@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Coches</title>
+</head>
+<body>
+<h1>Lista de Coches</h1>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Precio</th>
+        <th>Usuario</th>
+    </tr>
+    <tr th:each="coche : ${coches}">
+        <td th:text="${coche.id}"></td>
+        <td th:text="${coche.marca}"></td>
+        <td th:text="${coche.modelo}"></td>
+        <td th:text="${coche.precio}"></td>
+        <td th:text="${coche.usuario.nombre}"></td>
+    </tr>
+</table>
+</body>
+</html>
