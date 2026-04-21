@@ -291,7 +291,7 @@
                     localStorage.setItem('usuario', JSON.stringify(data.usuario));
                     showMessage('loginMessage', '✓ Login exitoso. Redirigiendo...', 'success');
                     setTimeout(() => {
-                        window.location.href = '/';
+                        window.location.href = '/perfil';
                     }, 1500);
                 } else {
                     showMessage('loginMessage', data, 'error');

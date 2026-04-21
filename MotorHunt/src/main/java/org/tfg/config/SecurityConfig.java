@@ -22,15 +22,9 @@ public class SecurityConfig {
         http
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index", "/login", "/registro", "/api/auth/**").permitAll()
+                .requestMatchers("/", "/index", "/login", "/registro", "/api/auth/**", "/resources/**", "/perfil").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ADMINISTRADOR")
-                .requestMatchers("/perfil", "/api/**").authenticated()
                 .anyRequest().permitAll()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/", true)
-                .permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")

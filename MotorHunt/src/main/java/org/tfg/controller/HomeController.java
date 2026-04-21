@@ -33,11 +33,6 @@ public class HomeController {
         return "login";
     }
 
-    @GetMapping("/perfil")
-    public String perfil() {
-        return "perfil";
-    }
-
     @GetMapping("/admin/dashboard")
     public String adminDashboard(Model model) {
         model.addAttribute("coches", cocheRepository.findAll());

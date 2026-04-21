@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MotorHunt - Compra y Venta de Coches</title>
+    <title>MotorHunt</title>
     <style>
         * {
             margin: 0;
@@ -13,357 +13,227 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #333;
+            background: linear-gradient(135deg, #0a0a0a 0%, #151515 100%);
+            color: #d0d0d0;
         }
 
-        /* NAVBAR */
-        nav {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 15px 40px;
+        #app {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
+        main {
+            flex: 1;
         }
 
-        .nav-right {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .nav-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s;
-            display: inline-block;
-        }
-
-        .nav-btn-login {
-            background: white;
-            color: #667eea;
-        }
-
-        .nav-btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .nav-btn-register {
-            background: #764ba2;
-            color: white;
-        }
-
-        .nav-btn-register:hover {
-            background: #5a3a7f;
-        }
-
-        .user-menu {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .user-info {
-            color: white;
-            font-size: 14px;
-        }
-
-        .btn-logout {
-            background: #ff6b6b;
-            color: white;
-            padding: 8px 15px;
-        }
-
-        .btn-logout:hover {
-            background: #ee5a52;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* HEADER */
         .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
             color: white;
-            padding: 60px 40px;
+            padding: 80px 50px;
             text-align: center;
+            border-bottom: 3px solid #d32f2f;
         }
 
         .hero h1 {
-            font-size: 40px;
-            margin-bottom: 10px;
+            font-size: 48px;
+            color: #d32f2f;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         .hero p {
             font-size: 18px;
-            opacity: 0.9;
+            color: #b0b0b0;
+            font-weight: 300;
         }
 
-        /* CONTAINER */
         .container {
             max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
+            margin: 60px auto;
+            padding: 0 50px;
         }
 
         .section-title {
-            font-size: 28px;
-            margin-bottom: 30px;
-            color: #333;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
+            font-size: 32px;
+            color: #d32f2f;
+            border-bottom: 3px solid #d32f2f;
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
-        /* GRID DE COCHES */
         .coches-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
         }
 
         .coche-card {
-            background: white;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
+            border: 2px solid #333;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
         }
 
         .coche-card:hover {
+            border-color: #d32f2f;
+            box-shadow: 0 15px 40px rgba(211, 47, 47, 0.3);
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
 
         .coche-image {
             width: 100%;
-            height: 200px;
-            background: #ddd;
+            height: 220px;
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
+            font-size: 100px;
         }
 
         .coche-info {
-            padding: 20px;
+            padding: 28px;
         }
 
         .coche-marca {
-            font-size: 18px;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 5px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #d32f2f;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
 
         .coche-modelo {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
+            font-size: 15px;
+            color: #888;
+            margin-bottom: 15px;
+            font-weight: 300;
         }
 
         .coche-detalles {
-            font-size: 12px;
-            color: #999;
-            margin-bottom: 10px;
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
         }
 
         .coche-precio {
-            font-size: 20px;
-            font-weight: bold;
-            color: #764ba2;
-            margin-bottom: 15px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #d32f2f;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
         }
 
         .coche-vendedor {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 10px;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 15px;
+            font-weight: 300;
         }
 
         .btn-ver {
             width: 100%;
-            padding: 10px;
-            background: #667eea;
+            padding: 14px;
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .btn-ver:hover {
-            background: #5568d3;
+            background: linear-gradient(135deg, #b71c1c 0%, #8b0000 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(211, 47, 47, 0.4);
         }
 
         .no-coches {
             text-align: center;
-            padding: 40px;
-            background: white;
-            border-radius: 10px;
-            color: #666;
-        }
-
-        .admin-tab {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .admin-tab a {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-
-        .admin-tab a:hover {
-            background: #5568d3;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+            border: 2px solid #333;
+            border-radius: 12px;
+            color: #888;
+            font-size: 16px;
         }
 
         @media (max-width: 768px) {
-            nav {
-                flex-wrap: wrap;
-            }
-
-            .nav-right {
-                width: 100%;
-                justify-content: flex-end;
+            .hero {
+                padding: 50px 30px;
             }
 
             .hero h1 {
-                font-size: 28px;
+                font-size: 32px;
+            }
+
+            .container {
+                padding: 0 20px;
+                margin: 40px auto;
             }
 
             .coches-grid {
                 grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .section-title {
+                font-size: 24px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- NAVBAR -->
-    <nav>
-        <div class="logo">🏎️ MotorHunt</div>
-        <div class="nav-right">
-            <div id="notLogged" class="nav-right">
-                <a href="/login" class="nav-btn nav-btn-login">🔐 Iniciar Sesión</a>
-                <a href="/registro" class="nav-btn nav-btn-register">📝 Registrarse</a>
-            </div>
-            <div id="logged" class="user-menu hidden">
-                <span class="user-info">👤 <span id="userName"></span></span>
-                <button class="nav-btn btn-logout" onclick="logout()">Cerrar Sesión</button>
-                <a href="/perfil" class="nav-btn nav-btn-login">Mi Perfil</a>
-                <a id="adminLink" href="/admin/dashboard" class="nav-btn nav-btn-register hidden">⚙️ Panel Admin</a>
-            </div>
-        </div>
-    </nav>
+    <div id="app">
+        <div th:replace="header :: header"></div>
 
-    <!-- HERO SECTION -->
-    <div class="hero">
-        <h1>🚗 Bienvenido a MotorHunt</h1>
-        <p>La plataforma más confiable para comprar y vender vehículos</p>
-    </div>
-
-    <!-- ADMIN PANEL LINK -->
-    <div id="adminSection" class="admin-tab hidden">
-        <a href="/admin/dashboard">⚙️ Ir al Panel de Administración</a>
-    </div>
-
-    <!-- COCHES DISPONIBLES -->
-    <div class="container">
-        <h2 class="section-title">🚗 Coches Disponibles para la Venta</h2>
-        
-        <div id="cochesList">
-            <div th:if="${coches.isEmpty()}" class="no-coches">
-                <p>No hay coches disponibles en este momento.</p>
+        <main>
+            <div class="hero">
+                <h1>🚗 Bienvenido a MotorHunt</h1>
+                <p>Compra y venta de vehículos de confianza</p>
             </div>
-            
-            <div class="coches-grid">
-                <div th:each="coche : ${coches}" class="coche-card">
-                    <div class="coche-image">🚙</div>
-                    <div class="coche-info">
-                        <div class="coche-marca" th:text="${coche.marca}"></div>
-                        <div class="coche-modelo" th:text="${coche.modelo + ' (' + coche.ano + ')'}"></div>
-                        <div class="coche-detalles">
-                            <span th:text="${coche.kilometraje} + ' km'"></span>
-                            <span th:text="${coche.combustible}"></span>
+
+            <div class="container">
+                <h2 class="section-title">🚗 Coches Disponibles</h2>
+                
+                <div th:if="${coches.isEmpty()}" class="no-coches">
+                    <p>No hay coches disponibles en este momento.</p>
+                </div>
+                
+                <div class="coches-grid" th:if="${!coches.isEmpty()}">
+                    <div th:each="coche : ${coches}" class="coche-card">
+                        <div class="coche-image">🚙</div>
+                        <div class="coche-info">
+                            <div class="coche-marca" th:text="${coche.marca}"></div>
+                            <div class="coche-modelo" th:text="${coche.modelo + ' (' + coche.ano + ')'}"></div>
+                            <div class="coche-detalles">
+                                <span th:text="${coche.kilometros} + ' km'"></span>
+                                <span th:text="${coche.combustible}"></span>
+                            </div>
+                            <div class="coche-precio" th:text="'€' + ${coche.precio}"></div>
+                            <div class="coche-vendedor" th:text="'Vendedor: ' + ${coche.usuario.nombre}"></div>
+                            <button class="btn-ver">Ver Detalles</button>
                         </div>
-                        <div class="coche-precio" th:text="'$' + ${coche.precio}"></div>
-                        <div class="coche-vendedor" th:text="'Vendedor: ' + ${coche.usuario.nombre}"></div>
-                        <button class="btn-ver" onclick="verDetalles(this)">Ver Detalles</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
+
+        <div th:replace="footer :: footer"></div>
     </div>
-
-    <script>
-        // Verificar si el usuario está logueado
-        function checkUser() {
-            const usuario = localStorage.getItem('usuario');
-            const notLogged = document.getElementById('notLogged');
-            const logged = document.getElementById('logged');
-            const adminSection = document.getElementById('adminSection');
-            const adminLink = document.getElementById('adminLink');
-
-            if (usuario) {
-                const user = JSON.parse(usuario);
-                notLogged.classList.add('hidden');
-                logged.classList.remove('hidden');
-                document.getElementById('userName').textContent = user.nombre;
-
-                // Mostrar panel admin si es administrador
-                if (user.rol === 'ADMINISTRADOR') {
-                    adminLink.classList.remove('hidden');
-                    adminSection.classList.remove('hidden');
-                }
-            } else {
-                notLogged.classList.remove('hidden');
-                logged.classList.add('hidden');
-                adminSection.classList.add('hidden');
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('usuario');
-            window.location.href = '/';
-        }
-
-        function verDetalles(btn) {
-            alert('Detalles del coche (próximamente)');
-        }
-
-        // Ejecutar al cargar
-        window.addEventListener('load', checkUser);
-    </script>
 </body>
 </html>

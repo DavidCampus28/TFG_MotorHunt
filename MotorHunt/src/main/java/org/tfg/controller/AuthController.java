@@ -101,7 +101,9 @@ public class AuthController {
                     "id", usuario.getId(),
                     "nombre", usuario.getNombre(),
                     "email", usuario.getEmail(),
-                    "rol", usuario.getRol().toString()
+                    "rol", usuario.getRol().toString(),
+                    "telefono", usuario.getTelefono() != null ? usuario.getTelefono() : "",
+                    "direccion", usuario.getDireccion() != null ? usuario.getDireccion() : ""
             ));
 
             return ResponseEntity.ok(response);

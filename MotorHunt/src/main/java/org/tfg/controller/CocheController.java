@@ -28,6 +28,11 @@ public class CocheController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/usuario/{usuarioId}")
+    public List<Coche> getCochesByUsuario(@PathVariable Long usuarioId) {
+        return cocheRepository.findByUsuarioId(usuarioId);
+    }
+
     @PostMapping
     public Coche createCoche(@RequestBody Coche coche) {
         return cocheRepository.save(coche);

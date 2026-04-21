@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,285 +10,352 @@
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #333;
+            background: linear-gradient(135deg, #0a0a0a 0%, #151515 100%);
+            color: #d0d0d0;
         }
 
-        nav {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 15px 40px;
+        #app {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .nav-right {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .nav-btn-logout {
-            background: #ff6b6b;
-            color: white;
-        }
-
-        .nav-btn-logout:hover {
-            background: #ee5a52;
-        }
-
-        .nav-btn-home {
-            background: white;
-            color: #667eea;
-        }
-
-        .nav-btn-home:hover {
-            transform: translateY(-2px);
+        main {
+            flex: 1;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 40px auto;
-            padding: 20px;
+            padding: 0 50px;
         }
 
-        .profile-header {
-            background: white;
+        .perfil-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            border: 2px solid #333;
             margin-bottom: 40px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
         }
 
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
+        .perfil-info {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .perfil-avatar {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
-            margin-bottom: 20px;
+            font-size: 80px;
+            box-shadow: 0 8px 25px rgba(211, 47, 47, 0.3);
         }
 
-        .profile-info h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .profile-email {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        .profile-rol {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .profile-rol.admin {
-            background: #764ba2;
-        }
-
-        .section {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        .section h2 {
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            font-size: 20px;
-        }
-
-        .info-group {
-            margin-bottom: 15px;
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: #667eea;
-            margin-bottom: 5px;
-        }
-
-        .info-value {
-            color: #666;
-            font-size: 16px;
-        }
-
-        .button-group {
+        .perfil-datos {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .btn {
-            padding: 12px 24px;
+        .dato-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .dato-item:last-child {
+            border-bottom: none;
+        }
+
+        .dato-label {
+            color: #d32f2f;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dato-valor {
+            color: #d0d0d0;
+            font-size: 16px;
+        }
+
+        .btn-editar {
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            color: white;
             border: none;
-            border-radius: 5px;
+            padding: 12px 30px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
+            margin-top: 20px;
         }
 
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
+        .btn-editar:hover {
+            background: linear-gradient(135deg, #b71c1c 0%, #8b0000 100%);
             transform: translateY(-2px);
         }
 
-        .btn-secondary {
-            background: #764ba2;
+        .seccion {
+            margin-bottom: 60px;
+        }
+
+        .seccion-titulo {
+            font-size: 28px;
+            color: #d32f2f;
+            border-bottom: 3px solid #d32f2f;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .btn-anadir {
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+
+        .btn-anadir:hover {
+            background: linear-gradient(135deg, #b71c1c 0%, #8b0000 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(211, 47, 47, 0.4);
+        }
+
+        .coches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .coche-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #333;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .coche-card:hover {
+            border-color: #d32f2f;
+            box-shadow: 0 15px 40px rgba(211, 47, 47, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .coche-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+        }
+
+        .coche-info {
+            padding: 20px;
+        }
+
+        .coche-marca {
+            font-size: 18px;
+            font-weight: 700;
+            color: #d32f2f;
+            margin-bottom: 5px;
+        }
+
+        .coche-precio {
+            font-size: 20px;
+            font-weight: 700;
+            color: #d32f2f;
+            margin: 15px 0;
+        }
+
+        .btn-acciones {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-accion {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-editar-coche {
+            background: #d32f2f;
             color: white;
         }
 
-        .btn-secondary:hover {
-            background: #5a3a7f;
-            transform: translateY(-2px);
+        .btn-editar-coche:hover {
+            background: #b71c1c;
         }
 
-        .empty-state {
+        .btn-eliminar {
+            background: #666;
+            color: white;
+        }
+
+        .btn-eliminar:hover {
+            background: #444;
+        }
+
+        .vacio {
             text-align: center;
             padding: 40px;
-            color: #999;
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+            border-radius: 12px;
+            color: #888;
+            border: 2px solid #333;
         }
 
-        .badge {
-            display: inline-block;
-            background: #f0f0f0;
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-size: 12px;
-            color: #666;
+        .chats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .chat-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #333;
+            transition: all 0.3s;
+        }
+
+        .chat-card:hover {
+            border-color: #d32f2f;
+            box-shadow: 0 8px 25px rgba(211, 47, 47, 0.3);
+        }
+
+        .chat-usuario {
+            font-weight: 600;
+            color: #d32f2f;
+            margin-bottom: 10px;
+        }
+
+        .chat-preview {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 10px;
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                padding: 0 20px;
             }
 
-            .profile-header {
-                padding: 20px;
+            .perfil-info {
+                grid-template-columns: 1fr;
             }
 
-            .button-group {
-                flex-direction: column;
+            .coches-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <nav>
-        <div class="logo">🏎️ MotorHunt</div>
-        <div class="nav-right">
-            <a href="/" class="nav-btn nav-btn-home">🏠 Inicio</a>
-            <button onclick="logout()" class="nav-btn nav-btn-logout">Cerrar Sesión</button>
-        </div>
-    </nav>
+    <div id="app">
+        <div th:replace="header :: header"></div>
 
-    <div class="container">
-        <!-- HEADER DE PERFIL -->
-        <div class="profile-header">
-            <div class="profile-avatar">👤</div>
-            <div class="profile-info">
-                <h1 id="userName">Cargando...</h1>
-                <p class="profile-email" id="userEmail">email@example.com</p>
-                <span class="profile-rol" id="userRol">USUARIO</span>
-            </div>
-        </div>
+        <main>
+            <div class="container">
+                <!-- PERFIL USUARIO -->
+                <div class="perfil-header">
+                    <div class="perfil-info">
+                        <div class="perfil-avatar">👤</div>
+                        <div class="perfil-datos">
+                            <div class="dato-item">
+                                <span class="dato-label">Nombre</span>
+                                <span class="dato-valor" id="nombrePerfil">-</span>
+                            </div>
+                            <div class="dato-item">
+                                <span class="dato-label">Email</span>
+                                <span class="dato-valor" id="emailPerfil">-</span>
+                            </div>
+                            <div class="dato-item">
+                                <span class="dato-label">Teléfono</span>
+                                <span class="dato-valor" id="telefonoPerfil">-</span>
+                            </div>
+                            <div class="dato-item">
+                                <span class="dato-label">Dirección</span>
+                                <span class="dato-valor" id="direccionPerfil">-</span>
+                            </div>
+                            <div class="dato-item">
+                                <span class="dato-label">Rol</span>
+                                <span class="dato-valor" id="rolPerfil">-</span>
+                            </div>
+                            <button class="btn-editar">Editar Perfil</button>
+                        </div>
+                    </div>
+                </div>
 
-        <!-- INFORMACIÓN PERSONAL -->
-        <div class="section">
-            <h2>📋 Información Personal</h2>
-            <div class="info-group">
-                <div class="info-label">Nombre</div>
-                <div class="info-value" id="infoNombre">-</div>
-            </div>
-            <div class="info-group">
-                <div class="info-label">Email</div>
-                <div class="info-value" id="infoEmail">-</div>
-            </div>
-            <div class="info-group">
-                <div class="info-label">Teléfono</div>
-                <div class="info-value" id="infoTelefono">-</div>
-            </div>
-            <div class="info-group">
-                <div class="info-label">Dirección</div>
-                <div class="info-value" id="infoDireccion">-</div>
-            </div>
-            <div class="button-group">
-                <button class="btn btn-primary" onclick="alert('Editar perfil (próximamente)')">✏️ Editar Perfil</button>
-            </div>
-        </div>
+                <!-- MIS COCHES A LA VENTA -->
+                <div class="seccion">
+                    <h2 class="seccion-titulo">🚗 Mis Coches en Venta</h2>
+                    <button class="btn-anadir">+ Añadir Coche Nuevo</button>
+                    
+                    <div id="misCoches">
+                        <div class="vacio">No tienes coches a la venta.</div>
+                    </div>
+                </div>
 
-        <!-- MIS COCHES -->
-        <div class="section">
-            <h2>🚗 Mis Coches en Venta</h2>
-            <div id="misCoches" class="empty-state">
-                <p>No tienes coches publicados aún.</p>
-            </div>
-            <div class="button-group">
-                <button class="btn btn-secondary" onclick="alert('Publicar coche (próximamente)')">➕ Publicar Coche</button>
-            </div>
-        </div>
+                <!-- COCHES FAVORITOS -->
+                <div class="seccion">
+                    <h2 class="seccion-titulo">❤️ Mis Coches Favoritos</h2>
+                    
+                    <div id="cochesFavoritos">
+                        <div class="vacio">No tienes coches marcados como favoritos.</div>
+                    </div>
+                </div>
 
-        <!-- MIS TRANSACCIONES -->
-        <div class="section">
-            <h2>💰 Mis Transacciones</h2>
-            <div id="misTransacciones" class="empty-state">
-                <p>No tienes transacciones aún.</p>
+                <!-- CHATS -->
+                <div class="seccion">
+                    <h2 class="seccion-titulo">💬 Mis Chats</h2>
+                    
+                    <div id="chats" class="chats-grid">
+                        <div class="vacio" style="grid-column: 1/-1;">No tienes chats activos.</div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </main>
 
-        <!-- MIS FAVORITOS -->
-        <div class="section">
-            <h2>❤️ Mis Coches Favoritos</h2>
-            <div id="misFavoritos" class="empty-state">
-                <p>No tienes coches favoritos aún.</p>
-            </div>
-        </div>
+        <div th:replace="footer :: footer"></div>
     </div>
 
     <script>
-        function loadUserProfile() {
+        function cargarPerfil() {
             const usuario = localStorage.getItem('usuario');
+            
             if (!usuario) {
                 window.location.href = '/login';
                 return;
@@ -296,29 +363,60 @@
 
             const user = JSON.parse(usuario);
             
-            // Cargar datos en la UI
-            document.getElementById('userName').textContent = user.nombre;
-            document.getElementById('userEmail').textContent = user.email;
-            const rol = document.getElementById('userRol');
-            rol.textContent = user.rol;
-            if (user.rol === 'ADMINISTRADOR') {
-                rol.classList.add('admin');
-            }
+            document.getElementById('nombrePerfil').textContent = user.nombre || '-';
+            document.getElementById('emailPerfil').textContent = user.email || '-';
+            document.getElementById('telefonoPerfil').textContent = user.telefono || '-';
+            document.getElementById('direccionPerfil').textContent = user.direccion || '-';
+            document.getElementById('rolPerfil').textContent = user.rol || '-';
 
-            // Campos informativos
-            document.getElementById('infoNombre').textContent = user.nombre;
-            document.getElementById('infoEmail').textContent = user.email;
-            document.getElementById('infoTelefono').textContent = user.telefono || '-';
-            document.getElementById('infoDireccion').textContent = user.direccion || '-';
+            // Aquí van llamadas API para cargar coches, favoritos, chats
+            cargarMisCoches(user.id);
+            cargarFavoritos(user.id);
+            cargarChats(user.id);
         }
 
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('usuario');
-            window.location.href = '/';
+        function cargarMisCoches(userId) {
+            fetch(`/coches/usuario/${userId}`)
+                .then(res => res.json())
+                .then(coches => {
+                    if (coches.length === 0) {
+                        document.getElementById('misCoches').innerHTML = '<div class="vacio">No tienes coches a la venta.</div>';
+                        return;
+                    }
+                    let html = '<div class="coches-grid">';
+                    coches.forEach(coche => {
+                        html += `
+                            <div class="coche-card">
+                                <div class="coche-image">🚙</div>
+                                <div class="coche-info">
+                                    <div class="coche-marca">${coche.marca} ${coche.modelo}</div>
+                                    <div>${coche.ano} • ${coche.kilometros} km</div>
+                                    <div class="coche-precio">€${coche.precio.toFixed(0)}</div>
+                                    <div class="btn-acciones">
+                                        <button class="btn-accion btn-editar-coche">Editar</button>
+                                        <button class="btn-accion btn-eliminar">Eliminar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    document.getElementById('misCoches').innerHTML = html;
+                })
+                .catch(err => {
+                    document.getElementById('misCoches').innerHTML = '<div class="vacio">Error cargando coches.</div>';
+                });
         }
 
-        window.addEventListener('load', loadUserProfile);
+        function cargarFavoritos(userId) {
+            // Placeholder
+        }
+
+        function cargarChats(userId) {
+            // Placeholder
+        }
+
+        window.addEventListener('load', cargarPerfil);
     </script>
 </body>
 </html>
