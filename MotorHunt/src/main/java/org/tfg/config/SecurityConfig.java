@@ -22,8 +22,7 @@ public class SecurityConfig {
         http
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index", "/login", "/registro", "/api/auth/**", "/resources/**", "/perfil").permitAll()
-                .requestMatchers("/admin/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers("/", "/index", "/login", "/registro", "/api/auth/**", "/resources/**", "/perfil", "/admin/**").permitAll()
                 .anyRequest().permitAll()
             )
             .logout(logout -> logout
@@ -31,8 +30,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/")
                 .permitAll()
             )
-            .cors().and()
-            .httpBasic();
+            .cors();
 
         return http.build();
     }

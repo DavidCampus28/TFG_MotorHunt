@@ -17,6 +17,11 @@
             color: #333;
         }
 
+        html[data-theme="dark"] body {
+            background: #0a0a0a;
+            color: #d0d0d0;
+        }
+
         /* NAVBAR */
         nav {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -36,6 +41,20 @@
         .nav-right {
             display: flex;
             gap: 20px;
+            align-items: center;
+        }
+
+        .theme-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.1);
         }
 
         .nav-btn {
@@ -279,6 +298,7 @@
     <nav>
         <div class="logo">⚙️ Panel Admin</div>
         <div class="nav-right">
+            <button class="theme-btn" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
             <a href="/" class="nav-btn nav-btn-home">🏠 Inicio</a>
             <button onclick="logout()" class="nav-btn nav-btn-logout">Cerrar Sesión</button>
         </div>
@@ -338,6 +358,31 @@
             <div id="coches" class="section-content hidden">
                 <div class="page-header">
                     <h1>🚗 Gestión de Coches</h1>
+                    <button onclick="showCreateCocheForm()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">➕ Crear Coche</button>
+                </div>
+
+                <div id="cocheFormSection" class="section hidden">
+                    <h2>Crear Nuevo Coche</h2>
+                    <form onsubmit="handleCreateCoche(event)" style="max-width: 800px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div><label style="display: block; margin-bottom: 5px;">Marca</label><input type="text" id="cocheMarca" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Modelo</label><input type="text" id="cocheModelo" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Motor</label><input type="text" id="cocheMotor" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Color</label><input type="text" id="cocheColor" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Tipo Cambio</label><select id="cocheTipoCambio" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"><option value="MANUAL">Manual</option><option value="AUTOMATICO">Automático</option></select></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Combustible</label><select id="cocheCombustible" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"><option value="GASOLINA">Gasolina</option><option value="DIESEL">Diesel</option><option value="ELECTRICO">Eléctrico</option><option value="HIBRIDO">Híbrido</option></select></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Año</label><input type="number" id="cocheAno" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Puertas</label><input type="number" id="cochePuertas" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Plazas</label><input type="number" id="cochePlazas" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Kilómetros</label><input type="number" id="cocheKm" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Precio (€)</label><input type="number" id="cochePrecio" step="0.01" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                        <div><label style="display: block; margin-bottom: 5px;">CC</label><input type="number" id="cocheCC" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Caballos</label><input type="number" id="cocheCaballos" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Etiqueta Ambiental</label><select id="cocheEtiqueta" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"><option value="B">B</option><option value="C">C</option><option value="ECO">ECO</option><option value="0">0</option></select></div>
+                        <div><label style="display: block; margin-bottom: 5px;">Ubicación</label><input type="text" id="cocheUbicacion" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                        <div style="grid-column: 1/-1;"><label style="display: block; margin-bottom: 5px;">Descripción</label><textarea id="cocheDescripcion" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px; min-height: 80px;"></textarea></div>
+                        <div style="grid-column: 1/-1;"><label style="display: block; margin-bottom: 5px;">Vendedor</label><select id="cocheVendedor" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;" th:with="usuarios=${usuarios}"><option value="">Seleccionar vendedor</option><option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nombre}"></option></select></div>
+                        <div style="grid-column: 1/-1;"><button type="submit" style="background: #667eea; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">Crear Coche</button><button type="button" onclick="hideCreateCocheForm()" style="background: #ccc; color: #333; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">Cancelar</button></div>
+                    </form>
                 </div>
 
                 <div class="section">
@@ -361,14 +406,21 @@
                                 <td th:text="${coche.marca}"></td>
                                 <td th:text="${coche.modelo}"></td>
                                 <td th:text="${coche.ano}"></td>
-                                <td th:text="'$' + ${coche.precio}"></td>
+                                <td th:text="'€' + ${coche.precio}"></td>
                                 <td th:text="${coche.usuario.nombre}"></td>
                                 <td>
-                                    <button onclick="alert('Ver detalles')">👁️ Ver</button>
+                                    <button th:onclick="'viewCocheDetails(' + ${coche.id} + ')'" style="background: #667eea; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-right: 5px;">👁️ Ver</button>
+                                    <button th:onclick="'deleteCoche(' + ${coche.id} + ')'" style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">🗑️ Borrar</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div id="cocheDetailsModal" class="section hidden">
+                    <h2>Detalles del Coche</h2>
+                    <div id="cocheDetailsContent"></div>
+                    <button onclick="hideCocheDetails()" style="background: #ccc; color: #333; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">Cerrar</button>
                 </div>
             </div>
 
@@ -376,6 +428,42 @@
             <div id="usuarios" class="section-content hidden">
                 <div class="page-header">
                     <h1>👥 Gestión de Usuarios</h1>
+                    <button onclick="showCreateUserForm()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">➕ Crear Usuario</button>
+                </div>
+
+                <div id="userFormSection" class="section hidden">
+                    <h2>Crear Nuevo Usuario</h2>
+                    <form onsubmit="handleCreateUser(event)" style="max-width: 600px;">
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #333;">Nombre</label>
+                            <input type="text" id="userName" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #333;">Email</label>
+                            <input type="email" id="userEmail" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #333;">Contraseña</label>
+                            <input type="password" id="userPassword" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #333;">Teléfono</label>
+                            <input type="tel" id="userTelefono" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #333;">Dirección</label>
+                            <input type="text" id="userDireccion" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #333;">Rol</label>
+                            <select id="userRol" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                                <option value="USUARIO">Usuario Normal</option>
+                                <option value="ADMINISTRADOR">Administrador</option>
+                            </select>
+                        </div>
+                        <button type="submit" style="background: #667eea; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">Crear Usuario</button>
+                        <button type="button" onclick="hideCreateUserForm()" style="background: #ccc; color: #333; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">Cancelar</button>
+                    </form>
                 </div>
 
                 <div class="section">
@@ -406,11 +494,18 @@
                                     <span class="badge" th:classappend="${usuario.activo} ? 'badge-activo' : 'badge-inactivo'" th:text="${usuario.activo} ? 'Activo' : 'Inactivo'"></span>
                                 </td>
                                 <td>
-                                    <button onclick="alert('Ver detalles')">👁️ Ver</button>
+                                    <button th:onclick="'viewUserDetails(' + ${usuario.id} + ')'" style="background: #667eea; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-right: 5px;">👁️ Ver</button>
+                                    <button th:onclick="'deleteUser(' + ${usuario.id} + ')'" style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">🗑️ Borrar</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div id="userDetailsModal" class="section hidden">
+                    <h2>Detalles del Usuario</h2>
+                    <div id="userDetailsContent"></div>
+                    <button onclick="hideUserDetails()" style="background: #ccc; color: #333; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">Cerrar</button>
                 </div>
             </div>
 
@@ -434,7 +529,7 @@
         function checkAdmin() {
             const usuario = localStorage.getItem('usuario');
             if (!usuario) {
-                window.location.href = '/login';
+                window.location.href = '/';
                 return;
             }
 
@@ -443,6 +538,11 @@
                 window.location.href = '/';
                 return;
             }
+        }
+
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
         }
 
         // Navegación del sidebar
@@ -466,7 +566,182 @@
             window.location.href = '/';
         }
 
-        window.addEventListener('load', checkAdmin);
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark' || !html.getAttribute('data-theme');
+            
+            if (isDark) {
+                html.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // USUARIOS
+        function showCreateUserForm() {
+            document.getElementById('userFormSection').classList.remove('hidden');
+        }
+
+        function hideCreateUserForm() {
+            document.getElementById('userFormSection').classList.add('hidden');
+        }
+
+        function handleCreateUser(e) {
+            e.preventDefault();
+            const data = {
+                nombre: document.getElementById('userName').value,
+                email: document.getElementById('userEmail').value,
+                password: document.getElementById('userPassword').value,
+                telefono: document.getElementById('userTelefono').value,
+                direccion: document.getElementById('userDireccion').value,
+                rol: document.getElementById('userRol').value
+            };
+
+            fetch('/api/admin/usuarios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert('Usuario creado');
+                location.reload();
+            })
+            .catch(err => alert('Error: ' + err));
+        }
+
+        function deleteUser(id) {
+            if (!confirm('¿Eliminar usuario?')) return;
+            fetch(`/api/admin/usuarios/${id}`, { method: 'DELETE' })
+            .then(() => {
+                alert('Usuario eliminado');
+                location.reload();
+            })
+            .catch(err => alert('Error: ' + err));
+        }
+
+        function viewUserDetails(id) {
+            fetch(`/api/admin/usuarios/${id}`)
+            .then(res => res.json())
+            .then(user => {
+                const html = `
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
+                        <p><strong>Nombre:</strong> ${user.nombre}</p>
+                        <p><strong>Email:</strong> ${user.email}</p>
+                        <p><strong>Teléfono:</strong> ${user.telefono || '-'}</p>
+                        <p><strong>Dirección:</strong> ${user.direccion || '-'}</p>
+                        <p><strong>Rol:</strong> <span class="badge ${user.rol === 'ADMINISTRADOR' ? 'badge-admin' : 'badge-usuario'}">${user.rol}</span></p>
+                        <p><strong>Activo:</strong> <span class="badge ${user.activo ? 'badge-activo' : 'badge-inactivo'}">${user.activo ? 'Sí' : 'No'}</span></p>
+                        <p><strong>Registrado:</strong> ${new Date(user.fechaRegistro).toLocaleDateString()}</p>
+                    </div>
+                `;
+                document.getElementById('userDetailsContent').innerHTML = html;
+                document.getElementById('userDetailsModal').classList.remove('hidden');
+            })
+            .catch(err => alert('Error: ' + err));
+        }
+
+        function hideUserDetails() {
+            document.getElementById('userDetailsModal').classList.add('hidden');
+        }
+
+        // COCHES
+        function showCreateCocheForm() {
+            document.getElementById('cocheFormSection').classList.remove('hidden');
+        }
+
+        function hideCreateCocheForm() {
+            document.getElementById('cocheFormSection').classList.add('hidden');
+        }
+
+        function handleCreateCoche(e) {
+            e.preventDefault();
+            const data = {
+                marca: document.getElementById('cocheMarca').value,
+                modelo: document.getElementById('cocheModelo').value,
+                motor: document.getElementById('cocheMotor').value,
+                color: document.getElementById('cocheColor').value,
+                tipoCambio: document.getElementById('cocheTipoCambio').value,
+                combustible: document.getElementById('cocheCombustible').value,
+                numeroPuertas: parseInt(document.getElementById('cochePuertas').value),
+                ubicacion: document.getElementById('cocheUbicacion').value,
+                caballosPotencia: parseInt(document.getElementById('cocheCaballos').value),
+                kilometros: parseInt(document.getElementById('cocheKm').value),
+                precio: parseFloat(document.getElementById('cochePrecio').value),
+                numeroPlazas: parseInt(document.getElementById('cochePlazas').value),
+                centimetrosCubicos: parseInt(document.getElementById('cocheCC').value),
+                etiquetaAmbiental: document.getElementById('cocheEtiqueta').value,
+                descripcion: document.getElementById('cocheDescripcion').value,
+                ano: parseInt(document.getElementById('cocheAno').value),
+                usuarioId: document.getElementById('cocheVendedor').value
+            };
+
+            fetch('/api/admin/coches', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert('Coche creado');
+                location.reload();
+            })
+            .catch(err => alert('Error: ' + err));
+        }
+
+        function deleteCoche(id) {
+            if (!confirm('¿Eliminar coche?')) return;
+            fetch(`/api/admin/coches/${id}`, { method: 'DELETE' })
+            .then(() => {
+                alert('Coche eliminado');
+                location.reload();
+            })
+            .catch(err => alert('Error: ' + err));
+        }
+
+        function viewCocheDetails(id) {
+            fetch(`/api/admin/coches/${id}`)
+            .then(res => res.json())
+            .then(coche => {
+                const html = `
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <p><strong>Marca:</strong> ${coche.marca}</p>
+                        <p><strong>Modelo:</strong> ${coche.modelo}</p>
+                        <p><strong>Año:</strong> ${coche.ano}</p>
+                        <p><strong>Motor:</strong> ${coche.motor}</p>
+                        <p><strong>Color:</strong> ${coche.color}</p>
+                        <p><strong>Tipo Cambio:</strong> ${coche.tipoCambio}</p>
+                        <p><strong>Combustible:</strong> ${coche.combustible}</p>
+                        <p><strong>Puertas:</strong> ${coche.numeroPuertas}</p>
+                        <p><strong>Plazas:</strong> ${coche.numeroPlazas}</p>
+                        <p><strong>Kilómetros:</strong> ${coche.kilometros}</p>
+                        <p><strong>Precio:</strong> €${coche.precio.toFixed(2)}</p>
+                        <p><strong>CC:</strong> ${coche.centimetrosCubicos}</p>
+                        <p><strong>Caballos:</strong> ${coche.caballosPotencia}</p>
+                        <p><strong>Etiqueta Ambiental:</strong> ${coche.etiquetaAmbiental}</p>
+                        <p><strong>Ubicación:</strong> ${coche.ubicacion}</p>
+                        <p><strong>Estado:</strong> ${coche.estado}</p>
+                        <p><strong>Vendedor:</strong> ${coche.vendedor}</p>
+                        <p style="grid-column: 1/-1;"><strong>Descripción:</strong> ${coche.descripcion || '-'}</p>
+                        <p style="grid-column: 1/-1;"><strong>Creado:</strong> ${new Date(coche.fechaCreacion).toLocaleDateString()}</p>
+                    </div>
+                `;
+                document.getElementById('cocheDetailsContent').innerHTML = html;
+                document.getElementById('cocheDetailsModal').classList.remove('hidden');
+            })
+            .catch(err => alert('Error: ' + err));
+        }
+
+        function hideCocheDetails() {
+            document.getElementById('cocheDetailsModal').classList.add('hidden');
+        }
+
+        window.addEventListener('load', () => {
+            initializeTheme();
+            checkAdmin();
+        });
     </script>
 </body>
 </html>

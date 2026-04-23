@@ -123,11 +123,11 @@ CREATE TABLE mensajes (
 -- =============================================
 
 INSERT INTO usuarios (nombre, email, password, telefono, direccion, rol, activo) VALUES
-('Admin User', 'admin@motorhunt.com', 'hashed_password_123', '123456789', 'Calle Principal 1', 'ADMINISTRADOR', TRUE),
+('Admin User', 'admin@motorhunt.com', 'admin', '123456789', 'Calle Principal 1', 'ADMINISTRADOR', TRUE),
 ('Juan García', 'juan@example.com', 'hashed_password_456', '987654321', 'Calle Secundaria 2', 'USUARIO', TRUE),
 ('María López', 'maria@example.com', 'hashed_password_789', '555111222', 'Avenida Central 3', 'USUARIO', TRUE),
 ('Carlos Martínez', 'carlos@example.com', 'hashed_password_012', '555333444', 'Plaza Mayor 4', 'USUARIO', TRUE);
-
+UPDATE usuarios SET password = '$2a$10$slYQmyNdGzin7olVN3BK2OPST9/PgBkqquzi.Gy6/a5LkB.o5xI4a' WHERE nombre = 'Admin User';
 INSERT INTO coches (marca, modelo, motor, color, tipo_cambio, combustible, numero_puertas, ubicacion, caballos_potencia, kilometros, precio, numero_plazas, centimetros_cubicos, etiqueta_ambiental, estado, descripcion, ano, usuario_id) VALUES
 ('Toyota', 'Corolla', '1.6L', 'Blanco', 'AUTOMATICO', 'GASOLINA', 4, 'Madrid', 130, 45000, 15000.00, 5, 1598, 'C', 'EN_VENTA', 'Coche en perfecto estado, poco uso', 2020, 2),
 ('BMW', '320i', '2.0L', 'Negro', 'MANUAL', 'DIESEL', 4, 'Barcelona', 150, 32000, 22000.00, 5, 1995, 'C', 'EN_VENTA', 'Sedán deportivo bien mantenido', 2019, 3),

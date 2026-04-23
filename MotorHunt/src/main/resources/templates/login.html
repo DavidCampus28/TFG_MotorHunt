@@ -11,13 +11,44 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #252525;
+            --text-main: #d0d0d0;
+            --text-secondary: #b0b0b0;
+            --accent: #ff4444;
+            --accent-dark: #cc0000;
+        }
+
+        html[data-theme="light"] {
+            --bg-dark: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-tertiary: #e8e8e8;
+            --text-main: #333333;
+            --text-secondary: #666666;
+            --accent: #ff4444;
+            --accent-dark: #cc0000;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
+            color: var(--text-main);
+        }
+
+        #app {
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 40px 20px;
         }
 
         .container {
@@ -27,11 +58,12 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             border-radius: 12px;
             overflow: hidden;
+            background: var(--bg-secondary);
         }
 
         .form-container {
             flex: 1;
-            background: white;
+            background: var(--bg-secondary);
             padding: 50px;
             display: flex;
             flex-direction: column;
@@ -50,7 +82,7 @@
 
         h1 {
             margin-bottom: 30px;
-            color: #333;
+            color: var(--text-main);
             font-size: 28px;
         }
 
@@ -61,50 +93,58 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #333;
+            color: var(--text-main);
             font-weight: 500;
         }
 
         input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ddd;
+            border: 1px solid #444;
             border-radius: 5px;
             font-size: 14px;
+            background: var(--bg-tertiary);
+            color: var(--text-main);
             transition: border-color 0.3s;
+        }
+
+        html[data-theme="light"] input {
+            background: #ffffff;
+            border-color: #ddd;
         }
 
         input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+            border-color: var(--accent);
+            box-shadow: 0 0 5px rgba(255, 68, 68, 0.3);
         }
 
         .btn {
             width: 100%;
             padding: 12px;
-            background: #667eea;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
             color: white;
             border: none;
             border-radius: 5px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
 
         .btn:hover {
-            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 68, 68, 0.4);
         }
 
         .toggle-form {
             text-align: center;
             margin-top: 20px;
-            color: #666;
+            color: var(--text-secondary);
         }
 
         .toggle-form a {
-            color: #667eea;
+            color: var(--accent);
             text-decoration: none;
             font-weight: 600;
             cursor: pointer;
@@ -183,82 +223,138 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="form-container">
-            <!-- FORMULARIO DE LOGIN -->
-            <div id="loginForm">
-                <h1>🔑 Iniciar Sesión</h1>
-                <div class="message" id="loginMessage"></div>
+    <div id="app">
+        <div id="header-placeholder"></div>
 
-                <form onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="loginEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Contraseña</label>
-                        <input type="password" id="loginPassword" required>
-                    </div>
-                    <button type="submit" class="btn">Iniciar Sesión</button>
-                </form>
+        <main>
+            <div class="container">
+                <div class="form-container">
+                    <!-- FORMULARIO DE LOGIN -->
+                    <div id="loginForm">
+                        <h1>🔑 Iniciar Sesión</h1>
+                        <div class="message" id="loginMessage"></div>
 
-                <div class="toggle-form">
-                    ¿No tienes cuenta? <a onclick="toggleForms()">Regístrate aquí</a>
+                        <form onsubmit="handleLogin(event)">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="loginEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Contraseña</label>
+                                <input type="password" id="loginPassword" required>
+                            </div>
+                            <button type="submit" class="btn">Iniciar Sesión</button>
+                        </form>
+
+                        <div class="toggle-form">
+                            ¿No tienes cuenta? <a onclick="toggleForms()">Regístrate aquí</a>
+                        </div>
+                    </div>
+
+                    <!-- FORMULARIO DE REGISTRO -->
+                    <div id="registerForm" class="hidden">
+                        <h1>📝 Registro</h1>
+                        <div class="message" id="registerMessage"></div>
+
+                        <form onsubmit="handleRegister(event)">
+                            <div class="form-group">
+                                <label>Nombre</label>
+                                <input type="text" id="registerNombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="registerEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Contraseña</label>
+                                <input type="password" id="registerPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfono</label>
+                                <input type="tel" id="registerTelefono">
+                            </div>
+                            <div class="form-group">
+                                <label>Dirección</label>
+                                <input type="text" id="registerDireccion">
+                            </div>
+                            <button type="submit" class="btn">Registrarse</button>
+                        </form>
+
+                        <div class="toggle-form">
+                            ¿Ya tienes cuenta? <a onclick="toggleForms()">Inicia sesión aquí</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-container">
+                    <h2>🚗 MotorHunt</h2>
+                    <p>Bienvenido al portal de compra y venta de vehículos más confiable.</p>
+                    
+                    <div id="loginInfo">
+                        <p><strong>¿Por qué registrarse?</strong></p>
+                        <p>• Acceso a ofertas exclusivas</p>
+                        <p>• Publica tus coches para vender</p>
+                        <p>• Historial de compras y ventas</p>
+                        <p>• Gestión de favoritos</p>
+                    </div>
+
+                    <a href="/" class="nav-link">← Volver al inicio</a>
                 </div>
             </div>
+        </main>
 
-            <!-- FORMULARIO DE REGISTRO -->
-            <div id="registerForm" class="hidden">
-                <h1>📝 Registro</h1>
-                <div class="message" id="registerMessage"></div>
-
-                <form onsubmit="handleRegister(event)">
-                    <div class="form-group">
-                        <label>Nombre</label>
-                        <input type="text" id="registerNombre" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="registerEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Contraseña</label>
-                        <input type="password" id="registerPassword" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Teléfono</label>
-                        <input type="tel" id="registerTelefono">
-                    </div>
-                    <div class="form-group">
-                        <label>Dirección</label>
-                        <input type="text" id="registerDireccion">
-                    </div>
-                    <button type="submit" class="btn">Registrarse</button>
-                </form>
-
-                <div class="toggle-form">
-                    ¿Ya tienes cuenta? <a onclick="toggleForms()">Inicia sesión aquí</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="info-container">
-            <h2>🚗 MotorHunt</h2>
-            <p>Bienvenido al portal de compra y venta de vehículos más confiable.</p>
-            
-            <div id="loginInfo">
-                <p><strong>¿Por qué registrarse?</strong></p>
-                <p>• Acceso a ofertas exclusivas</p>
-                <p>• Publica tus coches para vender</p>
-                <p>• Historial de compras y ventas</p>
-                <p>• Gestión de favoritos</p>
-            </div>
-
-            <a href="/" class="nav-link">← Volver al inicio</a>
-        </div>
+        <div id="footer-placeholder"></div>
     </div>
 
     <script>
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        function loadHeader() {
+            const headerHTML = `
+                <header style="background: var(--bg-secondary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 100;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="/resources/img/LogoMotorHunt.png" alt="Logo" style="width: 45px; height: 45px;">
+                        <div style="font-size: 24px; font-weight: bold; color: var(--accent); letter-spacing: 1px;">MotorHunt</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <button onclick="toggleTheme()" style="background: none; border: none; cursor: pointer; font-size: 28px; color: var(--accent); transition: all 0.3s;" title="Cambiar tema">🌙</button>
+                        <a href="/" style="color: var(--text-main); text-decoration: none;">🏠 Inicio</a>
+                    </div>
+                </header>
+            `;
+            document.getElementById('header-placeholder').innerHTML = headerHTML;
+        }
+
+        function loadFooter() {
+            const footerHTML = `
+                <footer style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); color: var(--text-secondary); padding: 50px; margin-top: 80px; border-top: 2px solid var(--accent); text-align: center;">
+                    <p>&copy; 2026 MotorHunt. Todos los derechos reservados.</p>
+                    <div style="margin-top: 20px; display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; font-size: 14px;">
+                        <a href="#" style="color: var(--text-secondary); text-decoration: none;">Términos</a>
+                        <a href="#" style="color: var(--text-secondary); text-decoration: none;">Privacidad</a>
+                        <a href="#" style="color: var(--text-secondary); text-decoration: none;">Cookies</a>
+                    </div>
+                </footer>
+            `;
+            document.getElementById('footer-placeholder').innerHTML = footerHTML;
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark' || !html.getAttribute('data-theme');
+            
+            if (isDark) {
+                html.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
         function toggleForms() {
             document.getElementById('loginForm').classList.toggle('hidden');
             document.getElementById('registerForm').classList.toggle('hidden');
@@ -291,7 +387,7 @@
                     localStorage.setItem('usuario', JSON.stringify(data.usuario));
                     showMessage('loginMessage', '✓ Login exitoso. Redirigiendo...', 'success');
                     setTimeout(() => {
-                        window.location.href = '/perfil';
+                        window.location.href = '/';
                     }, 1500);
                 } else {
                     showMessage('loginMessage', data, 'error');
@@ -338,6 +434,18 @@
             element.textContent = typeof message === 'string' ? message : JSON.stringify(message);
             element.className = 'message ' + type;
         }
+
+        window.addEventListener('load', () => {
+            initializeTheme();
+            loadHeader();
+            loadFooter();
+            
+            // Mostrar formulario registro si viene desde header
+            if (localStorage.getItem('showRegisterForm') === 'true') {
+                toggleForms();
+                localStorage.removeItem('showRegisterForm');
+            }
+        });
     </script>
 </body>
 </html>

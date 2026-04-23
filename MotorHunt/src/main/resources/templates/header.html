@@ -18,6 +18,11 @@
                 z-index: 100;
             }
 
+            html[data-theme="light"] header {
+                background: #f5f5f5;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
             .header-left {
                 display: flex;
                 align-items: center;
@@ -38,10 +43,13 @@
             }
 
             .header-right {
+                display: flex;
+                align-items: center;
+                gap: 20px;
                 position: relative;
             }
 
-            .user-btn {
+            .theme-btn, .user-btn {
                 background: none;
                 border: none;
                 cursor: pointer;
@@ -50,9 +58,28 @@
                 transition: all 0.3s;
             }
 
-            .user-btn:hover {
+            .theme-btn:hover, .user-btn:hover {
                 transform: scale(1.1);
                 color: #cc0000;
+            }
+
+            .admin-btn {
+                background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 14px;
+                transition: all 0.3s;
+                text-decoration: none;
+                display: inline-block;
+            }
+
+            .admin-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(255, 68, 68, 0.4);
             }
 
             .user-menu {
@@ -66,6 +93,12 @@
                 box-shadow: 0 10px 25px rgba(0,0,0,0.5);
                 display: none;
                 z-index: 200;
+            }
+
+            html[data-theme="light"] .user-menu {
+                background: #ffffff;
+                border: 2px solid #ff4444;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             }
 
             .user-menu.active {
@@ -87,6 +120,12 @@
                 border-bottom: 1px solid #444;
             }
 
+            html[data-theme="light"] .user-menu a,
+            html[data-theme="light"] .user-menu button {
+                color: #333;
+                border-bottom: 1px solid #ddd;
+            }
+
             .user-menu a:last-child, .user-menu button:last-child {
                 border-bottom: none;
             }
@@ -102,6 +141,11 @@
                 color: #ff9999;
                 font-size: 12px;
                 border-bottom: 1px solid #444 !important;
+            }
+
+            html[data-theme="light"] .user-info {
+                color: #ff6666;
+                border-bottom: 1px solid #ddd !important;
             }
 
             .user-info:hover {
@@ -130,6 +174,8 @@
         </div>
 
         <div class="header-right">
+            <a id="adminBtnHeader" class="admin-btn" href="/admin/dashboard" style="display: none;">⚙️ Panel Admin</a>
+            <button class="theme-btn" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
             <button class="user-btn" onclick="toggleUserMenu()">👤</button>
             <div class="user-menu" id="userMenu">
                 <div class="user-info" id="userInfo" style="display: none;">
@@ -137,12 +183,11 @@
                 </div>
                 <div id="notLoggedMenu">
                     <a href="/login">🔐 Iniciar Sesión</a>
-                    <a href="/registro">📝 Registrarse</a>
+                    <a href="/login" onclick="showRegisterForm(event)">📝 Registrarse</a>
                 </div>
                 <div id="loggedMenu" style="display: none;">
                     <a href="/perfil">👤 Mi Perfil</a>
                     <a href="/mis-coches">🚗 Mis Coches</a>
-                    <a id="adminLinkHeader" href="/admin/dashboard" style="display: none;">⚙️ Panel Admin</a>
                     <button onclick="logout()">🚪 Cerrar Sesión</button>
                 </div>
             </div>
@@ -160,12 +205,33 @@
                 window.location.href = '/';
             }
 
+            function toggleTheme() {
+                const html = document.documentElement;
+                const isDark = html.getAttribute('data-theme') === 'dark' || !html.getAttribute('data-theme');
+                
+                if (isDark) {
+                    html.setAttribute('data-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                    document.querySelector('.theme-btn').textContent = '☀️';
+                } else {
+                    html.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    document.querySelector('.theme-btn').textContent = '🌙';
+                }
+            }
+
+            function showRegisterForm(e) {
+                e.preventDefault();
+                localStorage.setItem('showRegisterForm', 'true');
+                window.location.href = '/login';
+            }
+
             function initializeHeader() {
                 const usuario = localStorage.getItem('usuario');
                 const userInfo = document.getElementById('userInfo');
                 const notLoggedMenu = document.getElementById('notLoggedMenu');
                 const loggedMenu = document.getElementById('loggedMenu');
-                const adminLink = document.getElementById('adminLinkHeader');
+                const adminBtn = document.getElementById('adminBtnHeader');
 
                 if (usuario) {
                     const user = JSON.parse(usuario);
@@ -175,7 +241,7 @@
                     loggedMenu.style.display = 'block';
 
                     if (user.rol === 'ADMINISTRADOR') {
-                        adminLink.style.display = 'block';
+                        adminBtn.style.display = 'inline-block';
                     }
                 } else {
                     userInfo.style.display = 'none';
@@ -184,8 +250,20 @@
                 }
             }
 
-            document.addEventListener('DOMContentLoaded', initializeHeader);
-            window.addEventListener('load', initializeHeader);
+            function initializeTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                document.querySelector('.theme-btn').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                initializeTheme();
+                initializeHeader();
+            });
+            window.addEventListener('load', () => {
+                initializeTheme();
+                initializeHeader();
+            });
         </script>
     </header>
 </body>
