@@ -1,20 +1,30 @@
 package org.tfg.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.tfg.model.entities.Coche;
 import org.tfg.model.entities.Usuario;
+import org.tfg.model.enums.*;
 import org.tfg.repository.CocheRepository;
+import org.tfg.repository.UsuarioRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/coches")
+@CrossOrigin(origins = "*")
 public class CocheController {
 
     @Autowired
     private CocheRepository cocheRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @GetMapping
     public List<Coche> getAllCoches() {
@@ -66,5 +76,59 @@ public class CocheController {
             cocheRepository.delete(coche);
             return ResponseEntity.ok().<Void>build();
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/crear")
+    public ResponseEntity<?> crearCoche(@RequestBody Map<String, Object> request) {
+        try {
+            Coche coche = new Coche();
+            coche.setMarca((String) request.get("marca"));
+            coche.setModelo((String) request.get("modelo"));
+            coche.setMotor((String) request.get("motor"));
+            coche.setColor((String) request.get("color"));
+            coche.setTipoCambio(TipoCambio.valueOf(request.get("tipoCambio").toString()));
+            coche.setCombustible(Combustible.valueOf(request.get("combustible").toString()));
+            
+            if (request.get("numeroPuertas") != null) {
+                coche.setNumeroPuertas(((Number) request.get("numeroPuertas")).intValue());
+            }
+            coche.setUbicacion((String) request.get("ubicacion"));
+            if (request.get("caballosPotencia") != null) {
+                coche.setCaballosPotencia(((Number) request.get("caballosPotencia")).intValue());
+            }
+            if (request.get("km") != null) {
+                coche.setKilometros(((Number) request.get("km")).intValue());
+            }
+            if (request.get("precio") != null) {
+                coche.setPrecio(((Number) request.get("precio")).doubleValue());
+            }
+            if (request.get("numeroPlazas") != null) {
+                coche.setNumeroPlazas(((Number) request.get("numeroPlazas")).intValue());
+            }
+            if (request.get("centimetrosCubicos") != null) {
+                coche.setCentimetrosCubicos(((Number) request.get("centimetrosCubicos")).intValue());
+            }
+            coche.setEtiquetaAmbiental(EtiquetaAmbiental.valueOf(request.get("etiquetaAmbiental").toString()));
+            coche.setEstado(EstadoCoche.EN_VENTA);
+            coche.setDescripcion((String) request.get("descripcion"));
+            if (request.get("ano") != null) {
+                coche.setAno(((Number) request.get("ano")).intValue());
+            }
+
+            Long usuarioId = Long.parseLong(request.get("usuarioId").toString());
+            Optional<Usuario> usuario = usuarioRepository.findById(usuarioId);
+            if (usuario.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Usuario no encontrado"));
+            }
+
+            coche.setUsuario(usuario.get());
+            coche.setFechaCreacion(LocalDateTime.now());
+
+            cocheRepository.save(coche);
+            return ResponseEntity.ok(Map.of("mensaje", "Coche creado", "id", coche.getId()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage(), "tipo", e.getClass().getSimpleName()));
+        }
     }
 }

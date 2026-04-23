@@ -11,88 +11,51 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #252525;
+            --text-main: #d0d0d0;
+            --text-secondary: #b0b0b0;
+            --accent: #ff4444;
+            --accent-dark: #cc0000;
+            --border: #333;
+        }
+
+        html[data-theme="light"] {
+            --bg-dark: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-tertiary: #e8e8e8;
+            --text-main: #333333;
+            --text-secondary: #666666;
+            --accent: #ff4444;
+            --accent-dark: #cc0000;
+            --border: #ddd;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #333;
+            background: var(--bg-dark);
+            color: var(--text-main);
         }
 
-        html[data-theme="dark"] body {
-            background: #0a0a0a;
-            color: #d0d0d0;
-        }
-
-        /* NAVBAR */
-        nav {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 15px 40px;
+        #app {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .nav-right {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .theme-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 20px;
-            color: white;
-            transition: all 0.3s;
-        }
-
-        .theme-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .nav-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .nav-btn-home {
-            background: white;
-            color: #667eea;
-        }
-
-        .nav-btn-logout {
-            background: #ff6b6b;
-            color: white;
-        }
-
-        .nav-btn-logout:hover {
-            background: #ee5a52;
-        }
-
-        /* LAYOUT */
         .container {
             display: flex;
-            height: calc(100vh - 60px);
+            flex: 1;
         }
 
-        /* SIDEBAR */
         .sidebar {
             width: 250px;
-            background: white;
+            background: var(--bg-secondary);
             padding: 30px 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            border-right: 1px solid var(--border);
             position: relative;
             z-index: 1;
         }
@@ -109,7 +72,7 @@
             display: flex;
             align-items: center;
             padding: 15px 20px;
-            color: #666;
+            color: var(--text-secondary);
             text-decoration: none;
             border-left: 4px solid transparent;
             transition: all 0.3s;
@@ -117,15 +80,15 @@
         }
 
         .sidebar-menu a:hover {
-            background: #f5f7fa;
-            color: #667eea;
-            border-left-color: #667eea;
+            background: var(--bg-tertiary);
+            color: var(--accent);
+            border-left-color: var(--accent);
         }
 
         .sidebar-menu a.active {
-            background: #f5f7fa;
-            color: #667eea;
-            border-left-color: #667eea;
+            background: var(--bg-tertiary);
+            color: var(--accent);
+            border-left-color: var(--accent);
             font-weight: 600;
         }
 
@@ -133,7 +96,6 @@
             margin-left: 10px;
         }
 
-        /* MAIN CONTENT */
         .main-content {
             flex: 1;
             overflow-y: auto;
@@ -145,16 +107,15 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
-            border-bottom: 2px solid #eee;
+            border-bottom: 2px solid var(--border);
             padding-bottom: 20px;
         }
 
         .page-header h1 {
             font-size: 28px;
-            color: #333;
+            color: var(--text-main);
         }
 
-        /* CARDS DE ESTADÍSTICAS */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -163,11 +124,12 @@
         }
 
         .stat-card {
-            background: white;
+            background: var(--bg-secondary);
             padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             text-align: center;
+            border: 1px solid var(--border);
         }
 
         .stat-icon {
@@ -178,29 +140,30 @@
         .stat-number {
             font-size: 32px;
             font-weight: bold;
-            color: #667eea;
+            color: var(--accent);
             margin-bottom: 5px;
         }
 
         .stat-label {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 14px;
         }
 
-        /* TABLES */
         .section {
-            background: white;
+            background: var(--bg-secondary);
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             margin-bottom: 30px;
+            border: 1px solid var(--border);
         }
 
         .section h2 {
-            border-bottom: 3px solid #667eea;
+            border-bottom: 3px solid var(--accent);
             padding-bottom: 10px;
             margin-bottom: 20px;
             font-size: 20px;
+            color: var(--text-main);
         }
 
         table {
@@ -209,21 +172,22 @@
         }
 
         th {
-            background: #f5f7fa;
+            background: var(--bg-tertiary);
             padding: 12px;
             text-align: left;
             font-weight: 600;
-            color: #667eea;
-            border-bottom: 2px solid #ddd;
+            color: var(--accent);
+            border-bottom: 2px solid var(--border);
         }
 
         td {
             padding: 12px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
         }
 
         tr:hover {
-            background: #f9f9f9;
+            background: var(--bg-tertiary);
         }
 
         .badge {
@@ -234,30 +198,135 @@
             font-weight: 600;
         }
 
-        .badge-usuario {
-            background: #d1e7f7;
-            color: #0056b3;
-        }
-
         .badge-admin {
-            background: #f0caf7;
-            color: #6d0080;
+            background: linear-gradient(135deg, rgba(255, 68, 68, 0.2), rgba(204, 0, 0, 0.2));
+            color: var(--accent);
+            border: 1px solid var(--accent);
         }
 
-        .badge-activo {
-            background: #d4edda;
-            color: #155724;
+        .badge-usuario {
+            background: linear-gradient(135deg, rgba(100, 100, 100, 0.2), rgba(150, 150, 150, 0.2));
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
         }
 
-        .badge-inactivo {
-            background: #f8d7da;
-            color: #721c24;
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-weight: 600;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #999;
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 68, 68, 0.4);
+        }
+
+        .btn-danger {
+            background: rgba(255, 68, 68, 0.2);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .btn-danger:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            background: var(--bg-tertiary);
+            color: var(--text-main);
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 5px rgba(255, 68, 68, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            margin: 2% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 95%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            color: var(--text-main);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--accent);
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            transform: scale(1.2);
         }
 
         .hidden {
@@ -284,10 +353,6 @@
                 flex: 1;
             }
 
-            .main-content {
-                height: auto;
-            }
-
             .stats-grid {
                 grid-template-columns: 1fr;
             }
@@ -295,452 +360,823 @@
     </style>
 </head>
 <body>
-    <nav>
-        <div class="logo">⚙️ Panel Admin</div>
-        <div class="nav-right">
-            <button class="theme-btn" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
-            <a href="/" class="nav-btn nav-btn-home">🏠 Inicio</a>
-            <button onclick="logout()" class="nav-btn nav-btn-logout">Cerrar Sesión</button>
-        </div>
-    </nav>
+    <div id="app">
+        <div id="header-placeholder"></div>
 
-    <div class="container">
-        <!-- SIDEBAR -->
-        <div class="sidebar">
-            <ul class="sidebar-menu">
-                <li><a class="menu-item active" data-section="dashboard"><span>📊 Dashboard</span></a></li>
-                <li><a class="menu-item" data-section="coches"><span>🚗 Coches</span></a></li>
-                <li><a class="menu-item" data-section="usuarios"><span>👥 Usuarios</span></a></li>
-                <li><a class="menu-item" data-section="transacciones"><span>💰 Transacciones</span></a></li>
-            </ul>
-        </div>
+        <div class="container">
+            <aside class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a onclick="showSection('usuarios')" class="menu-item active" data-section="usuarios">Usuarios</a></li>
+                    <li><a onclick="showSection('coches')" class="menu-item" data-section="coches">Vehículos</a></li>
+                </ul>
+            </aside>
 
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <!-- DASHBOARD -->
-            <div id="dashboard" class="section-content">
-                <div class="page-header">
-                    <h1>📊 Dashboard</h1>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">🚗</div>
-                        <div class="stat-number" th:text="${totalCoches}">0</div>
-                        <div class="stat-label">Coches en Venta</div>
+            <main class="main-content">
+                <div id="usuarios-section" class="section-container">
+                    <div class="page-header">
+                        <h1>Gestión de Usuarios</h1>
+                        <button class="btn btn-primary" onclick="openCreateUserModal()">+ Nuevo</button>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">👥</div>
-                        <div class="stat-number" th:text="${totalUsuarios}">0</div>
-                        <div class="stat-label">Usuarios Registrados</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">Transacciones</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⭐</div>
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">Reseñas</div>
-                    </div>
-                </div>
 
-                <div class="section">
-                    <h2>📈 Actividad Reciente</h2>
-                    <div class="empty-state">
-                        <p>Próximamente se mostrarán las actividades recientes de la plataforma.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COCHES -->
-            <div id="coches" class="section-content hidden">
-                <div class="page-header">
-                    <h1>🚗 Gestión de Coches</h1>
-                    <button onclick="showCreateCocheForm()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">➕ Crear Coche</button>
-                </div>
-
-                <div id="cocheFormSection" class="section hidden">
-                    <h2>Crear Nuevo Coche</h2>
-                    <form onsubmit="handleCreateCoche(event)" style="max-width: 800px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div><label style="display: block; margin-bottom: 5px;">Marca</label><input type="text" id="cocheMarca" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Modelo</label><input type="text" id="cocheModelo" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Motor</label><input type="text" id="cocheMotor" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Color</label><input type="text" id="cocheColor" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Tipo Cambio</label><select id="cocheTipoCambio" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"><option value="MANUAL">Manual</option><option value="AUTOMATICO">Automático</option></select></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Combustible</label><select id="cocheCombustible" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"><option value="GASOLINA">Gasolina</option><option value="DIESEL">Diesel</option><option value="ELECTRICO">Eléctrico</option><option value="HIBRIDO">Híbrido</option></select></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Año</label><input type="number" id="cocheAno" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Puertas</label><input type="number" id="cochePuertas" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Plazas</label><input type="number" id="cochePlazas" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Kilómetros</label><input type="number" id="cocheKm" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Precio (€)</label><input type="number" id="cochePrecio" step="0.01" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                        <div><label style="display: block; margin-bottom: 5px;">CC</label><input type="number" id="cocheCC" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Caballos</label><input type="number" id="cocheCaballos" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Etiqueta Ambiental</label><select id="cocheEtiqueta" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"><option value="B">B</option><option value="C">C</option><option value="ECO">ECO</option><option value="0">0</option></select></div>
-                        <div><label style="display: block; margin-bottom: 5px;">Ubicación</label><input type="text" id="cocheUbicacion" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                        <div style="grid-column: 1/-1;"><label style="display: block; margin-bottom: 5px;">Descripción</label><textarea id="cocheDescripcion" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px; min-height: 80px;"></textarea></div>
-                        <div style="grid-column: 1/-1;"><label style="display: block; margin-bottom: 5px;">Vendedor</label><select id="cocheVendedor" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;" th:with="usuarios=${usuarios}"><option value="">Seleccionar vendedor</option><option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nombre}"></option></select></div>
-                        <div style="grid-column: 1/-1;"><button type="submit" style="background: #667eea; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">Crear Coche</button><button type="button" onclick="hideCreateCocheForm()" style="background: #ccc; color: #333; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">Cancelar</button></div>
-                    </form>
-                </div>
-
-                <div class="section">
-                    <h2>Coches Disponibles</h2>
-                    <div th:if="${coches.isEmpty()}" class="empty-state">
-                        <p>No hay coches registrados aún.</p>
-                    </div>
-                    <table th:unless="${coches.isEmpty()}">
-                        <thead>
-                            <tr>
-                                <th>Marca</th>
-                                <th>Modelo</th>
-                                <th>Año</th>
-                                <th>Precio</th>
-                                <th>Vendedor</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="coche : ${coches}">
-                                <td th:text="${coche.marca}"></td>
-                                <td th:text="${coche.modelo}"></td>
-                                <td th:text="${coche.ano}"></td>
-                                <td th:text="'€' + ${coche.precio}"></td>
-                                <td th:text="${coche.usuario.nombre}"></td>
-                                <td>
-                                    <button th:onclick="'viewCocheDetails(' + ${coche.id} + ')'" style="background: #667eea; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-right: 5px;">👁️ Ver</button>
-                                    <button th:onclick="'deleteCoche(' + ${coche.id} + ')'" style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">🗑️ Borrar</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div id="cocheDetailsModal" class="section hidden">
-                    <h2>Detalles del Coche</h2>
-                    <div id="cocheDetailsContent"></div>
-                    <button onclick="hideCocheDetails()" style="background: #ccc; color: #333; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">Cerrar</button>
-                </div>
-            </div>
-
-            <!-- USUARIOS -->
-            <div id="usuarios" class="section-content hidden">
-                <div class="page-header">
-                    <h1>👥 Gestión de Usuarios</h1>
-                    <button onclick="showCreateUserForm()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">➕ Crear Usuario</button>
-                </div>
-
-                <div id="userFormSection" class="section hidden">
-                    <h2>Crear Nuevo Usuario</h2>
-                    <form onsubmit="handleCreateUser(event)" style="max-width: 600px;">
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #333;">Nombre</label>
-                            <input type="text" id="userName" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #333;">Email</label>
-                            <input type="email" id="userEmail" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #333;">Contraseña</label>
-                            <input type="password" id="userPassword" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #333;">Teléfono</label>
-                            <input type="tel" id="userTelefono" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #333;">Dirección</label>
-                            <input type="text" id="userDireccion" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; color: #333;">Rol</label>
-                            <select id="userRol" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
-                                <option value="USUARIO">Usuario Normal</option>
+                    <div class="section">
+                        <h2>Filtros</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                            <input type="text" id="userFilterId" placeholder="Filtrar por ID..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterUsuarios()">
+                            <input type="text" id="userFilterNombre" placeholder="Filtrar por nombre..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterUsuarios()">
+                            <input type="text" id="userFilterEmail" placeholder="Filtrar por email..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterUsuarios()">
+                            <input type="text" id="userFilterTelefono" placeholder="Filtrar por teléfono..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterUsuarios()">
+                            <select id="userFilterRol" style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onchange="filterUsuarios()">
+                                <option value="">- Rol -</option>
+                                <option value="USUARIO">Usuario</option>
                                 <option value="ADMINISTRADOR">Administrador</option>
                             </select>
+                            <button class="btn btn-secondary" onclick="resetUserFilters()">Limpiar</button>
                         </div>
-                        <button type="submit" style="background: #667eea; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">Crear Usuario</button>
-                        <button type="button" onclick="hideCreateUserForm()" style="background: #ccc; color: #333; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">Cancelar</button>
-                    </form>
-                </div>
-
-                <div class="section">
-                    <h2>Usuarios Registrados</h2>
-                    <div th:if="${usuarios.isEmpty()}" class="empty-state">
-                        <p>No hay usuarios registrados aún.</p>
                     </div>
-                    <table th:unless="${usuarios.isEmpty()}">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Email</th>
-                                <th>Rol</th>
-                                <th>Teléfono</th>
-                                <th>Activo</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="usuario : ${usuarios}">
-                                <td th:text="${usuario.nombre}"></td>
-                                <td th:text="${usuario.email}"></td>
-                                <td>
-                                    <span class="badge" th:classappend="${usuario.rol == 'ADMINISTRADOR'} ? 'badge-admin' : 'badge-usuario'" th:text="${usuario.rol}"></span>
-                                </td>
-                                <td th:text="${usuario.telefono ?: '-'}"></td>
-                                <td>
-                                    <span class="badge" th:classappend="${usuario.activo} ? 'badge-activo' : 'badge-inactivo'" th:text="${usuario.activo} ? 'Activo' : 'Inactivo'"></span>
-                                </td>
-                                <td>
-                                    <button th:onclick="'viewUserDetails(' + ${usuario.id} + ')'" style="background: #667eea; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-right: 5px;">👁️ Ver</button>
-                                    <button th:onclick="'deleteUser(' + ${usuario.id} + ')'" style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">🗑️ Borrar</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                    <div class="section">
+                        <h2>Lista de Usuarios</h2>
+                        <div id="usuariosList"></div>
+                    </div>
                 </div>
 
-                <div id="userDetailsModal" class="section hidden">
-                    <h2>Detalles del Usuario</h2>
-                    <div id="userDetailsContent"></div>
-                    <button onclick="hideUserDetails()" style="background: #ccc; color: #333; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">Cerrar</button>
+                <div id="coches-section" class="section-container hidden">
+                    <div class="page-header">
+                        <h1>Gestión de Vehículos</h1>
+                        <button class="btn btn-primary" onclick="openCreateCocheModal()">+ Nuevo</button>
+                    </div>
+
+                    <div class="section">
+                        <h2>Filtros</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                            <input type="text" id="cocheFilterId" placeholder="Filtrar por ID..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterCoches()">
+                            <input type="text" id="cocheFilterMarca" placeholder="Filtrar por marca..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterCoches()">
+                            <input type="text" id="cocheFilterModelo" placeholder="Filtrar por modelo..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterCoches()">
+                            <input type="text" id="cocheFilterColor" placeholder="Filtrar por color..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterCoches()">
+                            <input type="text" id="cocheFilterMotor" placeholder="Filtrar por motor..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterCoches()">
+                            <select id="cocheFilterCombustible" style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onchange="filterCoches()">
+                                <option value="">- Combustible -</option>
+                                <option value="GASOLINA">Gasolina</option>
+                                <option value="DIESEL">Diésel</option>
+                                <option value="ELECTRICO">Eléctrico</option>
+                                <option value="HIBRIDO">Híbrido</option>
+                            </select>
+                            <select id="cocheFilterTipoCambio" style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onchange="filterCoches()">
+                                <option value="">- Tipo Cambio -</option>
+                                <option value="MANUAL">Manual</option>
+                                <option value="AUTOMATICO">Automático</option>
+                            </select>
+                            <input type="number" id="cocheFilterMinKm" placeholder="Km mínimos..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterCoches()">
+                            <input type="number" id="cocheFilterMaxKm" placeholder="Km máximos..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterCoches()">
+                            <input type="number" id="cocheFilterMinPrice" placeholder="Precio mín..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterCoches()">
+                            <input type="number" id="cocheFilterMaxPrice" placeholder="Precio máx..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterCoches()">
+                            <button class="btn btn-secondary" onclick="resetCocheFilters()">Limpiar</button>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2>Lista de Vehículos</h2>
+                        <div id="cochesList"></div>
+                    </div>
                 </div>
+            </main>
+        </div>
+
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <div id="createUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Crear Usuario</h2>
+                <button class="close-btn" onclick="closeCreateUserModal()">×</button>
             </div>
-
-            <!-- TRANSACCIONES -->
-            <div id="transacciones" class="section-content hidden">
-                <div class="page-header">
-                    <h1>💰 Transacciones</h1>
+            <form onsubmit="handleCreateUser(event)">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="newUserNombre" required>
                 </div>
-
-                <div class="section">
-                    <div class="empty-state">
-                        <p>No hay transacciones registradas aún.</p>
-                    </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="newUserEmail" required>
                 </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="newUserPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="newUserTelefono">
+                </div>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <input type="text" id="newUserDireccion">
+                </div>
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select id="newUserRol" required>
+                        <option value="USUARIO">Usuario</option>
+                        <option value="ADMINISTRADOR">Administrador</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Crear</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="createCocheModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Crear Vehículo</h2>
+                <button class="close-btn" onclick="closeCreateCocheModal()">×</button>
+            </div>
+            <form onsubmit="handleCreateCoche(event)">
+                <div class="form-group">
+                    <label>Usuario ID</label>
+                    <input type="number" id="newCocheUsuarioId" required>
+                </div>
+                <div class="form-group">
+                    <label>Marca</label>
+                    <input type="text" id="newCocheMarca" required>
+                </div>
+                <div class="form-group">
+                    <label>Modelo</label>
+                    <input type="text" id="newCocheModelo" required>
+                </div>
+                <div class="form-group">
+                    <label>Año</label>
+                    <input type="number" id="newCocheAnio" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo Cambio</label>
+                    <select id="newCocheTipoCambio" required>
+                        <option value="MANUAL">Manual</option>
+                        <option value="AUTOMATICO">Automático</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Combustible</label>
+                    <select id="newCocheCombustible" required>
+                        <option value="GASOLINA">Gasolina</option>
+                        <option value="DIESEL">Diésel</option>
+                        <option value="ELECTRICO">Eléctrico</option>
+                        <option value="HIBRIDO">Híbrido</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Etiqueta Ambiental</label>
+                    <select id="newCocheEtiqueta" required>
+                        <option value="CERO">Cero</option>
+                        <option value="ECO">Eco</option>
+                        <option value="C">C</option>
+                        <option value="B">B</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Precio €</label>
+                    <input type="number" id="newCochePrecio" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Km</label>
+                    <input type="number" id="newCocheKm" required>
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="text" id="newCocheColor">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="newCocheDescripcion"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Crear</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="userDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalles Usuario</h2>
+                <button class="close-btn" onclick="closeUserDetailsModal()">×</button>
+            </div>
+            <div id="userDetailsContent"></div>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-primary" onclick="openEditUserModal()" style="flex: 1;">Editar</button>
+                <button class="btn btn-secondary" onclick="closeUserDetailsModal()" style="flex: 1;">Cerrar</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // Verificar que sea admin
-        function checkAdmin() {
-            const usuario = localStorage.getItem('usuario');
-            if (!usuario) {
-                window.location.href = '/';
-                return;
-            }
+    <div id="cocheDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalles Vehículo</h2>
+                <button class="close-btn" onclick="closeCocheDetailsModal()">×</button>
+            </div>
+            <div id="cocheDetailsContent"></div>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-primary" onclick="openEditCocheModal()" style="flex: 1;">Editar</button>
+                <button class="btn btn-secondary" onclick="closeCocheDetailsModal()" style="flex: 1;">Cerrar</button>
+            </div>
+        </div>
+    </div>
 
-            const user = JSON.parse(usuario);
-            if (user.rol !== 'ADMINISTRADOR') {
-                window.location.href = '/';
-                return;
-            }
-        }
+    <!-- MODAL EDITAR USUARIO -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Usuario</h2>
+                <button class="close-btn" onclick="closeEditUserModal()">×</button>
+            </div>
+            <form id="editUserForm" onsubmit="saveEditUser(event)">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="editUserNombre" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="editUserEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" id="editUserTelefono">
+                </div>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <input type="text" id="editUserDireccion">
+                </div>
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select id="editUserRol">
+                        <option value="USUARIO">Usuario</option>
+                        <option value="ADMINISTRADOR">Administrador</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Activo</label>
+                    <select id="editUserActivo">
+                        <option value="true">Sí</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR COCHE -->
+    <div id="editCocheModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Vehículo</h2>
+                <button class="close-btn" onclick="closeEditCocheModal()">×</button>
+            </div>
+            <form id="editCocheForm" onsubmit="saveEditCoche(event)">
+                <div class="form-group">
+                    <label>Marca</label>
+                    <input type="text" id="editCocheMarca" required>
+                </div>
+                <div class="form-group">
+                    <label>Modelo</label>
+                    <input type="text" id="editCocheModelo" required>
+                </div>
+                <div class="form-group">
+                    <label>Año</label>
+                    <input type="number" id="editCocheAnio" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo Cambio</label>
+                    <select id="editCocheTipoCambio" required>
+                        <option value="MANUAL">Manual</option>
+                        <option value="AUTOMATICO">Automático</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Combustible</label>
+                    <select id="editCocheCombustible" required>
+                        <option value="GASOLINA">Gasolina</option>
+                        <option value="DIESEL">Diésel</option>
+                        <option value="ELECTRICO">Eléctrico</option>
+                        <option value="HIBRIDO">Híbrido</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Etiqueta Ambiental</label>
+                    <select id="editCocheEtiqueta" required>
+                        <option value="CERO">Cero</option>
+                        <option value="ECO">Eco</option>
+                        <option value="C">C</option>
+                        <option value="B">B</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Precio €</label>
+                    <input type="number" id="editCochePrecio" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Km</label>
+                    <input type="number" id="editCocheKm" required>
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="text" id="editCocheColor">
+                </div>
+                <div class="form-group">
+                    <label>Motor</label>
+                    <input type="text" id="editCocheMotor">
+                </div>
+                <div class="form-group">
+                    <label>Ubicación</label>
+                    <input type="text" id="editCocheUbicacion">
+                </div>
+                <div class="form-group">
+                    <label>Puertas</label>
+                    <input type="number" id="editCocheNumeroPuertas">
+                </div>
+                <div class="form-group">
+                    <label>Plazas</label>
+                    <input type="number" id="editCocheNumeroPlazas">
+                </div>
+                <div class="form-group">
+                    <label>Caballos Potencia</label>
+                    <input type="number" id="editCocheCaballos">
+                </div>
+                <div class="form-group">
+                    <label>CC</label>
+                    <input type="number" id="editCocheCc">
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="editCocheEstado">
+                        <option value="EN_VENTA">En venta</option>
+                        <option value="VENDIDO">Vendido</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="editCocheDescripcion" style="min-height: 80px;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentUserId = null;
+        let currentCocheId = null;
 
         function initializeTheme() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
         }
 
-        // Navegación del sidebar
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const section = this.getAttribute('data-section');
-
-                // Desactivar todos
-                document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-                document.querySelectorAll('.section-content').forEach(s => s.classList.add('hidden'));
-
-                // Activar seleccionado
-                this.classList.add('active');
-                document.getElementById(section).classList.remove('hidden');
-            });
-        });
-
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('usuario');
-            window.location.href = '/';
-        }
-
         function toggleTheme() {
             const html = document.documentElement;
             const isDark = html.getAttribute('data-theme') === 'dark' || !html.getAttribute('data-theme');
-            
-            if (isDark) {
-                html.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
-            } else {
-                html.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        }
+
+        function checkAdminAccess() {
+            const usuario = JSON.parse(localStorage.getItem('usuario') || 'null');
+            if (!usuario || usuario.rol !== 'ADMINISTRADOR') {
+                window.location.href = '/';
             }
         }
 
-        // USUARIOS
-        function showCreateUserForm() {
-            document.getElementById('userFormSection').classList.remove('hidden');
+        function loadHeader() {
+            document.getElementById('header-placeholder').innerHTML = `
+                <header style="background: var(--bg-secondary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); border-bottom: 1px solid var(--border);">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="/img/LogoMotorHunt.png" alt="Logo" style="width: 45px; height: 45px;">
+                        <div style="font-size: 24px; font-weight: bold; color: var(--accent);">MotorHunt</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <button onclick="toggleTheme()" style="background: none; border: none; cursor: pointer; font-size: 28px; color: var(--accent);">🌙</button>
+                        <a href="/" style="color: var(--text-main); text-decoration: none;">Inicio</a>
+                        <a href="#" onclick="logout()" style="color: var(--text-main); text-decoration: none;">Salir</a>
+                    </div>
+                </header>
+            `;
         }
 
-        function hideCreateUserForm() {
-            document.getElementById('userFormSection').classList.add('hidden');
+        function loadFooter() {
+            document.getElementById('footer-placeholder').innerHTML = `
+                <footer style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); color: var(--text-secondary); padding: 30px; margin-top: 40px; border-top: 1px solid var(--border); text-align: center; font-size: 14px;">
+                    <p>&copy; 2026 MotorHunt</p>
+                </footer>
+            `;
         }
+
+        function logout() {
+            if (confirm('¿Cerrar sesión?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('usuario');
+                window.location.href = '/login';
+            }
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section-container').forEach(el => el.classList.add('hidden'));
+            document.getElementById(sectionId + '-section').classList.remove('hidden');
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+            if (sectionId === 'usuarios') loadUsuarios();
+            else loadCoches();
+        }
+
+        function openCreateUserModal() { document.getElementById('createUserModal').style.display = 'block'; }
+        function closeCreateUserModal() { document.getElementById('createUserModal').style.display = 'none'; }
+        function openCreateCocheModal() { document.getElementById('createCocheModal').style.display = 'block'; }
+        function closeCreateCocheModal() { document.getElementById('createCocheModal').style.display = 'none'; }
 
         function handleCreateUser(e) {
             e.preventDefault();
             const data = {
-                nombre: document.getElementById('userName').value,
-                email: document.getElementById('userEmail').value,
-                password: document.getElementById('userPassword').value,
-                telefono: document.getElementById('userTelefono').value,
-                direccion: document.getElementById('userDireccion').value,
-                rol: document.getElementById('userRol').value
+                nombre: document.getElementById('newUserNombre').value,
+                email: document.getElementById('newUserEmail').value,
+                password: document.getElementById('newUserPassword').value,
+                telefono: document.getElementById('newUserTelefono').value,
+                direccion: document.getElementById('newUserDireccion').value,
+                rol: document.getElementById('newUserRol').value
             };
-
             fetch('/api/admin/usuarios', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },
                 body: JSON.stringify(data)
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert('Usuario creado');
-                location.reload();
-            })
-            .catch(err => alert('Error: ' + err));
-        }
-
-        function deleteUser(id) {
-            if (!confirm('¿Eliminar usuario?')) return;
-            fetch(`/api/admin/usuarios/${id}`, { method: 'DELETE' })
-            .then(() => {
-                alert('Usuario eliminado');
-                location.reload();
-            })
-            .catch(err => alert('Error: ' + err));
-        }
-
-        function viewUserDetails(id) {
-            fetch(`/api/admin/usuarios/${id}`)
-            .then(res => res.json())
-            .then(user => {
-                const html = `
-                    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
-                        <p><strong>Nombre:</strong> ${user.nombre}</p>
-                        <p><strong>Email:</strong> ${user.email}</p>
-                        <p><strong>Teléfono:</strong> ${user.telefono || '-'}</p>
-                        <p><strong>Dirección:</strong> ${user.direccion || '-'}</p>
-                        <p><strong>Rol:</strong> <span class="badge ${user.rol === 'ADMINISTRADOR' ? 'badge-admin' : 'badge-usuario'}">${user.rol}</span></p>
-                        <p><strong>Activo:</strong> <span class="badge ${user.activo ? 'badge-activo' : 'badge-inactivo'}">${user.activo ? 'Sí' : 'No'}</span></p>
-                        <p><strong>Registrado:</strong> ${new Date(user.fechaRegistro).toLocaleDateString()}</p>
-                    </div>
-                `;
-                document.getElementById('userDetailsContent').innerHTML = html;
-                document.getElementById('userDetailsModal').classList.remove('hidden');
-            })
-            .catch(err => alert('Error: ' + err));
-        }
-
-        function hideUserDetails() {
-            document.getElementById('userDetailsModal').classList.add('hidden');
-        }
-
-        // COCHES
-        function showCreateCocheForm() {
-            document.getElementById('cocheFormSection').classList.remove('hidden');
-        }
-
-        function hideCreateCocheForm() {
-            document.getElementById('cocheFormSection').classList.add('hidden');
+            }).then(r => r.json()).then(d => {
+                if (d.id) {
+                    closeCreateUserModal();
+                    loadUsuarios();
+                } else alert('Error: ' + JSON.stringify(d));
+            }).catch(e => alert('Error: ' + e));
         }
 
         function handleCreateCoche(e) {
             e.preventDefault();
             const data = {
-                marca: document.getElementById('cocheMarca').value,
-                modelo: document.getElementById('cocheModelo').value,
-                motor: document.getElementById('cocheMotor').value,
-                color: document.getElementById('cocheColor').value,
-                tipoCambio: document.getElementById('cocheTipoCambio').value,
-                combustible: document.getElementById('cocheCombustible').value,
-                numeroPuertas: parseInt(document.getElementById('cochePuertas').value),
-                ubicacion: document.getElementById('cocheUbicacion').value,
-                caballosPotencia: parseInt(document.getElementById('cocheCaballos').value),
-                kilometros: parseInt(document.getElementById('cocheKm').value),
-                precio: parseFloat(document.getElementById('cochePrecio').value),
-                numeroPlazas: parseInt(document.getElementById('cochePlazas').value),
-                centimetrosCubicos: parseInt(document.getElementById('cocheCC').value),
-                etiquetaAmbiental: document.getElementById('cocheEtiqueta').value,
-                descripcion: document.getElementById('cocheDescripcion').value,
-                ano: parseInt(document.getElementById('cocheAno').value),
-                usuarioId: document.getElementById('cocheVendedor').value
+                marca: document.getElementById('newCocheMarca').value,
+                modelo: document.getElementById('newCocheModelo').value,
+                anio: parseInt(document.getElementById('newCocheAnio').value),
+                tipoCambio: document.getElementById('newCocheTipoCambio').value,
+                combustible: document.getElementById('newCocheCombustible').value,
+                etiquetaAmbiental: document.getElementById('newCocheEtiqueta').value,
+                precio: parseFloat(document.getElementById('newCochePrecio').value),
+                km: parseInt(document.getElementById('newCocheKm').value),
+                color: document.getElementById('newCocheColor').value,
+                descripcion: document.getElementById('newCocheDescripcion').value,
+                usuarioId: parseInt(document.getElementById('newCocheUsuarioId').value),
+                estado: 'VENTA'
             };
-
             fetch('/api/admin/coches', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },
                 body: JSON.stringify(data)
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert('Coche creado');
-                location.reload();
-            })
-            .catch(err => alert('Error: ' + err));
+            }).then(r => r.json()).then(d => {
+                if (d.id) {
+                    closeCreateCocheModal();
+                    loadCoches();
+                } else alert('Error: ' + JSON.stringify(d));
+            }).catch(e => alert('Error: ' + e));
         }
 
-        function deleteCoche(id) {
-            if (!confirm('¿Eliminar coche?')) return;
-            fetch(`/api/admin/coches/${id}`, { method: 'DELETE' })
-            .then(() => {
-                alert('Coche eliminado');
-                location.reload();
-            })
-            .catch(err => alert('Error: ' + err));
+        let allUsuarios = [];
+        let allCoches = [];
+
+        function loadUsuarios() {
+            fetch('/api/admin/usuarios', {
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+            }).then(r => r.json()).then(usuarios => {
+                allUsuarios = usuarios;
+                renderUsuarios(usuarios);
+            }).catch(e => console.error(e));
+        }
+
+        function renderUsuarios(usuarios) {
+            let html = '<table><thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Teléfono</th><th>Acciones</th></tr></thead><tbody>';
+            usuarios.forEach(u => {
+                html += `<tr>
+                    <td>${u.id}</td>
+                    <td>${u.nombre}</td>
+                    <td>${u.email}</td>
+                    <td><span class="badge badge-${u.rol.toLowerCase()}">${u.rol}</span></td>
+                    <td>${u.telefono || '-'}</td>
+                    <td><button class="btn btn-secondary" onclick="viewUserDetails(${u.id})">Ver</button> <button class="btn btn-danger" onclick="confirmDeleteUser(${u.id})">Eliminar</button></td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            document.getElementById('usuariosList').innerHTML = html;
+        }
+
+        function loadCoches() {
+            fetch('/api/admin/coches', {
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+            }).then(r => r.json()).then(coches => {
+                allCoches = coches;
+                renderCoches(coches);
+            }).catch(e => console.error(e));
+        }
+
+        function renderCoches(coches) {
+            let html = '<table><thead><tr><th>ID</th><th>Marca</th><th>Modelo</th><th>Año</th><th>Precio</th><th>Km</th><th>Acciones</th></tr></thead><tbody>';
+            coches.forEach(c => {
+                html += `<tr>
+                    <td>${c.id}</td>
+                    <td>${c.marca}</td>
+                    <td>${c.modelo}</td>
+                    <td>${c.anio}</td>
+                    <td>${c.precio}€</td>
+                    <td>${c.km}km</td>
+                    <td><button class="btn btn-secondary" onclick="viewCocheDetails(${c.id})">Ver</button> <button class="btn btn-danger" onclick="confirmDeleteCoche(${c.id})">Eliminar</button></td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            document.getElementById('cochesList').innerHTML = html;
+        }
+
+        function filterUsuarios() {
+            const id = document.getElementById('userFilterId').value.toLowerCase();
+            const nombre = document.getElementById('userFilterNombre').value.toLowerCase();
+            const email = document.getElementById('userFilterEmail').value.toLowerCase();
+            const telefono = document.getElementById('userFilterTelefono').value.toLowerCase();
+            const rol = document.getElementById('userFilterRol').value;
+
+            const filtered = allUsuarios.filter(u => {
+                return (id === '' || u.id.toString().includes(id)) &&
+                       (nombre === '' || u.nombre.toLowerCase().includes(nombre)) &&
+                       (email === '' || u.email.toLowerCase().includes(email)) &&
+                       (telefono === '' || (u.telefono && u.telefono.toLowerCase().includes(telefono))) &&
+                       (rol === '' || u.rol === rol);
+            });
+            renderUsuarios(filtered);
+        }
+
+        function filterCoches() {
+            const id = document.getElementById('cocheFilterId').value.toLowerCase();
+            const marca = document.getElementById('cocheFilterMarca').value.toLowerCase();
+            const modelo = document.getElementById('cocheFilterModelo').value.toLowerCase();
+            const color = document.getElementById('cocheFilterColor').value.toLowerCase();
+            const motor = document.getElementById('cocheFilterMotor').value.toLowerCase();
+            const combustible = document.getElementById('cocheFilterCombustible').value;
+            const tipoCambio = document.getElementById('cocheFilterTipoCambio').value;
+            const minKm = parseInt(document.getElementById('cocheFilterMinKm').value) || 0;
+            const maxKm = parseInt(document.getElementById('cocheFilterMaxKm').value) || Infinity;
+            const minPrice = parseFloat(document.getElementById('cocheFilterMinPrice').value) || 0;
+            const maxPrice = parseFloat(document.getElementById('cocheFilterMaxPrice').value) || Infinity;
+
+            const filtered = allCoches.filter(c => {
+                return (id === '' || c.id.toString().includes(id)) &&
+                       (marca === '' || c.marca.toLowerCase().includes(marca)) &&
+                       (modelo === '' || c.modelo.toLowerCase().includes(modelo)) &&
+                       (color === '' || (c.color && c.color.toLowerCase().includes(color))) &&
+                       (motor === '' || (c.motor && c.motor.toLowerCase().includes(motor))) &&
+                       (combustible === '' || c.combustible === combustible) &&
+                       (tipoCambio === '' || c.tipoCambio === tipoCambio) &&
+                       (c.km >= minKm && c.km <= maxKm) &&
+                       (c.precio >= minPrice && c.precio <= maxPrice);
+            });
+            renderCoches(filtered);
+        }
+
+        function resetUserFilters() {
+            document.getElementById('userFilterId').value = '';
+            document.getElementById('userFilterNombre').value = '';
+            document.getElementById('userFilterEmail').value = '';
+            document.getElementById('userFilterTelefono').value = '';
+            document.getElementById('userFilterRol').value = '';
+            renderUsuarios(allUsuarios);
+        }
+
+        function resetCocheFilters() {
+            document.getElementById('cocheFilterId').value = '';
+            document.getElementById('cocheFilterMarca').value = '';
+            document.getElementById('cocheFilterModelo').value = '';
+            document.getElementById('cocheFilterColor').value = '';
+            document.getElementById('cocheFilterMotor').value = '';
+            document.getElementById('cocheFilterCombustible').value = '';
+            document.getElementById('cocheFilterTipoCambio').value = '';
+            document.getElementById('cocheFilterMinKm').value = '';
+            document.getElementById('cocheFilterMaxKm').value = '';
+            document.getElementById('cocheFilterMinPrice').value = '';
+            document.getElementById('cocheFilterMaxPrice').value = '';
+            renderCoches(allCoches);
+        }
+
+        function viewUserDetails(id) {
+            currentUserId = id;
+            fetch(`/api/admin/usuarios/${id}`, {
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+            }).then(r => r.json()).then(u => {
+                const html = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <h3 style="color: var(--accent); margin-bottom: 15px;">Información Principal</h3>
+                            <p><strong>ID:</strong> <span style="color: var(--text-secondary);">${u.id}</span></p>
+                            <p><strong>Nombre:</strong> <span style="color: var(--text-secondary);">${u.nombre}</span></p>
+                            <p><strong>Email:</strong> <span style="color: var(--text-secondary);">${u.email}</span></p>
+                            <p><strong>Teléfono:</strong> <span style="color: var(--text-secondary);">${u.telefono || 'No especificado'}</span></p>
+                        </div>
+                        <div>
+                            <h3 style="color: var(--accent); margin-bottom: 15px;">Información Adicional</h3>
+                            <p><strong>Dirección:</strong> <span style="color: var(--text-secondary);">${u.direccion || 'No especificada'}</span></p>
+                            <p><strong>Rol:</strong> <span class="badge badge-${u.rol.toLowerCase()}">${u.rol}</span></p>
+                            <p><strong>Activo:</strong> <span style="color: var(--text-secondary);">${u.activo ? '✓ Sí' : '✗ No'}</span></p>
+                            <p><strong>Fecha Registro:</strong> <span style="color: var(--text-secondary);">${u.fechaRegistro ? new Date(u.fechaRegistro).toLocaleDateString('es-ES') : 'N/A'}</span></p>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('userDetailsContent').innerHTML = html;
+                document.getElementById('userDetailsModal').style.display = 'block';
+            }).catch(e => alert('Error: ' + e));
         }
 
         function viewCocheDetails(id) {
-            fetch(`/api/admin/coches/${id}`)
-            .then(res => res.json())
-            .then(coche => {
+            currentCocheId = id;
+            fetch(`/api/admin/coches/${id}`, {
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+            }).then(r => r.json()).then(c => {
                 const html = `
-                    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <p><strong>Marca:</strong> ${coche.marca}</p>
-                        <p><strong>Modelo:</strong> ${coche.modelo}</p>
-                        <p><strong>Año:</strong> ${coche.ano}</p>
-                        <p><strong>Motor:</strong> ${coche.motor}</p>
-                        <p><strong>Color:</strong> ${coche.color}</p>
-                        <p><strong>Tipo Cambio:</strong> ${coche.tipoCambio}</p>
-                        <p><strong>Combustible:</strong> ${coche.combustible}</p>
-                        <p><strong>Puertas:</strong> ${coche.numeroPuertas}</p>
-                        <p><strong>Plazas:</strong> ${coche.numeroPlazas}</p>
-                        <p><strong>Kilómetros:</strong> ${coche.kilometros}</p>
-                        <p><strong>Precio:</strong> €${coche.precio.toFixed(2)}</p>
-                        <p><strong>CC:</strong> ${coche.centimetrosCubicos}</p>
-                        <p><strong>Caballos:</strong> ${coche.caballosPotencia}</p>
-                        <p><strong>Etiqueta Ambiental:</strong> ${coche.etiquetaAmbiental}</p>
-                        <p><strong>Ubicación:</strong> ${coche.ubicacion}</p>
-                        <p><strong>Estado:</strong> ${coche.estado}</p>
-                        <p><strong>Vendedor:</strong> ${coche.vendedor}</p>
-                        <p style="grid-column: 1/-1;"><strong>Descripción:</strong> ${coche.descripcion || '-'}</p>
-                        <p style="grid-column: 1/-1;"><strong>Creado:</strong> ${new Date(coche.fechaCreacion).toLocaleDateString()}</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <h3 style="color: var(--accent); margin-bottom: 15px;">Datos Generales</h3>
+                            <p><strong>ID:</strong> <span style="color: var(--text-secondary);">${c.id}</span></p>
+                            <p><strong>Marca:</strong> <span style="color: var(--text-secondary);">${c.marca}</span></p>
+                            <p><strong>Modelo:</strong> <span style="color: var(--text-secondary);">${c.modelo}</span></p>
+                            <p><strong>Año:</strong> <span style="color: var(--text-secondary);">${c.anio}</span></p>
+                            <p><strong>Motor:</strong> <span style="color: var(--text-secondary);">${c.motor || 'N/A'}</span></p>
+                            <p><strong>Color:</strong> <span style="color: var(--text-secondary);">${c.color || 'N/A'}</span></p>
+                        </div>
+                        <div>
+                            <h3 style="color: var(--accent); margin-bottom: 15px;">Especificaciones</h3>
+                            <p><strong>Tipo Cambio:</strong> <span style="color: var(--text-secondary);">${c.tipoCambio}</span></p>
+                            <p><strong>Combustible:</strong> <span style="color: var(--text-secondary);">${c.combustible}</span></p>
+                            <p><strong>Etiqueta Ambiental:</strong> <span style="color: var(--text-secondary);">${c.etiquetaAmbiental}</span></p>
+                            <p><strong>Puertas:</strong> <span style="color: var(--text-secondary);">${c.numeroPuertas || 'N/A'}</span></p>
+                            <p><strong>Plazas:</strong> <span style="color: var(--text-secondary);">${c.numeroPlazas || 'N/A'}</span></p>
+                            <p><strong>CC:</strong> <span style="color: var(--text-secondary);">${c.centimetrosCubicos || 'N/A'}</span></p>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                        <div>
+                            <h3 style="color: var(--accent); margin-bottom: 15px;">Datos de Uso</h3>
+                            <p><strong>Kilometraje:</strong> <span style="color: var(--text-secondary);">${c.km}km</span></p>
+                            <p><strong>Caballos Potencia:</strong> <span style="color: var(--text-secondary);">${c.caballosPotencia || 'N/A'}</span></p>
+                            <p><strong>Ubicación:</strong> <span style="color: var(--text-secondary);">${c.ubicacion || 'N/A'}</span></p>
+                        </div>
+                        <div>
+                            <h3 style="color: var(--accent); margin-bottom: 15px;">Datos Comerciales</h3>
+                            <p><strong>Precio:</strong> <span style="color: var(--accent); font-weight: bold;">${c.precio}€</span></p>
+                            <p><strong>Usuario ID:</strong> <span style="color: var(--text-secondary);">${c.usuarioId}</span></p>
+                            <p><strong>Fecha Creación:</strong> <span style="color: var(--text-secondary);">${c.fechaCreacion ? new Date(c.fechaCreacion).toLocaleDateString('es-ES') : 'N/A'}</span></p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <h3 style="color: var(--accent); margin-bottom: 15px;">Descripción</h3>
+                        <p style="background: var(--bg-tertiary); padding: 15px; border-radius: 5px; color: var(--text-secondary); line-height: 1.6;">${c.descripcion || 'Sin descripción'}</p>
                     </div>
                 `;
                 document.getElementById('cocheDetailsContent').innerHTML = html;
-                document.getElementById('cocheDetailsModal').classList.remove('hidden');
-            })
-            .catch(err => alert('Error: ' + err));
+                document.getElementById('cocheDetailsModal').style.display = 'block';
+            }).catch(e => alert('Error: ' + e));
         }
 
-        function hideCocheDetails() {
-            document.getElementById('cocheDetailsModal').classList.add('hidden');
+        function confirmDeleteUser(id) {
+            if (confirm('¿Eliminar usuario ' + id + '?')) {
+                fetch(`/api/admin/usuarios/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                }).then(() => loadUsuarios()).catch(e => alert('Error: ' + e));
+            }
+        }
+
+        function confirmDeleteCoche(id) {
+            if (confirm('¿Eliminar vehículo ' + id + '?')) {
+                fetch(`/api/admin/coches/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                }).then(() => loadCoches()).catch(e => alert('Error: ' + e));
+            }
+        }
+
+        function closeUserDetailsModal() { document.getElementById('userDetailsModal').style.display = 'none'; currentUserId = null; }
+        function closeCocheDetailsModal() { document.getElementById('cocheDetailsModal').style.display = 'none'; currentCocheId = null; }
+
+        function openEditUserModal() {
+            fetch(`/api/admin/usuarios/${currentUserId}`, {
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+            }).then(r => r.json()).then(usuario => {
+                document.getElementById('editUserNombre').value = usuario.nombre;
+                document.getElementById('editUserEmail').value = usuario.email;
+                document.getElementById('editUserTelefono').value = usuario.telefono || '';
+                document.getElementById('editUserDireccion').value = usuario.direccion || '';
+                document.getElementById('editUserRol').value = usuario.rol;
+                document.getElementById('editUserActivo').value = usuario.activo;
+                document.getElementById('editUserModal').style.display = 'block';
+                document.getElementById('userDetailsModal').style.display = 'none';
+            }).catch(e => alert('Error cargando datos: ' + e));
+        }
+
+        function closeEditUserModal() {
+            document.getElementById('editUserModal').style.display = 'none';
+        }
+
+        function saveEditUser(e) {
+            e.preventDefault();
+            const data = {
+                nombre: document.getElementById('editUserNombre').value,
+                email: document.getElementById('editUserEmail').value,
+                telefono: document.getElementById('editUserTelefono').value,
+                direccion: document.getElementById('editUserDireccion').value,
+                rol: document.getElementById('editUserRol').value,
+                activo: document.getElementById('editUserActivo').value === 'true'
+            };
+            fetch(`/api/admin/usuarios/${currentUserId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+                body: JSON.stringify(data)
+            }).then(r => {
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                return r.json();
+            }).then(d => {
+                closeEditUserModal();
+                loadUsuarios();
+            }).catch(e => alert('Error editando usuario: ' + e.message));
+        }
+
+        function openEditCocheModal() {
+            fetch(`/api/admin/coches/${currentCocheId}`, {
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+            }).then(r => r.json()).then(coche => {
+                document.getElementById('editCocheMarca').value = coche.marca;
+                document.getElementById('editCocheModelo').value = coche.modelo;
+                document.getElementById('editCocheAnio').value = coche.ano;
+                document.getElementById('editCocheTipoCambio').value = coche.tipoCambio;
+                document.getElementById('editCocheCombustible').value = coche.combustible;
+                document.getElementById('editCocheEtiqueta').value = coche.etiquetaAmbiental;
+                document.getElementById('editCochePrecio').value = coche.precio;
+                document.getElementById('editCocheKm').value = coche.kilometros;
+                document.getElementById('editCocheColor').value = coche.color || '';
+                document.getElementById('editCocheMotor').value = coche.motor || '';
+                document.getElementById('editCocheUbicacion').value = coche.ubicacion || '';
+                document.getElementById('editCocheNumeroPuertas').value = coche.numeroPuertas || '';
+                document.getElementById('editCocheNumeroPlazas').value = coche.numeroPlazas || '';
+                document.getElementById('editCocheCaballos').value = coche.caballosPotencia || '';
+                document.getElementById('editCocheCc').value = coche.centimetrosCubicos || '';
+                document.getElementById('editCocheEstado').value = coche.estado || 'EN_VENTA';
+                document.getElementById('editCocheDescripcion').value = coche.descripcion || '';
+                document.getElementById('editCocheModal').style.display = 'block';
+                document.getElementById('cocheDetailsModal').style.display = 'none';
+            }).catch(e => alert('Error cargando datos: ' + e));
+        }
+
+        function closeEditCocheModal() {
+            document.getElementById('editCocheModal').style.display = 'none';
+        }
+
+        function saveEditCoche(e) {
+            e.preventDefault();
+            const data = {
+                marca: document.getElementById('editCocheMarca').value,
+                modelo: document.getElementById('editCocheModelo').value,
+                ano: parseInt(document.getElementById('editCocheAnio').value),
+                tipoCambio: document.getElementById('editCocheTipoCambio').value,
+                combustible: document.getElementById('editCocheCombustible').value,
+                etiquetaAmbiental: document.getElementById('editCocheEtiqueta').value,
+                precio: parseFloat(document.getElementById('editCochePrecio').value),
+                kilometros: parseInt(document.getElementById('editCocheKm').value),
+                color: document.getElementById('editCocheColor').value,
+                motor: document.getElementById('editCocheMotor').value,
+                ubicacion: document.getElementById('editCocheUbicacion').value,
+                numeroPuertas: parseInt(document.getElementById('editCocheNumeroPuertas').value) || null,
+                numeroPlazas: parseInt(document.getElementById('editCocheNumeroPlazas').value) || null,
+                caballosPotencia: parseInt(document.getElementById('editCocheCaballos').value) || null,
+                centimetrosCubicos: parseInt(document.getElementById('editCocheCc').value) || null,
+                estado: document.getElementById('editCocheEstado').value,
+                descripcion: document.getElementById('editCocheDescripcion').value
+            };
+            fetch(`/api/admin/coches/${currentCocheId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+                body: JSON.stringify(data)
+            }).then(r => {
+                if (!r.ok) return r.json().then(e => Promise.reject(new Error(e.error || e.tipo || 'Error')));
+                return r.json();
+            }).then(d => {
+                closeEditCocheModal();
+                loadCoches();
+            }).catch(e => alert('Error editando coche: ' + e.message));
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) event.target.style.display = 'none';
         }
 
         window.addEventListener('load', () => {
             initializeTheme();
-            checkAdmin();
+            checkAdminAccess();
+            loadHeader();
+            loadFooter();
+            loadUsuarios();
         });
     </script>
 </body>

@@ -19,6 +19,7 @@
             --text-secondary: #b0b0b0;
             --accent: #ff4444;
             --accent-dark: #cc0000;
+            --border: #333;
         }
 
         html[data-theme="light"] {
@@ -29,6 +30,7 @@
             --text-secondary: #666666;
             --accent: #ff4444;
             --accent-dark: #cc0000;
+            --border: #ddd;
         }
 
         body {
@@ -59,6 +61,7 @@
             border-radius: 12px;
             overflow: hidden;
             background: var(--bg-secondary);
+            border: 1px solid var(--border);
         }
 
         .form-container {
@@ -72,7 +75,7 @@
 
         .info-container {
             flex: 1;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
             color: white;
             padding: 50px;
             display: flex;
@@ -97,10 +100,10 @@
             font-weight: 500;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 12px;
-            border: 1px solid #444;
+            border: 1px solid var(--border);
             border-radius: 5px;
             font-size: 14px;
             background: var(--bg-tertiary);
@@ -108,12 +111,7 @@
             transition: border-color 0.3s;
         }
 
-        html[data-theme="light"] input {
-            background: #ffffff;
-            border-color: #ddd;
-        }
-
-        input:focus {
+        input:focus, select:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 5px rgba(255, 68, 68, 0.3);
@@ -182,7 +180,7 @@
 
         .nav-link:hover {
             background: white;
-            color: #667eea;
+            color: var(--accent);
         }
 
         .message {
@@ -229,9 +227,13 @@
         <main>
             <div class="container">
                 <div class="form-container">
+                    <div style="text-align: center; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <img src="/img/LogoMotorHunt.png" alt="Logo" style="width: 50px; height: 50px;">
+                        <div style="font-size: 28px; font-weight: bold; color: var(--accent);">MotorHunt</div>
+                    </div>
                     <!-- FORMULARIO DE LOGIN -->
                     <div id="loginForm">
-                        <h1>🔑 Iniciar Sesión</h1>
+                        <h1>🔐 Iniciar Sesión</h1>
                         <div class="message" id="loginMessage"></div>
 
                         <form onsubmit="handleLogin(event)">
@@ -253,7 +255,7 @@
 
                     <!-- FORMULARIO DE REGISTRO -->
                     <div id="registerForm" class="hidden">
-                        <h1>📝 Registro</h1>
+                        <h1>📄 Registro</h1>
                         <div class="message" id="registerMessage"></div>
 
                         <form onsubmit="handleRegister(event)">
@@ -287,8 +289,8 @@
                 </div>
 
                 <div class="info-container">
-                    <h2>🚗 MotorHunt</h2>
-                    <p>Bienvenido al portal de compra y venta de vehículos más confiable.</p>
+                    <h2>🚙 MotorHunt</h2>
+                    <p>Portal de compra y venta de vehículos confiable.</p>
                     
                     <div id="loginInfo">
                         <p><strong>¿Por qué registrarse?</strong></p>
@@ -314,9 +316,8 @@
 
         function loadHeader() {
             const headerHTML = `
-                <header style="background: var(--bg-secondary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 100;">
+                <header style="background: var(--bg-secondary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border);">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <img src="/resources/img/LogoMotorHunt.png" alt="Logo" style="width: 45px; height: 45px;">
                         <div style="font-size: 24px; font-weight: bold; color: var(--accent); letter-spacing: 1px;">MotorHunt</div>
                     </div>
                     <div style="display: flex; align-items: center; gap: 20px;">
@@ -330,7 +331,7 @@
 
         function loadFooter() {
             const footerHTML = `
-                <footer style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); color: var(--text-secondary); padding: 50px; margin-top: 80px; border-top: 2px solid var(--accent); text-align: center;">
+                <footer style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); color: var(--text-secondary); padding: 50px; margin-top: 80px; border-top: 1px solid var(--border); text-align: center;">
                     <p>&copy; 2026 MotorHunt. Todos los derechos reservados.</p>
                     <div style="margin-top: 20px; display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; font-size: 14px;">
                         <a href="#" style="color: var(--text-secondary); text-decoration: none;">Términos</a>
@@ -440,7 +441,6 @@
             loadHeader();
             loadFooter();
             
-            // Mostrar formulario registro si viene desde header
             if (localStorage.getItem('showRegisterForm') === 'true') {
                 toggleForms();
                 localStorage.removeItem('showRegisterForm');
