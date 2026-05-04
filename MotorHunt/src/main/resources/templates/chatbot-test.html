@@ -1,0 +1,396 @@
+:<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tests del ChatBot - MotorHunt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #d0d0d0;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #ff4444;
+            margin-bottom: 40px;
+            text-align: center;
+            font-size: 36px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .test-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+            border: 2px solid #ff4444;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 68, 68, 0.3);
+            border-color: #ff6666;
+        }
+
+        .test-card h3 {
+            color: #ff4444;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .test-card p {
+            color: #b0b0b0;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .preguntas-lista {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .pregunta-item {
+            padding: 8px;
+            margin: 4px 0;
+            background: #1a1a1a;
+            border-left: 3px solid #ff4444;
+            padding-left: 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        .pregunta-item:hover {
+            background: #242424;
+            transform: translateX(5px);
+        }
+
+        .btn-test {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 12px;
+            transition: all 0.3s;
+        }
+
+        .btn-test:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 68, 68, 0.4);
+        }
+
+        .results {
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+            border: 2px solid #ff4444;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .results h2 {
+            color: #ff4444;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .result-item {
+            background: #0a0a0a;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #ff4444;
+            border-radius: 8px;
+        }
+
+        .result-item .pregunta {
+            color: #ff9999;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-item .respuesta {
+            color: #b0b0b0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status.success {
+            background: #1a4d1a;
+            color: #7dff7d;
+            border: 2px solid #4dff4d;
+        }
+
+        .status.error {
+            background: #4d1a1a;
+            color: #ff7d7d;
+            border: 2px solid #ff4444;
+        }
+
+        .status.loading {
+            background: #4d3d1a;
+            color: #ffcc4d;
+            border: 2px solid #ffaa00;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Tests del ChatBot - MotorHunt</h1>
+
+        <div class="grid" id="testCardsContainer"></div>
+
+        <div class="results" id="resultsSection" style="display: none;">
+            <h2>📊 Resultados de Tests</h2>
+            <div id="resultsList"></div>
+        </div>
+    </div>
+
+    <script>
+        const testCases = [
+            {
+                title: "🔧 Defectos de Motores",
+                description: "Preguntas sobre problemas mecánicos comunes",
+                preguntas: [
+                    "¿Este motor qué defectos tiene?",
+                    "¿Cuáles son los problemas más comunes en motores diesel?",
+                    "¿Qué fallos puede tener la correa de distribución?"
+                ]
+            },
+            {
+                title: "⚙️ Especificaciones Técnicas",
+                description: "Información sobre potencia, cilindrada, revoluciones",
+                preguntas: [
+                    "¿Cuántos caballos tiene este motor?",
+                    "¿Qué cilindrada tiene el motor?",
+                    "¿Cuál es la potencia máxima en CV?"
+                ]
+            },
+            {
+                title: "🚗 Versiones y Generaciones",
+                description: "Cambios y evoluciones de modelos",
+                preguntas: [
+                    "¿Qué versiones tiene este coche?",
+                    "¿Cuál es la diferencia entre generaciones?",
+                    "¿Es mejor la generación 3?"
+                ]
+            },
+            {
+                title: "💰 Precios Segunda Mano",
+                description: "Valorización en el mercado actual",
+                preguntas: [
+                    "¿Cuál es el precio en segunda mano?",
+                    "¿Es buen precio este vehículo?",
+                    "¿Cómo influye el kilometraje en el precio?"
+                ]
+            },
+            {
+                title: "⛽ Consumo de Combustible",
+                description: "Eficiencia y gasto de gasolina",
+                preguntas: [
+                    "¿Cuánto consume este coche?",
+                    "¿Cuál es el consumo medio en carretera?",
+                    "¿Es eficiente en combustible?"
+                ]
+            },
+            {
+                title: "🔧 Mantenimiento",
+                description: "Revisiones y costos de reparación",
+                preguntas: [
+                    "¿Cada cuánto hay que hacer mantenimiento?",
+                    "¿Cuánto cuesta cambiar pastillas de freno?",
+                    "¿Necesita revisión el vehículo?"
+                ]
+            }
+        ];
+
+        // Renderizar tarjetas de test
+        function renderTestCards() {
+            const container = document.getElementById('testCardsContainer');
+
+            testCases.forEach((testCase, index) => {
+                const card = document.createElement('div');
+                card.className = 'test-card';
+
+                let preguntasHTML = testCase.preguntas
+                    .map((p, i) => `<div class="pregunta-item" onclick="testPregunta(event, '${p}')">"${p}"</div>`)
+                    .join('');
+
+                card.innerHTML = `
+                    <h3>${testCase.title}</h3>
+                    <p>${testCase.description}</p>
+                    <div class="preguntas-lista">
+                        ${preguntasHTML}
+                    </div>
+                    <button class="btn-test" onclick="testAllPreguntas(${index})">Testear Todas</button>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Testear una pregunta individual
+        async function testPregunta(event, pregunta) {
+            event.stopPropagation();
+            showResults();
+            addResult(`Pregunta: ${pregunta}`, 'loading', true);
+
+            try {
+                const response = await fetch('/api/chatbot/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: pregunta, context: '' })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    addResult(`Pregunta: ${pregunta}`, data.response, 'success');
+                } else {
+                    addResult(`Pregunta: ${pregunta}`, `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                addResult(`Pregunta: ${pregunta}`, `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Testear todas las preguntas de una categoría
+        async function testAllPreguntas(categoryIndex) {
+            const category = testCases[categoryIndex];
+            showResults();
+
+            for (const pregunta of category.preguntas) {
+                addResult(`Pregunta: ${pregunta}`, 'loading', true);
+
+                try {
+                    const response = await fetch('/api/chatbot/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ prompt: pregunta, context: '' })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        addResult(`Pregunta: ${pregunta}`, data.response, 'success');
+                    } else {
+                        addResult(`Pregunta: ${pregunta}`, `Error: ${data.error}`, 'error');
+                    }
+                } catch (error) {
+                    addResult(`Pregunta: ${pregunta}`, `Error de conexión: ${error.message}`, 'error');
+                }
+
+                // Pequeña pausa entre preguntas
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        // Mostrar sección de resultados
+        function showResults() {
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Agregar resultado a la lista
+        function addResult(pregunta, respuesta, status) {
+            const resultsList = document.getElementById('resultsList');
+            const isLoading = status === 'loading' && respuesta === true;
+
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            resultItem.id = `result-${Date.now()}`;
+
+            if (isLoading) {
+                resultItem.innerHTML = `
+                    <div class="pregunta">${pregunta}</div>
+                    <div class="status loading">
+                        <span class="loading-spinner">⌛</span> Cargando respuesta...
+                    </div>
+                `;
+            } else {
+                const statusClass = status === 'success' ? 'success' : 'error';
+                resultItem.innerHTML = `
+                    <div class="pregunta">${pregunta}</div>
+                    <div class="status ${statusClass}">
+                        ${status === 'success' ? '✓ Respuesta correcta' : '✗ Error'}
+                    </div>
+                    <div class="respuesta">${respuesta}</div>
+                `;
+            }
+
+            // Si es loading, insertar al final
+            if (isLoading) {
+                resultsList.appendChild(resultItem);
+                resultsList.scrollTop = resultsList.scrollHeight;
+            } else {
+                // Si no es loading, reemplazar el último loading
+                const lastLoading = resultsList.querySelector('.status.loading');
+                if (lastLoading) {
+                    lastLoading.parentElement.replaceWith(resultItem);
+                } else {
+                    resultsList.appendChild(resultItem);
+                }
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTestCards();
+        });
+    </script>
+</body>
+</html>
+

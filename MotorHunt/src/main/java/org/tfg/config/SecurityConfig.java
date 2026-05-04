@@ -22,7 +22,7 @@ public class SecurityConfig {
         http
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index", "/login", "/registro", "/api/auth/**", "/resources/**", "/perfil", "/admin/**").permitAll()
+                .requestMatchers("/", "/index", "/login", "/registro", "/api/auth/**", "/api/chatbot/**", "/chatbot-test", "/resources/**", "/perfil", "/admin/**").permitAll()
                 .anyRequest().permitAll()
             )
             .logout(logout -> logout
