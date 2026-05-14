@@ -13,4 +13,5 @@ public class RegisterRequest {
     private String password;
     private String telefono;
     private String direccion;
+    private String rol; // USUARIO o EMPRESA
 }

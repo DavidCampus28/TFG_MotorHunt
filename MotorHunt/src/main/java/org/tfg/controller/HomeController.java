@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.tfg.model.enums.EstadoCoche;
+import org.tfg.repository.CocheFotoRepository;
 import org.tfg.repository.CocheRepository;
 import org.tfg.repository.UsuarioRepository;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class HomeController {
@@ -15,11 +18,21 @@ public class HomeController {
     private CocheRepository cocheRepository;
 
     @Autowired
+    private CocheFotoRepository cocheFotoRepository;
+
+    @Autowired
     private UsuarioRepository usuarioRepository;
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("coches", cocheRepository.findAll());
+        var coches = cocheRepository.findAll();
+        Map<Long, String> portadas = new HashMap<>();
+        coches.forEach(coche -> cocheFotoRepository.findByCocheAndPortadaTrue(coche)
+                .or(() -> cocheFotoRepository.findFirstByCocheOrderByOrdenAsc(coche))
+                .ifPresent(foto -> portadas.put(coche.getId(), "/coches/fotos/" + foto.getId())));
+
+        model.addAttribute("coches", coches);
+        model.addAttribute("portadas", portadas);
         return "index";
     }
 

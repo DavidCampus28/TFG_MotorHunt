@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - MotorHunt</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #252525;
+            --text-main: #d0d0d0;
+            --text-secondary: #999;
+            --accent: #d32f2f;
+            --accent-dark: #b71c1c;
+            --border: #333;
+            --panel-shadow: 0 12px 28px rgba(0,0,0,0.35);
+        }
+
+        html[data-theme="light"] {
+            --bg-dark: #f5f5f5;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #eeeeee;
+            --text-main: #333333;
+            --text-secondary: #666666;
+            --accent: #d32f2f;
+            --accent-dark: #b71c1c;
+            --border: #dddddd;
+            --panel-shadow: 0 10px 24px rgba(0,0,0,0.12);
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .chat-container {
+            max-width: 1120px;
+            margin: 30px auto;
+            padding: 20px;
+            height: calc(100vh - 200px);
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+        }
+        .chats-list {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: var(--panel-shadow);
+            overflow-y: auto;
+        }
+        .chats-list h3 {
+            margin-top: 0;
+            color: var(--accent);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 14px;
+        }
+        .chat-item {
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.03);
+        }
+        .chat-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(211,47,47,0.18);
+        }
+        .chat-item.activo {
+            background: rgba(211,47,47,0.12);
+            border-color: var(--accent);
+        }
+        .chat-item-nombre {
+            font-weight: bold;
+            color: var(--text-main);
+        }
+        .chat-item-preview {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-item-fecha {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        .chat-item-noLeidos {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        .chat-ventana {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--panel-shadow);
+            overflow: hidden;
+        }
+        .chat-header {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            padding: 20px;
+            border-bottom: 2px solid var(--accent-dark);
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: center;
+        }
+        .chat-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        .chat-header p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        .mensajes-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(0,0,0,0.08);
+        }
+        .mensaje {
+            margin-bottom: 15px;
+            display: flex;
+            animation: slideUp 0.3s ease-out;
+        }
+        .mensaje.propio {
+            justify-content: flex-end;
+        }
+        .mensaje-contenido {
+            max-width: 70%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            word-wrap: break-word;
+        }
+        .mensaje.ajeno .mensaje-contenido {
+            background: var(--bg-secondary);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 10px 10px 10px 0;
+        }
+        .mensaje.propio .mensaje-contenido {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            border-radius: 10px 10px 0 10px;
+        }
+        .mensaje-fecha {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            margin-left: 10px;
+        }
+        .mensaje.propio .mensaje-fecha {
+            text-align: right;
+            margin-left: 0;
+            margin-right: 10px;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mensaje-sin-contacto {
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            padding: 40px;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+        .chat-input-form {
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input-form input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+            background: var(--bg-tertiary);
+            color: var(--text-main);
+        }
+        .chat-input-form input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(211,47,47,0.18);
+        }
+        .chat-input-form button {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .chat-input-form button:hover {
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle-chat {
+            background: rgba(255,255,255,0.14);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 8px;
+            padding: 9px 12px;
+            cursor: pointer;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            .chats-list {
+                display: none;
+            }
+            .mensaje-contenido {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav th:include="header.html"></nav>
+
+    <div class="chat-container">
+        <div class="chats-list">
+            <h3>💬 Mis Chats</h3>
+            <div id="listaChats"></div>
+        </div>
+
+        <div class="chat-ventana">
+            <div id="chatVacio" class="mensaje-sin-contacto">
+                <p>Selecciona un chat para comenzar</p>
+            </div>
+
+            <div id="chatActivo" style="display: none; flex-direction: column; height: 100%;">
+                <div class="chat-header">
+                    <div>
+                        <h2 id="contactoNombre"></h2>
+                        <p id="contactoEmail"></p>
+                    </div>
+                    <button type="button" class="theme-toggle-chat" onclick="toggleChatTheme()">Claro</button>
+                </div>
+
+                <div class="mensajes-area" id="mensajesArea"></div>
+
+                <div class="chat-input-area">
+                    <form class="chat-input-form" onsubmit="enviarMensaje(event)">
+                        <input type="text" id="mensajeInput" placeholder="Escribe un mensaje..." required>
+                        <button type="submit">Enviar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:include="footer.html"></footer>
+
+    <script>
+        let usuarioActual = JSON.parse(localStorage.getItem('usuario'));
+        let contactoActual = null;
+        let cocheSeleccionado = new URLSearchParams(window.location.search).get('coche');
+        let contactoParam = new URLSearchParams(window.location.search).get('contacto');
+
+        function initializeChatTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const toggle = document.querySelector('.theme-toggle-chat');
+            if (toggle) toggle.textContent = savedTheme === 'dark' ? 'Claro' : 'Oscuro';
+        }
+
+        function toggleChatTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            document.querySelector('.theme-toggle-chat').textContent = next === 'dark' ? 'Claro' : 'Oscuro';
+        }
+
+        window.addEventListener('load', () => {
+            initializeChatTheme();
+            if (!usuarioActual) {
+                window.location.href = '/login';
+                return;
+            }
+            cargarMisChats();
+            if (contactoParam) {
+                seleccionarContacto(contactoParam);
+            }
+        });
+
+        function cargarMisChats() {
+            fetch(`/api/mensajes/mis-chats/${usuarioActual.id}`)
+                .then(res => res.json())
+                .then(chats => {
+                    mostrarChats(chats);
+                })
+                .catch(err => console.error('Error:', err));
+        }
+
+        function mostrarChats(chats) {
+            const listaChats = document.getElementById('listaChats');
+            listaChats.innerHTML = '';
+
+            if (chats.length === 0) {
+                listaChats.innerHTML = '<p style="color: #999; text-align: center;">No hay chats</p>';
+                return;
+            }
+
+            chats.forEach(chat => {
+                const chatItem = document.createElement('div');
+                chatItem.className = 'chat-item';
+                chatItem.onclick = () => seleccionarContacto(chat.contactoId, chat.contactoNombre, chat.contactoEmail);
+
+                chatItem.innerHTML = `
+                    <div class="chat-item-nombre">${chat.contactoNombre}</div>
+                    <div class="chat-item-preview">${chat.ultimoMensaje}</div>
+                    <div class="chat-item-fecha">${new Date(chat.ultimoMensajeHora).toLocaleDateString()}</div>
+                    ${chat.noLeidos > 0 ? `<div class="chat-item-noLeidos">${chat.noLeidos} nuevo</div>` : ''}
+                `;
+
+                listaChats.appendChild(chatItem);
+            });
+        }
+
+        function seleccionarContacto(contactoId, nombre = null, email = null) {
+            contactoActual = {
+                id: contactoId,
+                nombre: nombre,
+                email: email
+            };
+
+            // Actualizar UI
+            document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('activo'));
+            event?.target?.closest('.chat-item')?.classList.add('activo');
+
+            document.getElementById('chatVacio').style.display = 'none';
+            document.getElementById('chatActivo').style.display = 'flex';
+
+            document.getElementById('contactoNombre').textContent = nombre || 'Cargando...';
+            document.getElementById('contactoEmail').textContent = email || '';
+
+            if (!nombre) {
+                fetch(`/usuarios/${contactoId}`)
+                    .then(res => res.ok ? res.json() : null)
+                    .then(usuario => {
+                        if (!usuario) return;
+                        contactoActual.nombre = usuario.nombre;
+                        contactoActual.email = usuario.email;
+                        document.getElementById('contactoNombre').textContent = usuario.nombre || 'Contacto';
+                        document.getElementById('contactoEmail').textContent = usuario.email || '';
+                    })
+                    .catch(() => {
+                        document.getElementById('contactoNombre').textContent = 'Contacto';
+                    });
+            }
+
+            cargarConversacion();
+        }
+
+        function cargarConversacion() {
+            fetch(`/api/mensajes/conversacion?usuarioId1=${usuarioActual.id}&usuarioId2=${contactoActual.id}`)
+                .then(res => res.json())
+                .then(mensajes => {
+                    mostrarMensajes(mensajes);
+                })
+                .catch(err => console.error('Error:', err));
+        }
+
+        function mostrarMensajes(mensajes) {
+            const area = document.getElementById('mensajesArea');
+            area.innerHTML = '';
+
+            mensajes.forEach(msg => {
+                const div = document.createElement('div');
+                const esPropio = msg.remitente.id === usuarioActual.id;
+                div.className = `mensaje ${esPropio ? 'propio' : 'ajeno'}`;
+
+                const fecha = new Date(msg.fechaEnvio).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                div.innerHTML = `
+                    <div>
+                        <div class="mensaje-contenido">${escapeHtml(msg.contenido)}</div>
+                        <div class="mensaje-fecha">${fecha}</div>
+                    </div>
+                `;
+
+                area.appendChild(div);
+            });
+
+            // Scroll al último mensaje
+            area.scrollTop = area.scrollHeight;
+        }
+
+        function enviarMensaje(event) {
+            event.preventDefault();
+
+            if (!contactoActual) {
+                alert('Selecciona un contacto primero');
+                return;
+            }
+
+            const contenido = document.getElementById('mensajeInput').value.trim();
+            if (!contenido) return;
+
+            const params = new URLSearchParams({
+                remitenteId: usuarioActual.id,
+                destinatarioId: contactoActual.id,
+                contenido: contenido
+            });
+
+            if (cocheSeleccionado) {
+                params.append('cocheId', cocheSeleccionado);
+            }
+
+            fetch(`/api/mensajes/enviar?${params}`, {
+                method: 'POST'
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('mensajeInput').value = '';
+                cargarConversacion();
+                cargarMisChats();
+            })
+            .catch(err => console.error('Error:', err));
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Recargar chats cada 3 segundos
+        setInterval(cargarMisChats, 3000);
+        setInterval(() => {
+            if (contactoActual) cargarConversacion();
+        }, 3000);
+    </script>
+</body>
+</html>
+

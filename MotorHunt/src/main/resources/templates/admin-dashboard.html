@@ -368,6 +368,8 @@
                 <ul class="sidebar-menu">
                     <li><a onclick="showSection('usuarios')" class="menu-item active" data-section="usuarios">Usuarios</a></li>
                     <li><a onclick="showSection('coches')" class="menu-item" data-section="coches">Vehículos</a></li>
+                    <li><a onclick="showSection('conversaciones')" class="menu-item" data-section="conversaciones">💬 Conversaciones</a></li>
+                    <li><a onclick="showSection('me-gustas')" class="menu-item" data-section="me-gustas">❤️ Me Gustas</a></li>
                 </ul>
             </aside>
 
@@ -437,6 +439,25 @@
                     <div class="section">
                         <h2>Lista de Vehículos</h2>
                         <div id="cochesList"></div>
+                    </div>
+                </div>
+
+                <div id="conversaciones-section" class="section-container hidden">
+                    <div class="page-header">
+                        <h1>💬 Conversaciones entre Usuarios</h1>
+                    </div>
+                    <div class="section">
+                        <div id="conversacionesList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;"></div>
+                    </div>
+                </div>
+
+                <div id="me-gustas-section" class="section-container hidden">
+                    <div class="page-header">
+                        <h1>❤️ Me Gustas por Usuario</h1>
+                    </div>
+                    <div class="section">
+                        <h2>Selecciona un usuario para ver sus favoritos</h2>
+                        <div id="meGustasList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;"></div>
                     </div>
                 </div>
             </main>
@@ -782,7 +803,104 @@
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
             if (sectionId === 'usuarios') loadUsuarios();
-            else loadCoches();
+            else if (sectionId === 'coches') loadCoches();
+            else if (sectionId === 'conversaciones') loadConversaciones();
+            else if (sectionId === 'me-gustas') loadMeGustas();
+        }
+
+        function loadConversaciones() {
+            fetch('/api/admin/conversaciones')
+                .then(r => r.json())
+                .then(data => {
+                    const lista = document.getElementById('conversacionesList');
+                    lista.innerHTML = '';
+                    if (!data || data.length === 0) {
+                        lista.innerHTML = '<p style="color: #999; text-align: center;">No hay conversaciones</p>';
+                        return;
+                    }
+                    data.forEach(msg => {
+                        lista.innerHTML += `
+                            <div style="background: var(--bg-tertiary); padding: 15px; border-radius: 5px; border-left: 3px solid var(--accent);">
+                                <h3 style="color: var(--accent); margin-bottom: 10px; font-size: 14px;">
+                                    ${msg.remitente} → ${msg.destinatario}
+                                </h3>
+                                <p style="color: var(--text-secondary); margin: 5px 0; font-size: 13px;">
+                                    <strong>Mensaje:</strong> "${msg.contenido.substring(0, 100)}..."
+                                </p>
+                                <p style="color: var(--text-secondary); margin: 5px 0; font-size: 13px;">
+                                    <strong>Coche:</strong> ${msg.coche || 'Sin coche'}
+                                </p>
+                                <p style="color: var(--text-secondary); font-size: 12px;">
+                                    ${new Date(msg.fecha).toLocaleString('es-ES')}
+                                </p>
+                            </div>
+                        `;
+                    });
+                })
+                .catch(e => console.error('Error cargando conversaciones:', e));
+        }
+
+        function loadMeGustas() {
+            fetch('/api/admin/usuarios')
+                .then(r => r.json())
+                .then(usuarios => {
+                    const lista = document.getElementById('meGustasList');
+                    lista.innerHTML = '';
+                    if (!usuarios || usuarios.length === 0) {
+                        lista.innerHTML = '<p style="color: #999; text-align: center;">No hay usuarios</p>';
+                        return;
+                    }
+                    usuarios.forEach(usuario => {
+                        lista.innerHTML += `
+                            <div style="background: var(--bg-tertiary); padding: 15px; border-radius: 5px; border-left: 3px solid #ff4444;">
+                                <h3 style="color: #ff4444; margin-bottom: 10px; font-size: 16px;">
+                                    👤 ${usuario.nombre}
+                                </h3>
+                                <p style="color: var(--text-secondary); margin: 5px 0; font-size: 12px;">
+                                    <strong>Email:</strong> ${usuario.email}
+                                </p>
+                                <button class="btn btn-secondary" onclick="cargarMeGustasUsuario(${usuario.id}, '${usuario.nombre}')" style="margin-top: 10px; padding: 5px 10px; font-size: 12px;">
+                                    Ver Me Gustas
+                                </button>
+                            </div>
+                        `;
+                    });
+                })
+                .catch(e => console.error('Error cargando usuarios:', e));
+        }
+
+        function cargarMeGustasUsuario(usuarioId, usuarioNombre) {
+            fetch(`/api/admin/me-gustas/${usuarioId}`)
+                .then(r => r.json())
+                .then(meGustas => {
+                    let contenido = `<div style="margin-top: 20px; background: var(--bg-secondary); padding: 20px; border-radius: 5px;">`;
+                    contenido += `<h4 style="color: var(--accent); margin-bottom: 15px;">Me Gustas de ${usuarioNombre}</h4>`;
+
+                    if (!meGustas || meGustas.length === 0) {
+                        contenido += `<p style="color: #999;">Sin me gustas</p>`;
+                    } else {
+                        meGustas.forEach(mg => {
+                            contenido += `
+                                <div style="background: var(--bg-tertiary); padding: 10px; margin-bottom: 10px; border-radius: 3px; border-left: 2px solid #ff4444;">
+                                    <p style="color: var(--text-main); margin: 3px 0; font-size: 13px;">
+                                        <strong>${mg.marca} ${mg.modelo}</strong> - Año ${mg.ano}
+                                    </p>
+                                    <p style="color: var(--text-secondary); margin: 3px 0; font-size: 12px;">
+                                        Precio: €${mg.precio.toLocaleString()}
+                                    </p>
+                                    <p style="color: var(--text-secondary); font-size: 11px;">
+                                        Guardado: ${new Date(mg.fecha).toLocaleDateString('es-ES')}
+                                    </p>
+                                </div>
+                            `;
+                        });
+                    }
+                    contenido += `</div>`;
+
+                    const lista = document.getElementById('meGustasList');
+                    lista.innerHTML = contenido;
+                })
+                .catch(e => console.error('Error cargando me gustas:', e));
         }
 
         function openCreateUserModal() { document.getElementById('createUserModal').style.display = 'block'; }

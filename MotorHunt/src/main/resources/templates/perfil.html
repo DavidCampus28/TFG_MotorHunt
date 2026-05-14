@@ -180,6 +180,7 @@
             border: 2px solid var(--border);
             transition: all 0.3s;
             box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            position: relative;
         }
 
         .coche-card:hover {
@@ -198,8 +199,55 @@
             font-size: 100px;
         }
 
+        .coche-card.mine .coche-image {
+            height: 215px;
+            position: relative;
+        }
+
+        .coche-card.mine .coche-image::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0 0;
+            height: 70px;
+            background: linear-gradient(to top, rgba(0,0,0,0.72), transparent);
+        }
+
         .coche-info {
             padding: 20px;
+        }
+
+        .coche-meta-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .coche-actions-stack {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .btn-estado {
+            background: #2f80ed;
+            color: white;
+        }
+
+        .btn-fotos {
+            background: #666;
+            color: white;
+        }
+
+        .btn-eliminar-coche {
+            background: rgba(211, 47, 47, 0.15);
+            color: var(--accent);
+            border: 1px solid var(--accent);
         }
 
         .coche-marca {
@@ -251,6 +299,115 @@
             background: #444;
         }
 
+        .estado-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .estado-en-venta { background: rgba(39, 174, 96, 0.15); color: #27ae60; border: 1px solid #27ae60; }
+        .estado-reservado { background: rgba(241, 196, 15, 0.15); color: #f1c40f; border: 1px solid #f1c40f; }
+        .estado-vendido { background: rgba(231, 76, 60, 0.15); color: #e74c3c; border: 1px solid #e74c3c; }
+
+        .foto-upload-box {
+            margin-top: 15px;
+            padding: 14px;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.03);
+        }
+
+        .foto-upload-box small {
+            display: block;
+            margin-top: 8px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .btn-ver-detalle {
+            background: linear-gradient(135deg, #667eea 0%, #5568d3 100%);
+            color: white;
+        }
+
+        .btn-eliminar-favorito {
+            background: rgba(211, 47, 47, 0.15);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .favoritos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .favorito-card .coche-image {
+            height: 190px;
+            position: relative;
+        }
+
+        .favorito-card .coche-image::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0 0;
+            height: 72px;
+            background: linear-gradient(to top, rgba(0,0,0,0.72), transparent);
+        }
+
+        .favorito-card .coche-info {
+            padding: 18px 18px 20px;
+        }
+
+        .favorito-meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 8px 0 12px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .favorito-fecha {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .favorito-price {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--accent);
+            margin: 10px 0;
+        }
+
+        .favorito-card .favorito-meta {
+            display: none;
+        }
+
+        .favorito-actions {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: center;
+            margin-top: 14px;
+        }
+
+        .favorito-actions .btn-accion {
+            flex: unset;
+            text-align: center;
+        }
+
+        .favorito-actions .btn-eliminar-favorito {
+            min-width: 86px;
+        }
+
         .vacio {
             text-align: center;
             padding: 40px;
@@ -262,33 +419,115 @@
 
         .chats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 18px;
         }
 
         .chat-card {
-            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
-            padding: 20px;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            padding: 18px;
             border-radius: 12px;
-            border: 2px solid #333;
+            border: 2px solid var(--border);
             transition: all 0.3s;
+            box-shadow: 0 8px 22px rgba(0,0,0,0.25);
         }
 
         .chat-card:hover {
-            border-color: #d32f2f;
+            border-color: var(--accent);
             box-shadow: 0 8px 25px rgba(211, 47, 47, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .chat-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .chat-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+            flex: 0 0 auto;
+            box-shadow: 0 6px 16px rgba(211,47,47,0.25);
+        }
+
+        .chat-main {
+            min-width: 0;
+            flex: 1;
         }
 
         .chat-usuario {
-            font-weight: 600;
-            color: #d32f2f;
-            margin-bottom: 10px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .chat-preview {
             font-size: 13px;
-            color: #999;
-            margin-bottom: 10px;
+            color: var(--text-secondary);
+            line-height: 1.45;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 42px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .chat-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .chat-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .chat-unread {
+            background: var(--accent);
+            color: white;
+            min-width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 0 8px;
+        }
+
+        .chat-open {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 9px 14px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
         }
 
         .modal {
@@ -319,6 +558,10 @@
             border: 2px solid var(--border);
         }
 
+        .modal-content.modal-wide {
+            max-width: 920px;
+        }
+
         .modal-header {
             font-size: 24px;
             font-weight: bold;
@@ -326,6 +569,56 @@
             margin-bottom: 20px;
             border-bottom: 2px solid var(--border);
             padding-bottom: 15px;
+        }
+
+        .modal-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin: -8px 0 22px;
+            line-height: 1.5;
+        }
+
+        .form-section {
+            margin-bottom: 24px;
+            padding: 18px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .form-section-title {
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 13px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px 18px;
+        }
+
+        #anadirCocheForm {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px 18px;
+        }
+
+        #anadirCocheForm .foto-upload-box,
+        #anadirCocheForm .modal-buttons,
+        #anadirCocheForm .modal-subtitle {
+            grid-column: 1 / -1;
+        }
+
+        #editCocheEstadoGroup {
+            display: none;
+        }
+
+        #anadirCocheForm .form-group:has(textarea) {
+            grid-column: 1 / -1;
         }
 
         .form-group {
@@ -341,7 +634,8 @@
         }
 
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 10px;
             border: 1px solid var(--border);
@@ -357,10 +651,100 @@
         }
 
         .form-group input:focus,
-        .form-group textarea:focus {
+        .form-group textarea:focus,
+        .form-group select:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 5px rgba(211, 47, 47, 0.3);
+        }
+
+        .estado-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .estado-option {
+            border: 2px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-main);
+            border-radius: 10px;
+            padding: 18px 14px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .estado-option strong {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .estado-option span {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .estado-option:hover,
+        .estado-option.selected {
+            border-color: var(--accent);
+            box-shadow: 0 10px 24px rgba(211,47,47,0.22);
+            transform: translateY(-2px);
+        }
+
+        .foto-previews {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .foto-preview {
+            position: relative;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+        }
+
+        .foto-preview img {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .foto-preview span {
+            display: block;
+            padding: 7px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .foto-preview.portada {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(211,47,47,0.25);
+        }
+
+        .foto-preview.portada::after {
+            content: "Portada";
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 7px;
+            border-radius: 999px;
         }
 
         .modal-buttons {
@@ -408,6 +792,12 @@
             }
 
             .coches-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid,
+            .estado-options,
+            #anadirCocheForm {
                 grid-template-columns: 1fr;
             }
         }
@@ -510,8 +900,9 @@
 
         <!-- MODAL AÑADIR COCHE -->
         <div id="anadirCocheModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">Añadir Coche Nuevo</div>
+            <div class="modal-content modal-wide">
+                <div class="modal-header" id="cocheModalTitle">Añadir Coche Nuevo</div>
+                <p class="modal-subtitle" id="cocheModalSubtitle">Completa los datos principales, añade las fotos y marca visualmente la portada antes de publicar el anuncio.</p>
                 <form id="anadirCocheForm">
                     <div class="form-group">
                         <label>Marca *</label>
@@ -561,6 +952,14 @@
                             <option value="B">B</option>
                         </select>
                     </div>
+                    <div class="form-group" id="editCocheEstadoGroup">
+                        <label>Estado</label>
+                        <select id="editCocheEstado">
+                            <option value="EN_VENTA">En venta</option>
+                            <option value="RESERVADO">Reservado</option>
+                            <option value="VENDIDO">Vendido</option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label>Kilometraje *</label>
                         <input type="number" id="newCocheKm" required>
@@ -593,6 +992,13 @@
                         <label>Descripción</label>
                         <textarea id="newCocheDescripcion" style="min-height: 80px;"></textarea>
                     </div>
+                    <div class="form-group foto-upload-box">
+                        <label>Fotos del coche</label>
+                        <input type="file" id="newCocheFotos" multiple accept="image/*">
+                        <small>Selecciona una o varias fotos desde tu ordenador. Después pulsa una miniatura para marcarla como portada.</small>
+                        <div id="fotoPreviews" class="foto-previews"></div>
+                    </div>
+                    <input type="hidden" id="newCochePortadaIndex" value="0">
                     <div class="modal-buttons">
                         <button type="submit" class="btn-guardar">Crear Coche</button>
                         <button type="button" class="btn-cancelar" onclick="cerrarModalAnadirCoche()">Cancelar</button>
@@ -601,8 +1007,36 @@
             </div>
         </div>
 
+        <!-- MODAL CAMBIAR ESTADO -->
+        <div id="estadoCocheModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">Cambiar estado del coche</div>
+                <p class="modal-subtitle">Elige cómo quieres que aparezca el anuncio en el listado público.</p>
+                <div class="estado-options">
+                    <button type="button" class="estado-option" data-estado="EN_VENTA" onclick="seleccionarEstadoCoche('EN_VENTA')">
+                        <strong>En venta</strong>
+                        <span>Disponible para recibir contactos.</span>
+                    </button>
+                    <button type="button" class="estado-option" data-estado="RESERVADO" onclick="seleccionarEstadoCoche('RESERVADO')">
+                        <strong>Reservado</strong>
+                        <span>Apartado temporalmente para un comprador.</span>
+                    </button>
+                    <button type="button" class="estado-option" data-estado="VENDIDO" onclick="seleccionarEstadoCoche('VENDIDO')">
+                        <strong>Vendido</strong>
+                        <span>Marca el vehículo como no disponible.</span>
+                    </button>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-guardar" onclick="guardarEstadoCoche()">Guardar estado</button>
+                    <button type="button" class="btn-cancelar" onclick="cerrarModalEstadoCoche()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
         <div th:replace="footer :: footer"></div>
     </div>
+
+    <input type="file" id="fotoInputOculto" multiple accept="image/*" style="display:none;" onchange="subirFotosSeleccionadas(this)">
 
     <script>
         function cargarPerfil() {
@@ -636,17 +1070,26 @@
                         return;
                     }
                     let html = '<div class="coches-grid">';
+                    window.misCochesCache = coches;
                     coches.forEach(coche => {
+                        const estadoClass = coche.estado === 'VENDIDO' ? 'estado-vendido' : (coche.estado === 'RESERVADO' ? 'estado-reservado' : 'estado-en-venta');
                         html += `
-                            <div class="coche-card">
-                                <div class="coche-image">🚙</div>
+                            <div class="coche-card mine">
+                                <div class="coche-image" style="background-image:url('${coche.portadaUrl || ''}'); background-size:cover; background-position:center;">${coche.portadaUrl ? '' : '🚙'}</div>
                                 <div class="coche-info">
                                     <div class="coche-marca">${coche.marca} ${coche.modelo}</div>
-                                    <div>${coche.ano} • ${coche.kilometros} km</div>
+                                    <div class="coche-meta-row">
+                                        <span>${coche.ano}</span>
+                                        <span>${Number(coche.kilometros).toLocaleString()} km</span>
+                                        <span>${coche.combustible || '-'}</span>
+                                    </div>
                                     <div class="coche-precio">€${coche.precio.toFixed(0)}</div>
-                                    <div class="btn-acciones">
-                                        <button class="btn-accion btn-editar-coche">Editar</button>
-                                        <button class="btn-accion btn-eliminar">Eliminar</button>
+                                    <div class="estado-badge ${estadoClass}">${coche.estado === 'VENDIDO' ? 'Vendido' : (coche.estado === 'RESERVADO' ? 'Reservado' : 'En venta')}</div>
+                                    <div class="coche-actions-stack">
+                                        <button class="btn-accion btn-editar-coche" onclick="abrirEditarCoche(${coche.id})">Editar</button>
+                                        <button class="btn-accion btn-estado" onclick="abrirEstadoCoche(${coche.id})">Estado</button>
+                                        <button class="btn-accion btn-fotos" onclick="abrirSubirFotos(${coche.id})">Fotos</button>
+                                        <button class="btn-accion btn-eliminar-coche" onclick="eliminarCoche(${coche.id})">Eliminar</button>
                                     </div>
                                 </div>
                             </div>
@@ -661,11 +1104,168 @@
         }
 
         function cargarFavoritos(userId) {
-            // Placeholder
+            fetch(`/api/perfil/${userId}/me-gustas`)
+                .then(res => res.json())
+                .then(favoritos => {
+                    const contenedor = document.getElementById('cochesFavoritos');
+
+                    if (!Array.isArray(favoritos) || favoritos.length === 0) {
+                        contenedor.innerHTML = '<div class="vacio">No tienes coches marcados como favoritos.</div>';
+                        return;
+                    }
+
+                    let html = '<div class="favoritos-grid">';
+                    favoritos.forEach(favorito => {
+                        const estadoClass = favorito.estado === 'VENDIDO' ? 'estado-vendido' : (favorito.estado === 'RESERVADO' ? 'estado-reservado' : 'estado-en-venta');
+                        const estadoTexto = favorito.estado === 'VENDIDO' ? 'Vendido' : (favorito.estado === 'RESERVADO' ? 'Reservado' : 'En venta');
+                        html += `
+                            <div class="coche-card favorito-card">
+                                <div class="coche-image" style="background-image:url('${favorito.portadaUrl || ''}'); background-size:cover; background-position:center;">${favorito.portadaUrl ? '' : '❤️'}</div>
+                                <div class="coche-info">
+                                    <div class="coche-marca">${favorito.marca} ${favorito.modelo}</div>
+                                    <div class="favorito-price">€${Number(favorito.precio).toLocaleString()}</div>
+                                    <div class="favorito-meta">Año ${favorito.ano} • €${Number(favorito.precio).toLocaleString()}</div>
+                                    <div class="estado-badge ${estadoClass}">${estadoTexto}</div>
+                                    <div class="favorito-actions">
+                                        <a class="btn-accion btn-ver-detalle" href="/coche-detalle?id=${favorito.cocheId}">Ver detalle</a>
+                                        <button class="btn-accion btn-eliminar-favorito" onclick="eliminarFavorito(${favorito.cocheId})">Quitar</button>
+                                    </div>
+                                    <div class="favorito-fecha">Guardado: ${new Date(favorito.fecha).toLocaleDateString('es-ES')}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    contenedor.innerHTML = html;
+                })
+                .catch(() => {
+                    document.getElementById('cochesFavoritos').innerHTML = '<div class="vacio">Error cargando favoritos.</div>';
+                });
         }
 
         function cargarChats(userId) {
-            // Placeholder
+            fetch(`/api/mensajes/mis-chats/${userId}`)
+                .then(res => res.json())
+                .then(chats => {
+                    const contenedor = document.getElementById('chats');
+
+                    if (!Array.isArray(chats) || chats.length === 0) {
+                        contenedor.innerHTML = '<div class="vacio" style="grid-column: 1/-1;">No tienes chats activos.</div>';
+                        return;
+                    }
+
+                    let html = '';
+                    chats.forEach(chat => {
+                        const inicial = (chat.contactoNombre || '?').trim().charAt(0).toUpperCase();
+                        const noLeidos = Number(chat.noLeidos || 0);
+                        html += `
+                            <div class="chat-card">
+                                <div class="chat-top">
+                                    <div class="chat-avatar">${inicial}</div>
+                                    <div class="chat-main">
+                                        <div class="chat-usuario">${chat.contactoNombre}</div>
+                                        <div class="chat-date">${new Date(chat.ultimoMensajeHora).toLocaleString('es-ES')}</div>
+                                    </div>
+                                    ${noLeidos > 0 ? `<div class="chat-unread">${noLeidos}</div>` : ''}
+                                </div>
+                                <div class="chat-preview">${chat.ultimoMensaje}</div>
+                                <div class="chat-footer">
+                                    <span class="chat-date">Conversación activa</span>
+                                    <a class="chat-open" href="/chat?contacto=${chat.contactoId}">Abrir chat</a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    contenedor.innerHTML = html;
+                })
+                .catch(() => {
+                    document.getElementById('chats').innerHTML = '<div class="vacio" style="grid-column: 1/-1;">Error cargando chats.</div>';
+                });
+        }
+
+        let cocheEstadoSeleccionadoId = null;
+        let estadoSeleccionado = 'EN_VENTA';
+
+        function abrirEstadoCoche(cocheId) {
+            cocheEstadoSeleccionadoId = cocheId;
+            seleccionarEstadoCoche('EN_VENTA');
+            document.getElementById('estadoCocheModal').classList.add('active');
+        }
+
+        function seleccionarEstadoCoche(estado) {
+            estadoSeleccionado = estado;
+            document.querySelectorAll('.estado-option').forEach(option => {
+                option.classList.toggle('selected', option.dataset.estado === estado);
+            });
+        }
+
+        function cerrarModalEstadoCoche() {
+            document.getElementById('estadoCocheModal').classList.remove('active');
+            cocheEstadoSeleccionadoId = null;
+        }
+
+        function guardarEstadoCoche() {
+            if (!cocheEstadoSeleccionadoId) return;
+
+            fetch(`/coches/${cocheEstadoSeleccionadoId}/estado?estado=${encodeURIComponent(estadoSeleccionado)}`, { method: 'PUT' })
+                .then(res => {
+                    if (!res.ok) throw new Error('No se pudo cambiar el estado');
+                    return res.json();
+                })
+                .then(() => {
+                    cerrarModalEstadoCoche();
+                    cargarPerfil();
+                })
+                .catch(() => alert('No se pudo cambiar el estado'));
+        }
+
+        function abrirSubirFotos(cocheId) {
+            const input = document.getElementById('fotoInputOculto');
+            input.dataset.cocheId = cocheId;
+            input.click();
+        }
+
+        function subirFotosSeleccionadas(input) {
+            const cocheId = input.dataset.cocheId;
+            if (!cocheId || !input.files || input.files.length === 0) return;
+
+            const portadaIndex = prompt('Índice de portada (0 = primera foto, 1 = segunda...)', '0') || '0';
+            const formData = new FormData();
+            Array.from(input.files).forEach(file => formData.append('files', file));
+            formData.append('portadaIndex', portadaIndex);
+
+            fetch(`/coches/${cocheId}/fotos`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(() => cargarPerfil())
+            .catch(() => alert('No se pudieron subir las fotos'))
+            .finally(() => { input.value = ''; });
+        }
+
+        function eliminarFavorito(cocheId) {
+            const usuario = JSON.parse(localStorage.getItem('usuario'));
+            if (!usuario) return;
+
+            fetch(`/api/me-gusta/eliminar?usuarioId=${usuario.id}&cocheId=${cocheId}`, {
+                method: 'DELETE'
+            })
+            .then(() => cargarFavoritos(usuario.id))
+            .catch(() => alert('No se pudo quitar el favorito'));
+        }
+
+        function eliminarCoche(cocheId) {
+            if (!confirm('¿Seguro que quieres eliminar este coche? Esta acción no se puede deshacer.')) {
+                return;
+            }
+
+            fetch(`/coches/${cocheId}`, { method: 'DELETE' })
+                .then(res => {
+                    if (!res.ok) throw new Error('No se pudo eliminar');
+                    cargarPerfil();
+                })
+                .catch(() => alert('No se pudo eliminar el coche'));
         }
 
         function abrirModalPerfil() {
@@ -714,20 +1314,90 @@
 
         document.querySelector('.btn-editar').addEventListener('click', abrirModalPerfil);
 
+        let cocheEditandoId = null;
+
         function abrirModalAnadirCoche() {
+            cocheEditandoId = null;
+            document.getElementById('cocheModalTitle').textContent = 'Añadir Coche Nuevo';
+            document.getElementById('cocheModalSubtitle').textContent = 'Completa los datos principales, añade las fotos y marca visualmente la portada antes de publicar el anuncio.';
+            document.getElementById('editCocheEstadoGroup').style.display = 'none';
+            document.querySelector('#anadirCocheForm .btn-guardar').textContent = 'Crear Coche';
             document.getElementById('anadirCocheModal').classList.add('active');
         }
 
         function cerrarModalAnadirCoche() {
             document.getElementById('anadirCocheModal').classList.remove('active');
             document.getElementById('anadirCocheForm').reset();
+            document.getElementById('fotoPreviews').innerHTML = '';
+            document.getElementById('newCochePortadaIndex').value = '0';
+            cocheEditandoId = null;
+        }
+
+        function abrirEditarCoche(cocheId) {
+            const coche = (window.misCochesCache || []).find(item => item.id === cocheId);
+            if (!coche) return;
+
+            cocheEditandoId = cocheId;
+            document.getElementById('cocheModalTitle').textContent = `Editar ${coche.marca} ${coche.modelo}`;
+            document.getElementById('cocheModalSubtitle').textContent = 'Modifica los datos del anuncio. Si seleccionas fotos nuevas, se añadirán a las que ya tiene el coche.';
+            document.querySelector('#anadirCocheForm .btn-guardar').textContent = 'Guardar cambios';
+            document.getElementById('editCocheEstadoGroup').style.display = 'block';
+
+            document.getElementById('newCocheMarca').value = coche.marca || '';
+            document.getElementById('newCocheModelo').value = coche.modelo || '';
+            document.getElementById('newCocheAnio').value = coche.ano || '';
+            document.getElementById('newCocheMotor').value = coche.motor || '';
+            document.getElementById('newCocheColor').value = coche.color || '';
+            document.getElementById('newCocheTipoCambio').value = coche.tipoCambio || '';
+            document.getElementById('newCocheCombustible').value = coche.combustible || '';
+            document.getElementById('newCocheEtiqueta').value = coche.etiquetaAmbiental || '';
+            document.getElementById('editCocheEstado').value = coche.estado || 'EN_VENTA';
+            document.getElementById('newCocheKm').value = coche.kilometros || '';
+            document.getElementById('newCochePrecio').value = coche.precio || '';
+            document.getElementById('newCocheNumeroPuertas').value = coche.numeroPuertas || '';
+            document.getElementById('newCocheNumeroPlazas').value = coche.numeroPlazas || '';
+            document.getElementById('newCocheCaballos').value = coche.caballosPotencia || '';
+            document.getElementById('newCocheCc').value = coche.centimetrosCubicos || '';
+            document.getElementById('newCocheUbicacion').value = coche.ubicacion || '';
+            document.getElementById('newCocheDescripcion').value = coche.descripcion || '';
+            document.getElementById('newCocheFotos').value = '';
+            document.getElementById('fotoPreviews').innerHTML = coche.portadaUrl
+                ? `<div class="foto-preview portada"><img src="${coche.portadaUrl}" alt="Portada actual"><span>Portada actual</span></div>`
+                : '';
+            document.getElementById('newCochePortadaIndex').value = '0';
+            document.getElementById('anadirCocheModal').classList.add('active');
         }
 
         document.querySelector('.btn-anadir').addEventListener('click', abrirModalAnadirCoche);
 
+        document.getElementById('newCocheFotos').addEventListener('change', function() {
+            const previews = document.getElementById('fotoPreviews');
+            const portadaInput = document.getElementById('newCochePortadaIndex');
+            previews.innerHTML = '';
+            portadaInput.value = '0';
+
+            Array.from(this.files || []).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const item = document.createElement('div');
+                    item.className = `foto-preview ${index === 0 ? 'portada' : ''}`;
+                    item.onclick = () => {
+                        portadaInput.value = index;
+                        document.querySelectorAll('.foto-preview').forEach(preview => preview.classList.remove('portada'));
+                        item.classList.add('portada');
+                    };
+                    item.innerHTML = `<img src="${reader.result}" alt="Foto ${index + 1}"><span>${file.name}</span>`;
+                    previews.appendChild(item);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
         document.getElementById('anadirCocheForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const usuario = JSON.parse(localStorage.getItem('usuario'));
+            const fotosInput = document.getElementById('newCocheFotos');
+            const portadaIndex = parseInt(document.getElementById('newCochePortadaIndex').value || '0', 10);
             const data = {
                 marca: document.getElementById('newCocheMarca').value,
                 modelo: document.getElementById('newCocheModelo').value,
@@ -749,8 +1419,15 @@
                 estado: 'EN_VENTA'
             };
 
-            fetch('/coches/crear', {
-                method: 'POST',
+            if (cocheEditandoId) {
+                data.estado = document.getElementById('editCocheEstado').value;
+            }
+
+            const url = cocheEditandoId ? `/coches/${cocheEditandoId}/editar` : '/coches/crear';
+            const method = cocheEditandoId ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             })
@@ -758,12 +1435,34 @@
                 if (!r.ok) return r.json().then(e => Promise.reject(new Error(e.error || e.tipo || 'Error')));
                 return r.json();
             })
+            .then(resp => {
+                const cocheIdParaFotos = cocheEditandoId || resp.id;
+                const subir = fotosInput.files && fotosInput.files.length > 0
+                    ? subirFotosAlCrear(cocheIdParaFotos, fotosInput.files, portadaIndex)
+                    : Promise.resolve();
+
+                return subir.then(() => resp);
+            })
             .then(() => {
                 cerrarModalAnadirCoche();
                 cargarPerfil();
             })
             .catch(e => alert('Error: ' + e.message));
         });
+
+        function subirFotosAlCrear(cocheId, files, portadaIndex) {
+            const formData = new FormData();
+            Array.from(files).forEach(file => formData.append('files', file));
+            formData.append('portadaIndex', portadaIndex);
+
+            return fetch(`/coches/${cocheId}/fotos`, {
+                method: 'POST',
+                body: formData
+            }).then(r => {
+                if (!r.ok) return r.json().then(e => Promise.reject(new Error(e.error || 'Error subiendo fotos')));
+                return r.json();
+            });
+        }
 
         window.addEventListener('load', cargarPerfil);
     </script>

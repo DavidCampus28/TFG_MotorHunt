@@ -15,7 +15,7 @@
                 box-shadow: 0 2px 10px rgba(0,0,0,0.3);
                 position: sticky;
                 top: 0;
-                z-index: 100;
+                z-index: 2000;
             }
 
             html[data-theme="light"] header {
@@ -85,20 +85,38 @@
             .user-menu {
                 position: absolute;
                 right: 0;
-                top: 50px;
+                top: calc(100% + 12px);
                 background: #2a2a2a;
                 border: 2px solid #ff4444;
-                border-radius: 8px;
-                min-width: 200px;
+                border-radius: 10px;
+                min-width: 220px;
                 box-shadow: 0 10px 25px rgba(0,0,0,0.5);
                 display: none;
-                z-index: 200;
+                z-index: 2100;
+                overflow: visible;
+            }
+
+            .user-menu::before {
+                content: "";
+                position: absolute;
+                top: -8px;
+                right: 16px;
+                width: 14px;
+                height: 14px;
+                background: #2a2a2a;
+                border-left: 2px solid #ff4444;
+                border-top: 2px solid #ff4444;
+                transform: rotate(45deg);
             }
 
             html[data-theme="light"] .user-menu {
                 background: #ffffff;
                 border: 2px solid #ff4444;
                 box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            }
+
+            html[data-theme="light"] .user-menu::before {
+                background: #ffffff;
             }
 
             .user-menu.active {
@@ -118,6 +136,8 @@
                 text-decoration: none;
                 transition: all 0.3s;
                 border-bottom: 1px solid #444;
+                position: relative;
+                z-index: 1;
             }
 
             html[data-theme="light"] .user-menu a,
@@ -436,8 +456,10 @@
         </style>
 
         <div class="header-left">
-            <img src="/img/LogoMotorHunt.png" alt="MotorHunt Logo" class="header-logo">
-            <div class="header-title">MotorHunt</div>
+            <a href="/" style="display:flex; align-items:center; gap:15px; text-decoration:none;">
+                <img src="/img/LogoMotorHunt.png" alt="MotorHunt Logo" class="header-logo">
+                <div class="header-title">MotorHunt</div>
+            </a>
         </div>
 
         <div class="header-right">

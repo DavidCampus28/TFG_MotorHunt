@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Coche - MotorHunt</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #252525;
+            --text-main: #d0d0d0;
+            --text-secondary: #999;
+            --accent: #d32f2f;
+            --accent-dark: #b71c1c;
+            --border: #333;
+        }
+
+        html[data-theme="light"] {
+            --bg-dark: #f5f5f5;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e8e8e8;
+            --text-main: #333333;
+            --text-secondary: #666666;
+            --accent: #d32f2f;
+            --accent-dark: #b71c1c;
+            --border: #ddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
+            color: var(--text-main);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .coche-detalle-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        .detalle-header {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.75fr);
+            gap: 30px;
+            margin-bottom: 40px;
+            align-items: start;
+        }
+        .detalle-imagen {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 14px 34px rgba(0,0,0,0.32);
+        }
+        .detalle-imagen img {
+            width: 100%;
+            border-radius: 10px;
+            height: 420px;
+            object-fit: cover;
+            background: var(--bg-dark);
+        }
+        .detalle-titulo {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+        }
+        .detalle-titulo h1 {
+            font-size: 2.35em;
+            margin: 0;
+            color: var(--text-main);
+        }
+        .btn-me-gusta {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-me-gusta:hover {
+            background: linear-gradient(135deg, var(--accent-dark) 0%, #8b0000 100%);
+            transform: scale(1.05);
+        }
+        .btn-me-gusta.activo {
+            background: linear-gradient(135deg, var(--accent-dark) 0%, #8b0000 100%);
+        }
+        .especificaciones {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+            margin-top: 18px;
+        }
+        .especificacion {
+            background: var(--bg-secondary);
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+        }
+        .especificacion .label {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            font-weight: bold;
+        }
+        .especificacion .valor {
+            font-size: 1.3em;
+            color: var(--text-main);
+            margin-top: 5px;
+        }
+        .vendedor-card {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            color: var(--text-main);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+        }
+        .vendedor-card h3 {
+            margin-top: 0;
+            color: var(--accent);
+        }
+        .vendedor-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .vendedor-info-item {
+            font-size: 0.95em;
+        }
+        .vendedor-info-item .label {
+            opacity: 0.9;
+            font-size: 0.8em;
+            color: var(--text-secondary);
+        }
+        .botones-accion {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .btn-chat {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+        }
+        .btn-chat:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        .btn-vendedor {
+            background: transparent;
+            color: var(--accent);
+            padding: 12px 24px;
+            border: 1px solid var(--accent);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+        }
+        .btn-vendedor:hover {
+            background: rgba(211, 47, 47, 0.12);
+            transform: translateY(-2px);
+        }
+        .descripcion {
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            border: 1px solid var(--border);
+        }
+        .descripcion h3 {
+            margin-top: 0;
+        }
+        .ubicacion {
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .ubicacion h3 {
+            margin-top: 0;
+        }
+        .precio-final {
+            font-size: 2.35em;
+            color: var(--accent);
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .me-gustas-count {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        .detalle-extra {
+            margin-top: 20px;
+            padding: 18px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .detalle-extra h3 {
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .galeria-fotos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .mini-foto {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mini-foto.activa {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(211,47,47,0.2);
+        }
+
+        .estado-detalle {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 13px;
+            margin: 12px 0 4px;
+            border: 1px solid transparent;
+        }
+
+        .estado-detalle.en-venta {
+            color: #27ae60;
+            border-color: #27ae60;
+            background: rgba(39,174,96,0.12);
+        }
+
+        .estado-detalle.reservado {
+            color: #f1c40f;
+            border-color: #f1c40f;
+            background: rgba(241,196,15,0.12);
+        }
+
+        .estado-detalle.vendido {
+            color: #e74c3c;
+            border-color: #e74c3c;
+            background: rgba(231,76,60,0.12);
+        }
+
+        .detalle-actions-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .detalle-actions-row .me-gustas-count {
+            margin-left: 0;
+        }
+        @media (max-width: 768px) {
+            .detalle-header {
+                grid-template-columns: 1fr;
+            }
+            .especificaciones {
+                grid-template-columns: 1fr;
+            }
+            .vendedor-info {
+                grid-template-columns: 1fr;
+            }
+            .detalle-titulo {
+                flex-direction: column;
+            }
+            .btn-me-gusta {
+                width: 100%;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav th:include="header.html"></nav>
+
+    <div class="coche-detalle-container">
+        <div class="detalle-header" id="cocheMostrado" style="display:none;">
+            <div class="detalle-imagen">
+                <img id="cocheImagen" src="/img/LogoMotorHunt.png" alt="Coche">
+                <div id="galeriaFotos" class="galeria-fotos"></div>
+            </div>
+            <div>
+                <div class="detalle-titulo">
+                    <div>
+                        <h1 id="cocheTitulo"></h1>
+                        <p id="cocheAno" style="color: #666; font-size: 1.1em; margin-top: 5px;"></p>
+                        <div id="cocheEstado" class="estado-detalle en-venta">En venta</div>
+                        <div class="precio-final" id="cochePrecio"></div>
+                        <div class="detalle-actions-row">
+                            <button class="btn-me-gusta" id="btnMeGusta" onclick="toggleMeGusta()">❤️ Me gusta</button>
+                            <div class="me-gustas-count">
+                                <span id="meGustasTotales">0</span> me gustas
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="especificaciones">
+                    <div class="especificacion">
+                        <div class="label">Motor</div>
+                        <div class="valor" id="cocheMotor"></div>
+                    </div>
+                    <div class="especificacion">
+                        <div class="label">Potencia</div>
+                        <div class="valor" id="cocheCaballos"></div>
+                    </div>
+                    <div class="especificacion">
+                        <div class="label">Combustible</div>
+                        <div class="valor" id="cocheCombustible"></div>
+                    </div>
+                    <div class="especificacion">
+                        <div class="label">Cambio</div>
+                        <div class="valor" id="cocheTipoCambio"></div>
+                    </div>
+                    <div class="especificacion">
+                        <div class="label">Km</div>
+                        <div class="valor" id="cocheKm"></div>
+                    </div>
+                    <div class="especificacion">
+                        <div class="label">Puertas</div>
+                        <div class="valor" id="cochePuertas"></div>
+                    </div>
+                    <div class="especificacion">
+                        <div class="label">Color</div>
+                        <div class="valor" id="cocheColor"></div>
+                    </div>
+                    <div class="especificacion">
+                        <div class="label">Etiqueta Ambiental</div>
+                        <div class="valor" id="cocheEtiqueta"></div>
+                    </div>
+                    <div class="especificacion">
+                        <div class="label">Plazas</div>
+                        <div class="valor" id="cochePlazas"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="vendedor-card" id="vendedorMostrado" style="display:none;">
+            <h3>👤 Información del Vendedor</h3>
+            <p style="margin: 0; font-size: 1.2em; font-weight: bold;" id="vendedorNombre"></p>
+            <p style="margin: 5px 0 0 0; opacity: 0.9;" id="vendedorRol"></p>
+            <div class="vendedor-info">
+                <div class="vendedor-info-item">
+                    <div class="label">Email</div>
+                    <div id="vendedorEmail"></div>
+                </div>
+                <div class="vendedor-info-item">
+                    <div class="label">Teléfono</div>
+                    <div id="vendedorTelefono"></div>
+                </div>
+                <div class="vendedor-info-item">
+                    <div class="label">Dirección</div>
+                    <div id="vendedorDireccion"></div>
+                </div>
+            </div>
+            <div class="botones-accion">
+                <button class="btn-chat" onclick="abrirChat()">💬 Chatear con el vendedor</button>
+                <a id="btnPerfilVendedor" class="btn-vendedor" href="#">👤 Ver perfil del vendedor</a>
+            </div>
+        </div>
+
+        <div class="descripcion" id="descripcionMostrada" style="display:none;">
+            <h3>📝 Descripción</h3>
+            <p id="cocheDescripcion"></p>
+        </div>
+
+        <div class="ubicacion" id="ubicacionMostrada" style="display:none;">
+            <h3>📍 Ubicación</h3>
+            <p id="cocheUbicacion"></p>
+        </div>
+    </div>
+
+    <footer th:include="footer.html"></footer>
+
+    <script>
+        let cocheId = new URLSearchParams(window.location.search).get('id');
+        let usuarioActual = JSON.parse(localStorage.getItem('usuario'));
+
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        window.addEventListener('load', () => {
+            initializeTheme();
+            if (cocheId) {
+                cargarDetalleCoche();
+            }
+        });
+
+        function cargarDetalleCoche() {
+            const url = `/coches/detalle/${cocheId}?usuarioId=${usuarioActual?.id || ''}`;
+
+            fetch(url)
+                .then(res => {
+                    if (!res.ok) throw new Error('No se pudo cargar');
+                    return res.json();
+                })
+                .then(coche => {
+                    mostrarCoche(coche);
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    alert('No se pudo cargar el coche');
+                });
+        }
+
+        function mostrarCoche(coche) {
+            // Mostrar información principal
+            document.getElementById('cocheTitulo').textContent = `${coche.marca} ${coche.modelo}`;
+            document.getElementById('cocheAno').textContent = `Año ${coche.ano}`;
+            document.getElementById('cochePrecio').textContent = `€${coche.precio.toLocaleString()}`;
+            const estado = document.getElementById('cocheEstado');
+            const estadoTexto = coche.estado === 'VENDIDO' ? 'Vendido' : (coche.estado === 'RESERVADO' ? 'Reservado' : 'En venta');
+            const estadoClase = coche.estado === 'VENDIDO' ? 'vendido' : (coche.estado === 'RESERVADO' ? 'reservado' : 'en-venta');
+            estado.textContent = estadoTexto;
+            estado.className = `estado-detalle ${estadoClase}`;
+            document.getElementById('cocheMotor').textContent = coche.motor;
+            document.getElementById('cocheCaballos').textContent = `${coche.caballosPotencia} CV`;
+            document.getElementById('cocheCombustible').textContent = coche.combustible;
+            document.getElementById('cocheTipoCambio').textContent = coche.tipoCambio;
+            document.getElementById('cocheKm').textContent = `${coche.kilometros.toLocaleString()} km`;
+            document.getElementById('cochePuertas').textContent = coche.numeroPuertas;
+            document.getElementById('cocheColor').textContent = coche.color;
+            document.getElementById('cocheEtiqueta').textContent = coche.etiquetaAmbiental;
+            document.getElementById('cochePlazas').textContent = coche.numeroPlazas;
+            document.getElementById('cocheDescripcion').textContent = coche.descripcion || 'Sin descripción disponible';
+            document.getElementById('cocheUbicacion').textContent = coche.ubicacion;
+            document.getElementById('meGustasTotales').textContent = coche.totalMeGustas;
+            document.getElementById('cocheImagen').src = coche.fotoPortadaUrl || '/img/LogoMotorHunt.png';
+
+            const galeria = document.getElementById('galeriaFotos');
+            if (Array.isArray(coche.fotos) && coche.fotos.length > 0) {
+                galeria.innerHTML = coche.fotos.map((foto, index) => `
+                    <img class="mini-foto ${foto.portada ? 'activa' : ''}" src="${foto.url}" alt="Foto ${index + 1}" onclick="cambiarPortada('${foto.url}', this)">
+                `).join('');
+            } else {
+                galeria.innerHTML = '';
+            }
+
+            // Mostrar información del vendedor
+            document.getElementById('vendedorNombre').textContent = coche.vendedorNombre;
+            document.getElementById('vendedorRol').textContent = `(${coche.vendedorRol})`;
+            document.getElementById('vendedorEmail').textContent = coche.vendedorEmail;
+            document.getElementById('vendedorTelefono').textContent = coche.vendedorTelefono || 'No disponible';
+            document.getElementById('vendedorDireccion').textContent = coche.vendedorDireccion || 'No disponible';
+            document.getElementById('btnPerfilVendedor').href = `/perfil-vendedor?id=${coche.vendedorId}`;
+
+            // Actualizar botón me gusta
+            if (coche.tieneMemGusta) {
+                document.getElementById('btnMeGusta').classList.add('activo');
+                document.getElementById('btnMeGusta').innerHTML = '❤️ Ya te gusta';
+            }
+
+            actualizarCountMeGustas();
+
+            // Mostrar secciones
+            document.getElementById('cocheMostrado').style.display = 'grid';
+            document.getElementById('vendedorMostrado').style.display = 'block';
+            document.getElementById('descripcionMostrada').style.display = 'block';
+            document.getElementById('ubicacionMostrada').style.display = 'block';
+
+            // Guardar info del vendedor para chat
+            window.vendedorInfo = {
+                id: coche.vendedorId,
+                nombre: coche.vendedorNombre,
+                email: coche.vendedorEmail
+            };
+        }
+
+        function toggleMeGusta() {
+            if (!usuarioActual) {
+                alert('Debes iniciar sesión');
+                window.location.href = '/login';
+                return;
+            }
+
+            const btn = document.getElementById('btnMeGusta');
+            const siExiste = btn.classList.contains('activo');
+
+            if (siExiste) {
+                eliminarMeGusta();
+            } else {
+                agregarMeGusta();
+            }
+        }
+
+        function agregarMeGusta() {
+            fetch(`/api/me-gusta/agregar?usuarioId=${usuarioActual.id}&cocheId=${cocheId}`, {
+                method: 'POST'
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('btnMeGusta').classList.add('activo');
+                document.getElementById('btnMeGusta').innerHTML = '❤️ Ya te gusta';
+                actualizarCountMeGustas();
+                if (window.opener && window.opener.location) {
+                    try { window.opener.location.reload(); } catch (e) {}
+                }
+            })
+            .catch(err => console.error('Error:', err));
+        }
+
+        function eliminarMeGusta() {
+            fetch(`/api/me-gusta/eliminar?usuarioId=${usuarioActual.id}&cocheId=${cocheId}`, {
+                method: 'DELETE'
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('btnMeGusta').classList.remove('activo');
+                document.getElementById('btnMeGusta').innerHTML = '❤️ Me gusta';
+                actualizarCountMeGustas();
+                if (window.opener && window.opener.location) {
+                    try { window.opener.location.reload(); } catch (e) {}
+                }
+            })
+            .catch(err => console.error('Error:', err));
+        }
+
+        function actualizarCountMeGustas() {
+            fetch(`/api/me-gusta/contar/${cocheId}`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('meGustasTotales').textContent = data.cantidad;
+                })
+                .catch(err => console.error('Error:', err));
+        }
+
+        function abrirChat() {
+            if (!usuarioActual) {
+                alert('Debes iniciar sesión');
+                window.location.href = '/login';
+                return;
+            }
+
+            // Redirigir a página de chat o abrir modal
+            window.location.href = `/chat?contacto=${window.vendedorInfo.id}&coche=${cocheId}`;
+        }
+
+        function cambiarPortada(url, elemento) {
+            document.getElementById('cocheImagen').src = url;
+            document.querySelectorAll('.mini-foto').forEach(img => img.classList.remove('activa'));
+            elemento.classList.add('activa');
+        }
+    </script>
+</body>
+</html>

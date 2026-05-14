@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil del Vendedor - MotorHunt</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #252525;
+            --text-main: #d0d0d0;
+            --text-secondary: #999;
+            --accent: #d32f2f;
+            --accent-dark: #b71c1c;
+            --border: #333;
+        }
+
+        html[data-theme="light"] {
+            --bg-dark: #f5f5f5;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e8e8e8;
+            --text-main: #333333;
+            --text-secondary: #666666;
+            --accent: #d32f2f;
+            --accent-dark: #b71c1c;
+            --border: #ddd;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
+            color: var(--text-main);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        #app { min-height: 100vh; display: flex; flex-direction: column; }
+        main { flex: 1; }
+
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+
+        .hero {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+        }
+
+        .hero-top { display: flex; gap: 20px; align-items: center; }
+        .avatar {
+            width: 96px; height: 96px; border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 52px; flex-shrink: 0;
+        }
+        .titulo { font-size: 2.1rem; color: var(--accent); margin-bottom: 6px; }
+        .subtitulo { color: var(--text-secondary); margin-bottom: 10px; }
+        .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        .chip {
+            padding: 6px 10px; border-radius: 999px; font-size: 12px;
+            background: rgba(211,47,47,0.12); color: var(--accent); border: 1px solid var(--accent);
+        }
+
+        .grid-info { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 24px 0; }
+        .card {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.22);
+        }
+        .card h3 { color: var(--accent); margin-bottom: 14px; }
+        .dato { display: flex; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .dato:last-child { border-bottom: none; }
+        .dato span:first-child { color: var(--text-secondary); }
+
+        .seccion-titulo {
+            margin: 30px 0 18px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--accent);
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .coches-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+        .coche-card {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.22);
+        }
+        .coche-img { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 64px; background: rgba(0,0,0,0.12); }
+        .coche-body { padding: 18px; }
+        .coche-title { font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+        .coche-meta { color: var(--text-secondary); font-size: 13px; margin-bottom: 10px; }
+        .coche-price { font-size: 1.35rem; font-weight: 700; color: var(--accent); margin: 10px 0 14px; }
+        .btn-row { display: flex; gap: 10px; }
+        .btn {
+            flex: 1; display: inline-block; text-align: center; text-decoration: none;
+            padding: 10px 12px; border-radius: 8px; font-weight: 700; border: 1px solid transparent;
+            transition: all 0.3s; cursor: pointer;
+        }
+        .btn-primary { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%); color: white; }
+        .btn-outline { background: transparent; color: var(--accent); border-color: var(--accent); }
+        .btn:hover { transform: translateY(-2px); }
+
+        .empty {
+            text-align: center; padding: 28px; border: 1px dashed var(--border); border-radius: 12px;
+            color: var(--text-secondary); background: rgba(255,255,255,0.03);
+        }
+
+        @media (max-width: 768px) {
+            .hero-top { flex-direction: column; align-items: flex-start; }
+            .grid-info { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div th:replace="header :: header"></div>
+
+    <main>
+        <div class="container">
+            <section class="hero">
+                <div class="hero-top">
+                    <div class="avatar">👤</div>
+                    <div>
+                        <div class="titulo" th:text="${vendedor.nombre}">Nombre vendedor</div>
+                        <div class="subtitulo" th:text="${vendedor.rol}">ROL</div>
+                        <div class="chips">
+                            <span class="chip" th:text="${totalCoches} + ' coches en venta'">0 coches</span>
+                            <span class="chip" th:text="${vendedor.activo ? 'Cuenta activa' : 'Cuenta inactiva'}">Estado</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid-info">
+                <div class="card">
+                    <h3>Datos de contacto</h3>
+                    <div class="dato"><span>Email</span><strong th:text="${vendedor.email}">-</strong></div>
+                    <div class="dato"><span>Teléfono</span><strong th:text="${vendedor.telefono != null ? vendedor.telefono : 'No disponible'}">-</strong></div>
+                    <div class="dato"><span>Dirección</span><strong th:text="${vendedor.direccion != null ? vendedor.direccion : 'No disponible'}">-</strong></div>
+                </div>
+                <div class="card">
+                    <h3>Resumen</h3>
+                    <div class="dato"><span>Fecha registro</span><strong th:text="${vendedor.fechaRegistro}">-</strong></div>
+                    <div class="dato"><span>Última actividad</span><strong th:text="${vendedor.ultimaActividad}">-</strong></div>
+                    <div class="dato"><span>Rol</span><strong th:text="${vendedor.rol}">-</strong></div>
+                </div>
+            </section>
+
+            <h2 class="seccion-titulo">Coches del vendedor</h2>
+            <section th:if="${#lists.isEmpty(cochesVendedor)}" class="empty">
+                No tiene coches publicados.
+            </section>
+            <section th:if="${!#lists.isEmpty(cochesVendedor)}" class="coches-grid">
+                <article class="coche-card" th:each="coche : ${cochesVendedor}">
+                    <div class="coche-img">🚗</div>
+                    <div class="coche-body">
+                        <div class="coche-title" th:text="${coche.marca + ' ' + coche.modelo}">Marca modelo</div>
+                        <div class="coche-meta" th:text="${coche.ano + ' • ' + coche.kilometros + ' km • ' + coche.combustible}">Meta</div>
+                        <div class="coche-price" th:text="'€' + ${coche.precio}">€0</div>
+                        <div class="btn-row">
+                            <a class="btn btn-primary" th:href="${'/coche-detalle?id=' + coche.id}">Ver detalle</a>
+                            <a class="btn btn-outline" th:href="${'/chat?contacto=' + vendedor.id + '&coche=' + coche.id}">Chat</a>
+                        </div>
+                    </div>
+                </article>
+            </section>
+        </div>
+    </main>
+
+    <div th:replace="footer :: footer"></div>
+</div>
+</body>
+</html>
+

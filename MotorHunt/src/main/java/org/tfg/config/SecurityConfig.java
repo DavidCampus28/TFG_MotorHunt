@@ -20,7 +20,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/index", "/login", "/registro", "/api/auth/**", "/api/chatbot/**", "/chatbot-test", "/resources/**", "/perfil", "/admin/**").permitAll()
                 .anyRequest().permitAll()
@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/")
                 .permitAll()
             )
-            .cors();
+            .cors(cors -> cors.disable());
 
         return http.build();
     }

@@ -34,6 +34,7 @@ public class AuthController {
             String password = request.get("password");
             String telefono = request.get("telefono");
             String direccion = request.get("direccion");
+            String rolStr = request.getOrDefault("rol", "USUARIO");
 
             if (usuarioRepository.findByEmail(email).isPresent()) {
                 return ResponseEntity.badRequest().body("El email ya está registrado");
@@ -45,7 +46,14 @@ public class AuthController {
             usuario.setPassword(passwordEncoder.encode(password));
             usuario.setTelefono(telefono);
             usuario.setDireccion(direccion);
-            usuario.setRol(Rol.USUARIO);
+
+            // Asignar rol (USUARIO o EMPRESA)
+            try {
+                usuario.setRol(Rol.valueOf(rolStr.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                usuario.setRol(Rol.USUARIO);
+            }
+
             usuario.setActivo(true);
             usuario.setFechaRegistro(LocalDateTime.now());
 

@@ -119,6 +119,8 @@
             align-items: center;
             justify-content: center;
             font-size: 100px;
+            background-size: cover;
+            background-position: center;
         }
 
         .coche-info {
@@ -164,6 +166,19 @@
             margin-bottom: 15px;
             font-weight: 300;
         }
+
+        .estado-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .estado-en-venta { background: rgba(39,174,96,0.15); color: #27ae60; border: 1px solid #27ae60; }
+        .estado-reservado { background: rgba(241,196,15,0.15); color: #f1c40f; border: 1px solid #f1c40f; }
+        .estado-vendido { background: rgba(231,76,60,0.15); color: #e74c3c; border: 1px solid #e74c3c; }
 
         .btn-ver {
             width: 100%;
@@ -240,17 +255,23 @@
                 
                 <div class="coches-grid" th:if="${!coches.isEmpty()}">
                     <div th:each="coche : ${coches}" class="coche-card">
-                        <div class="coche-image">🚙</div>
+                        <div class="coche-image"
+                             th:style="${portadas[coche.id] != null ? 'background-image: url(' + portadas[coche.id] + ')' : ''}">
+                            <span th:if="${portadas[coche.id] == null}">🚙</span>
+                        </div>
                         <div class="coche-info">
                             <div class="coche-marca" th:text="${coche.marca}"></div>
                             <div class="coche-modelo" th:text="${coche.modelo + ' (' + coche.ano + ')'}"></div>
+                            <div class="estado-badge" th:classappend="${coche.estado.name() == 'VENDIDO' ? ' estado-vendido' : (coche.estado.name() == 'RESERVADO' ? ' estado-reservado' : ' estado-en-venta')}">
+                                <span th:text="${coche.estado.name() == 'VENDIDO' ? 'Vendido' : (coche.estado.name() == 'RESERVADO' ? 'Reservado' : 'En venta')}"></span>
+                            </div>
                             <div class="coche-detalles">
                                 <span th:text="${coche.kilometros} + ' km'"></span>
                                 <span th:text="${coche.combustible}"></span>
                             </div>
                             <div class="coche-precio" th:text="'€' + ${coche.precio}"></div>
                             <div class="coche-vendedor" th:text="'Vendedor: ' + ${coche.usuario.nombre}"></div>
-                            <button class="btn-ver">Ver Detalles</button>
+                            <button class="btn-ver" th:onclick="'window.location.href=\'/coche-detalle?id=' + ${coche.id} + '\''" style="cursor: pointer;">Ver Detalles</button>
                         </div>
                     </div>
                 </div>

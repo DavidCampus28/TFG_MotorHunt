@@ -10,11 +10,16 @@ import org.tfg.model.entities.Usuario;
 import org.tfg.model.enums.*;
 import org.tfg.repository.CocheRepository;
 import org.tfg.repository.UsuarioRepository;
+import org.tfg.repository.MensajeRepository;
+import org.tfg.repository.MeGustaRepository;
+import org.tfg.model.entities.Mensaje;
+import org.tfg.model.entities.MeGusta;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -26,6 +31,12 @@ public class AdminController {
 
     @Autowired
     private CocheRepository cocheRepository;
+
+    @Autowired
+    private MensajeRepository mensajeRepository;
+
+    @Autowired
+    private MeGustaRepository meGustaRepository;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -316,6 +327,105 @@ public class AdminController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage(), "tipo", e.getClass().getSimpleName()));
+        }
+    }
+
+    // Ver todos los mensajes (conversaciones)
+    @GetMapping("/conversaciones")
+    public ResponseEntity<?> verConversaciones() {
+        try {
+            List<Mensaje> mensajes = mensajeRepository.findAll();
+            var resultado = mensajes.stream().map(m -> Map.of(
+                    "id", m.getId(),
+                    "remitente", m.getRemitente().getNombre(),
+                    "remitenteId", m.getRemitente().getId(),
+                    "destinatario", m.getDestinatario().getNombre(),
+                    "destinatarioId", m.getDestinatario().getId(),
+                    "contenido", m.getContenido(),
+                    "coche", m.getCoche() != null ? m.getCoche().getMarca() + " " + m.getCoche().getModelo() : "Sin coche",
+                    "leido", m.getLeido(),
+                    "fecha", m.getFechaEnvio()
+            )).toList();
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
+    // Ver conversación específica entre dos usuarios
+    @GetMapping("/conversacion/{usuarioId1}/{usuarioId2}")
+    public ResponseEntity<?> verConversacion(@PathVariable Long usuarioId1, @PathVariable Long usuarioId2) {
+        try {
+            Optional<Usuario> usuario1Opt = usuarioRepository.findById(usuarioId1);
+            Optional<Usuario> usuario2Opt = usuarioRepository.findById(usuarioId2);
+
+            if (usuario1Opt.isEmpty() || usuario2Opt.isEmpty()) {
+                return ResponseEntity.badRequest().body("Usuario no encontrado");
+            }
+
+            Usuario usuario1 = usuario1Opt.get();
+            Usuario usuario2 = usuario2Opt.get();
+
+            List<Mensaje> mensajes = mensajeRepository.findAll().stream()
+                    .filter(m -> (m.getRemitente().getId().equals(usuario1.getId()) && 
+                                 m.getDestinatario().getId().equals(usuario2.getId())) ||
+                                (m.getRemitente().getId().equals(usuario2.getId()) && 
+                                 m.getDestinatario().getId().equals(usuario1.getId())))
+                    .toList();
+
+            var resultado = mensajes.stream().map(m -> Map.of(
+                    "id", m.getId(),
+                    "remitente", m.getRemitente().getNombre(),
+                    "contenido", m.getContenido(),
+                    "leido", m.getLeido(),
+                    "fecha", m.getFechaEnvio()
+            )).toList();
+
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
+    // Ver me gustas de todos los usuarios
+    @GetMapping("/me-gustas")
+    public ResponseEntity<?> verMeGustas() {
+        try {
+            List<MeGusta> meGustas = meGustaRepository.findAll();
+            var resultado = meGustas.stream().map(mg -> Map.of(
+                    "id", mg.getId(),
+                    "usuario", mg.getUsuario().getNombre(),
+                    "usuarioId", mg.getUsuario().getId(),
+                    "coche", mg.getCoche().getMarca() + " " + mg.getCoche().getModelo() + " (" + mg.getCoche().getAno() + ")",
+                    "cocheId", mg.getCoche().getId(),
+                    "fecha", mg.getFecha()
+            )).toList();
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
+    // Ver me gustas de un usuario específico
+    @GetMapping("/me-gustas/{usuarioId}")
+    public ResponseEntity<?> verMeGustasPorUsuario(@PathVariable Long usuarioId) {
+        try {
+            Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+            if (usuarioOpt.isEmpty()) {
+                return ResponseEntity.badRequest().body("Usuario no encontrado");
+            }
+
+            List<MeGusta> meGustas = meGustaRepository.findByUsuario(usuarioOpt.get());
+            var resultado = meGustas.stream().map(mg -> Map.of(
+                    "id", mg.getId(),
+                    "coche", mg.getCoche().getMarca() + " " + mg.getCoche().getModelo(),
+                    "cocheId", mg.getCoche().getId(),
+                    "precio", mg.getCoche().getPrecio(),
+                    "fecha", mg.getFecha()
+            )).toList();
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
 }

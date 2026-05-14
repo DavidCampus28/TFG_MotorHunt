@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Me Gustas - MotorHunt</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .me-gustas-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        .me-gustas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ff4444;
+            padding-bottom: 20px;
+        }
+        .me-gustas-header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #333;
+        }
+        .me-gustas-header .contador {
+            background: #ff4444;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .me-gustas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .coche-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .coche-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        .coche-card-imagen {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3em;
+        }
+        .coche-card-contenido {
+            padding: 20px;
+        }
+        .coche-card-titulo {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+        .coche-card-ano {
+            color: #666;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+        .coche-card-precio {
+            font-size: 1.5em;
+            color: #ff4444;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .coche-card-specs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            font-size: 0.85em;
+            color: #666;
+        }
+        .coche-card-spec-item {
+            display: flex;
+            justify-content: space-between;
+        }
+        .coche-card-botones {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn-ver {
+            flex: 1;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-ver:hover {
+            background: #5568d3;
+        }
+        .btn-eliminar {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-eliminar:hover {
+            background: #ff2222;
+        }
+        .me-gustas-vacio {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .me-gustas-vacio svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        .me-gustas-vacio p {
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+        .me-gustas-vacio a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .me-gustas-vacio a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .me-gustas-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            .coche-card-specs {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav th:include="header.html"></nav>
+
+    <div class="me-gustas-container">
+        <div class="me-gustas-header">
+            <h1>❤️ Mis Me Gustas</h1>
+            <div class="contador" id="contador">0 coches</div>
+        </div>
+
+        <div id="meGustasList" class="me-gustas-grid"></div>
+
+        <div id="meGustaVacio" class="me-gustas-vacio" style="display: none;">
+            <p style="font-size: 3em; margin: 0;">😞</p>
+            <p>Aún no tienes me gustas guardados</p>
+            <p><a href="/coches-view">Explora coches y guarda los que te gusten</a></p>
+        </div>
+    </div>
+
+    <footer th:include="footer.html"></footer>
+
+    <script>
+        let usuarioActual = JSON.parse(localStorage.getItem('usuario'));
+
+        window.addEventListener('load', () => {
+            if (!usuarioActual) {
+                window.location.href = '/login';
+                return;
+            }
+            cargarMeGustas();
+        });
+
+        function cargarMeGustas() {
+            fetch(`/api/perfil/${usuarioActual.id}/me-gustas`)
+                .then(res => res.json())
+                .then(meGustas => {
+                    mostrarMeGustas(meGustas);
+                })
+                .catch(err => console.error('Error:', err));
+        }
+
+        function mostrarMeGustas(meGustas) {
+            const listContenedor = document.getElementById('meGustasList');
+            const contador = document.getElementById('contador');
+            const vacio = document.getElementById('meGustaVacio');
+
+            contador.textContent = `${meGustas.length} coche${meGustas.length !== 1 ? 's' : ''}`;
+
+            if (meGustas.length === 0) {
+                listContenedor.style.display = 'none';
+                vacio.style.display = 'block';
+                return;
+            }
+
+            listContenedor.innerHTML = '';
+            vacio.style.display = 'none';
+
+            meGustas.forEach(mg => {
+                const card = document.createElement('div');
+                card.className = 'coche-card';
+
+                const fecha = new Date(mg.fecha).toLocaleDateString('es-ES', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                });
+
+                card.innerHTML = `
+                    <div class="coche-card-imagen">🏎️</div>
+                    <div class="coche-card-contenido">
+                        <h3 class="coche-card-titulo">${mg.marca} ${mg.modelo}</h3>
+                        <p class="coche-card-ano">Año ${mg.ano}</p>
+                        <p class="coche-card-precio">€${mg.precio.toLocaleString()}</p>
+
+                        <div class="coche-card-specs">
+                            <div class="coche-card-spec-item">
+                                <span>Guardado:</span>
+                                <strong>${fecha}</strong>
+                            </div>
+                        </div>
+
+                        <div class="coche-card-botones">
+                            <button class="btn-ver" onclick="verDetalles(${mg.cocheId})">Ver Detalles</button>
+                            <button class="btn-eliminar" onclick="eliminarMeGusta(${mg.cocheId})">✕</button>
+                        </div>
+                    </div>
+                `;
+
+                listContenedor.appendChild(card);
+            });
+        }
+
+        function verDetalles(cocheId) {
+            window.location.href = `/coche-detalle?id=${cocheId}`;
+        }
+
+        function eliminarMeGusta(cocheId) {
+            if (confirm('¿Eliminar este me gusta?')) {
+                fetch(`/api/me-gusta/eliminar?usuarioId=${usuarioActual.id}&cocheId=${cocheId}`, {
+                    method: 'DELETE'
+                })
+                .then(res => res.json())
+                .then(data => {
+                    cargarMeGustas();
+                })
+                .catch(err => console.error('Error:', err));
+            }
+        }
+    </script>
+</body>
+</html>
+
