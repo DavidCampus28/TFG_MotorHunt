@@ -84,9 +84,12 @@ public class AdminController {
             usuario.setActivo(true);
             usuario.setFechaRegistro(LocalDateTime.now());
 
-            usuarioRepository.save(usuario);
+            Usuario usuarioGuardado = usuarioRepository.save(usuario);
 
-            return ResponseEntity.ok(Map.of("mensaje", "Usuario creado"));
+            return ResponseEntity.ok(Map.of(
+                    "id", usuarioGuardado.getId(),
+                    "mensaje", "Usuario creado"
+            ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
@@ -138,15 +141,20 @@ public class AdminController {
                 map.put("id", c.getId());
                 map.put("marca", c.getMarca());
                 map.put("modelo", c.getModelo());
+                map.put("ano", c.getAno());
                 map.put("anio", c.getAno());
+                map.put("motor", c.getMotor());
                 map.put("tipoCambio", c.getTipoCambio().toString());
                 map.put("combustible", c.getCombustible().toString());
                 map.put("etiquetaAmbiental", c.getEtiquetaAmbiental().toString());
                 map.put("precio", c.getPrecio());
+                map.put("kilometros", c.getKilometros());
                 map.put("km", c.getKilometros());
                 map.put("color", c.getColor());
                 map.put("descripcion", c.getDescripcion() != null ? c.getDescripcion() : "");
                 map.put("usuarioId", c.getUsuario().getId());
+                map.put("vendedor", c.getUsuario().getNombre());
+                map.put("estado", c.getEstado().toString());
                 return map;
             }).toList();
             return ResponseEntity.ok(coches);
@@ -159,23 +167,23 @@ public class AdminController {
     public ResponseEntity<?> crearCoche(@RequestBody Map<String, Object> request) {
         try {
             Coche coche = new Coche();
-            coche.setMarca((String) request.get("marca"));
-            coche.setModelo((String) request.get("modelo"));
-            coche.setMotor((String) request.get("motor"));
-            coche.setColor((String) request.get("color"));
+            coche.setMarca(requiredString(request, "marca"));
+            coche.setModelo(requiredString(request, "modelo"));
+            coche.setMotor(optionalString(request, "motor", "No especificado"));
+            coche.setColor(optionalString(request, "color", ""));
             coche.setTipoCambio(TipoCambio.valueOf(request.get("tipoCambio").toString()));
             coche.setCombustible(Combustible.valueOf(request.get("combustible").toString()));
-            coche.setNumeroPuertas(((Number) request.get("numeroPuertas")).intValue());
-            coche.setUbicacion((String) request.get("ubicacion"));
-            coche.setCaballosPotencia(((Number) request.get("caballosPotencia")).intValue());
-            coche.setKilometros(((Number) request.get("kilometros")).intValue());
+            coche.setNumeroPuertas(intValue(request, "numeroPuertas", 5));
+            coche.setUbicacion(optionalString(request, "ubicacion", "No especificada"));
+            coche.setCaballosPotencia(intValue(request, "caballosPotencia", 0));
+            coche.setKilometros(intValue(request, "kilometros", "km", 0));
             coche.setPrecio(Double.parseDouble(request.get("precio").toString()));
-            coche.setNumeroPlazas(((Number) request.get("numeroPlazas")).intValue());
-            coche.setCentimetrosCubicos(((Number) request.get("centimetrosCubicos")).intValue());
+            coche.setNumeroPlazas(intValue(request, "numeroPlazas", 5));
+            coche.setCentimetrosCubicos(intValue(request, "centimetrosCubicos", 0));
             coche.setEtiquetaAmbiental(EtiquetaAmbiental.valueOf(request.get("etiquetaAmbiental").toString()));
             coche.setEstado(EstadoCoche.EN_VENTA);
-            coche.setDescripcion((String) request.get("descripcion"));
-            coche.setAno(((Number) request.get("ano")).intValue());
+            coche.setDescripcion(optionalString(request, "descripcion", ""));
+            coche.setAno(intValue(request, "ano", "anio", 0));
 
             Long usuarioId = Long.parseLong(request.get("usuarioId").toString());
             Optional<Usuario> usuario = usuarioRepository.findById(usuarioId);
@@ -186,8 +194,11 @@ public class AdminController {
             coche.setUsuario(usuario.get());
             coche.setFechaCreacion(LocalDateTime.now());
 
-            cocheRepository.save(coche);
-            return ResponseEntity.ok(Map.of("mensaje", "Coche creado"));
+            Coche cocheGuardado = cocheRepository.save(coche);
+            return ResponseEntity.ok(Map.of(
+                    "id", cocheGuardado.getId(),
+                    "mensaje", "Coche creado"
+            ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
@@ -234,8 +245,11 @@ public class AdminController {
             response.put("estado", c.getEstado().toString());
             response.put("descripcion", c.getDescripcion());
             response.put("ano", c.getAno());
+            response.put("anio", c.getAno());
+            response.put("km", c.getKilometros());
             response.put("vendedor", c.getUsuario().getNombre());
             response.put("vendedorId", c.getUsuario().getId());
+            response.put("usuarioId", c.getUsuario().getId());
             response.put("fechaCreacion", c.getFechaCreacion());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -427,5 +441,34 @@ public class AdminController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
+    }
+
+    private String requiredString(Map<String, Object> request, String key) {
+        Object value = request.get(key);
+        if (value == null || value.toString().isBlank()) {
+            throw new IllegalArgumentException("El campo " + key + " es obligatorio");
+        }
+        return value.toString();
+    }
+
+    private String optionalString(Map<String, Object> request, String key, String defaultValue) {
+        Object value = request.get(key);
+        return value == null || value.toString().isBlank() ? defaultValue : value.toString();
+    }
+
+    private int intValue(Map<String, Object> request, String key, int defaultValue) {
+        Object value = request.get(key);
+        if (value == null || value.toString().isBlank()) {
+            return defaultValue;
+        }
+        return ((Number) value).intValue();
+    }
+
+    private int intValue(Map<String, Object> request, String primaryKey, String fallbackKey, int defaultValue) {
+        Object value = request.containsKey(primaryKey) ? request.get(primaryKey) : request.get(fallbackKey);
+        if (value == null || value.toString().isBlank()) {
+            return defaultValue;
+        }
+        return ((Number) value).intValue();
     }
 }

@@ -529,6 +529,10 @@
                     <input type="number" id="newCocheAnio" required>
                 </div>
                 <div class="form-group">
+                    <label>Motor</label>
+                    <input type="text" id="newCocheMotor" required>
+                </div>
+                <div class="form-group">
                     <label>Tipo Cambio</label>
                     <select id="newCocheTipoCambio" required>
                         <option value="MANUAL">Manual</option>
@@ -560,6 +564,26 @@
                 <div class="form-group">
                     <label>Km</label>
                     <input type="number" id="newCocheKm" required>
+                </div>
+                <div class="form-group">
+                    <label>Ubicación</label>
+                    <input type="text" id="newCocheUbicacion" required>
+                </div>
+                <div class="form-group">
+                    <label>Puertas</label>
+                    <input type="number" id="newCocheNumeroPuertas" min="1" value="5" required>
+                </div>
+                <div class="form-group">
+                    <label>Plazas</label>
+                    <input type="number" id="newCocheNumeroPlazas" min="1" value="5" required>
+                </div>
+                <div class="form-group">
+                    <label>Caballos Potencia</label>
+                    <input type="number" id="newCocheCaballos" min="0" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label>CC</label>
+                    <input type="number" id="newCocheCc" min="0" value="0" required>
                 </div>
                 <div class="form-group">
                     <label>Color</label>
@@ -883,10 +907,10 @@
                             contenido += `
                                 <div style="background: var(--bg-tertiary); padding: 10px; margin-bottom: 10px; border-radius: 3px; border-left: 2px solid #ff4444;">
                                     <p style="color: var(--text-main); margin: 3px 0; font-size: 13px;">
-                                        <strong>${mg.marca} ${mg.modelo}</strong> - Año ${mg.ano}
+                                        <strong>${mg.coche}</strong>
                                     </p>
                                     <p style="color: var(--text-secondary); margin: 3px 0; font-size: 12px;">
-                                        Precio: €${mg.precio.toLocaleString()}
+                                        Precio: ${Number(mg.precio).toLocaleString('es-ES')}€
                                     </p>
                                     <p style="color: var(--text-secondary); font-size: 11px;">
                                         Guardado: ${new Date(mg.fecha).toLocaleDateString('es-ES')}
@@ -935,16 +959,22 @@
             const data = {
                 marca: document.getElementById('newCocheMarca').value,
                 modelo: document.getElementById('newCocheModelo').value,
-                anio: parseInt(document.getElementById('newCocheAnio').value),
+                ano: parseInt(document.getElementById('newCocheAnio').value),
+                motor: document.getElementById('newCocheMotor').value,
                 tipoCambio: document.getElementById('newCocheTipoCambio').value,
                 combustible: document.getElementById('newCocheCombustible').value,
                 etiquetaAmbiental: document.getElementById('newCocheEtiqueta').value,
                 precio: parseFloat(document.getElementById('newCochePrecio').value),
-                km: parseInt(document.getElementById('newCocheKm').value),
+                kilometros: parseInt(document.getElementById('newCocheKm').value),
+                ubicacion: document.getElementById('newCocheUbicacion').value,
+                numeroPuertas: parseInt(document.getElementById('newCocheNumeroPuertas').value),
+                numeroPlazas: parseInt(document.getElementById('newCocheNumeroPlazas').value),
+                caballosPotencia: parseInt(document.getElementById('newCocheCaballos').value),
+                centimetrosCubicos: parseInt(document.getElementById('newCocheCc').value),
                 color: document.getElementById('newCocheColor').value,
                 descripcion: document.getElementById('newCocheDescripcion').value,
                 usuarioId: parseInt(document.getElementById('newCocheUsuarioId').value),
-                estado: 'VENTA'
+                estado: 'EN_VENTA'
             };
             fetch('/api/admin/coches', {
                 method: 'POST',
