@@ -44,7 +44,7 @@ CREATE TABLE coches (
     precio DECIMAL(10, 2) NOT NULL,
     numero_plazas INT NOT NULL,
     centimetros_cubicos INT NOT NULL,
-    etiqueta_ambiental VARCHAR(50) NOT NULL CHECK (etiqueta_ambiental IN ('B', 'C', 'ECO', '0')),
+    etiqueta_ambiental VARCHAR(50) NOT NULL CHECK (etiqueta_ambiental IN ('B', 'C', 'ECO', 'CERO')),
     estado VARCHAR(50) NOT NULL DEFAULT 'EN_VENTA' CHECK (estado IN ('EN_VENTA', 'VENDIDO', 'RESERVADO', 'FUERA_SERVICIO')),
     descripcion VARCHAR(1000),
     ano INT NOT NULL,
@@ -60,6 +60,24 @@ CREATE TABLE coches (
     INDEX idx_coches_ubicacion (ubicacion),
     INDEX idx_coches_combustible (combustible),
     INDEX idx_coches_etiqueta (etiqueta_ambiental)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- Tabla de Fotos de Coches
+-- =============================================
+CREATE TABLE coche_fotos (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    contenido LONGBLOB NOT NULL,
+    nombre_archivo VARCHAR(255) NOT NULL,
+    content_type VARCHAR(100),
+    portada BOOLEAN NOT NULL DEFAULT FALSE,
+    orden INT NOT NULL DEFAULT 0,
+    fecha_subida TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    coche_id BIGINT NOT NULL,
+    CONSTRAINT fk_coche_fotos_coche FOREIGN KEY (coche_id) REFERENCES coches(id) ON DELETE CASCADE,
+    INDEX idx_coche_fotos_coche (coche_id),
+    INDEX idx_coche_fotos_portada (coche_id, portada),
+    INDEX idx_coche_fotos_orden (coche_id, orden)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================

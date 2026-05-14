@@ -93,6 +93,15 @@ public class Coche {
     @ManyToMany(mappedBy = "cochesFavoritos")
     private List<Usuario> usuariosFavorito;
 
+    // Relación inversa con me gustas
+    @OneToMany(mappedBy = "coche", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MeGusta> meGustas;
+
+    // Relación con fotos del coche
+    @OneToMany(mappedBy = "coche", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("orden ASC")
+    private List<CocheFoto> fotos;
+
     @PrePersist
     protected void onCreate() {
         fechaCreacion = LocalDateTime.now();
@@ -176,4 +185,10 @@ public class Coche {
 
     public List<Usuario> getUsuariosFavorito() { return usuariosFavorito; }
     public void setUsuariosFavorito(List<Usuario> usuariosFavorito) { this.usuariosFavorito = usuariosFavorito; }
+
+    public List<MeGusta> getMeGustas() { return meGustas; }
+    public void setMeGustas(List<MeGusta> meGustas) { this.meGustas = meGustas; }
+
+    public List<CocheFoto> getFotos() { return fotos; }
+    public void setFotos(List<CocheFoto> fotos) { this.fotos = fotos; }
 }

@@ -17,4 +17,19 @@ public class CocheViewController {
         model.addAttribute("coches", cocheRepository.findAll());
         return "coches-index";
     }
+
+    @GetMapping("/coche-detalle")
+    public String verDetalleCoche() {
+        return "coche-detalle";
+    }
+
+    @GetMapping("/chat")
+    public String verChat() {
+        return "chat";
+    }
+
+    @GetMapping("/mis-me-gustas")
+    public String verMeMeGustas() {
+        return "mis-me-gustas";
+    }
 }

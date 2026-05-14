@@ -279,6 +279,13 @@
                                 <label>Dirección</label>
                                 <input type="text" id="registerDireccion">
                             </div>
+                            <div class="form-group">
+                                <label>Tipo de cuenta</label>
+                                <select id="registerRol" required>
+                                    <option value="USUARIO">Usuario (Comprador)</option>
+                                    <option value="EMPRESA">Empresa (Vendedor)</option>
+                                </select>
+                            </div>
                             <button type="submit" class="btn">Registrarse</button>
                         </form>
 
@@ -406,7 +413,8 @@
                 email: document.getElementById('registerEmail').value,
                 password: document.getElementById('registerPassword').value,
                 telefono: document.getElementById('registerTelefono').value,
-                direccion: document.getElementById('registerDireccion').value
+                direccion: document.getElementById('registerDireccion').value,
+                rol: document.getElementById('registerRol').value
             };
 
             fetch('/api/auth/registro', {

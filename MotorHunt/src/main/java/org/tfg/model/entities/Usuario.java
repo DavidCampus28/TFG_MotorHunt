@@ -62,6 +62,18 @@ public class Usuario {
     @OneToMany(mappedBy = "vendedor", cascade = CascadeType.ALL)
     private List<Transaccion> ventas;
 
+    // Relación inversa con mensajes enviados
+    @OneToMany(mappedBy = "remitente", cascade = CascadeType.ALL)
+    private List<Mensaje> mensajesEnviados;
+
+    // Relación inversa con mensajes recibidos
+    @OneToMany(mappedBy = "destinatario", cascade = CascadeType.ALL)
+    private List<Mensaje> mensajesRecibidos;
+
+    // Relación con me gustas
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MeGusta> meGustas;
+
     @PrePersist
     protected void onCreate() {
         fechaRegistro = LocalDateTime.now();
@@ -115,4 +127,13 @@ public class Usuario {
 
     public List<Transaccion> getVentas() { return ventas; }
     public void setVentas(List<Transaccion> ventas) { this.ventas = ventas; }
+
+    public List<Mensaje> getMensajesEnviados() { return mensajesEnviados; }
+    public void setMensajesEnviados(List<Mensaje> mensajesEnviados) { this.mensajesEnviados = mensajesEnviados; }
+
+    public List<Mensaje> getMensajesRecibidos() { return mensajesRecibidos; }
+    public void setMensajesRecibidos(List<Mensaje> mensajesRecibidos) { this.mensajesRecibidos = mensajesRecibidos; }
+
+    public List<MeGusta> getMeGustas() { return meGustas; }
+    public void setMeGustas(List<MeGusta> meGustas) { this.meGustas = meGustas; }
 }

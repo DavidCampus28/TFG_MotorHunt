@@ -207,6 +207,7 @@
                             <th>Precio</th>
                             <th>Ubicación</th>
                             <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -223,6 +224,9 @@
                                 <span th:if="${coche.estado.name() == 'VENDIDO'}" class="badge badge-danger">Vendido</span>
                                 <span th:if="${coche.estado.name() == 'RESERVADO'}" class="badge badge-warning">Reservado</span>
                                 <span th:if="${coche.estado.name() == 'FUERA_SERVICIO'}" class="badge badge-info">Fuera de servicio</span>
+                            </td>
+                            <td>
+                                <a th:href="${'/coche-detalle?id=' + coche.id}" style="padding: 5px 10px; font-size: 12px; background-color: #667eea; color: white; text-decoration: none; border-radius: 3px; display: inline-block;">Ver Detalles</a>
                             </td>
                         </tr>
                     </tbody>
