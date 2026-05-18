@@ -1,6 +1,8 @@
 package org.tfg.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,27 +13,21 @@ public class CocheFoto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(nullable = false, columnDefinition = "LONGBLOB")
-    private byte[] contenido;
-
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String nombreArchivo;
 
-    @Column(length = 100)
-    private String contentType;
+    @Column(nullable = false, length = 100)
+    private String tipoContenido;
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean portada = false;
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGBLOB")
+    private byte[] datos;
 
     @Column(nullable = false)
-    private Integer orden = 0;
-
-    @Column(nullable = false, updatable = false)
     private LocalDateTime fechaSubida;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coche_id", nullable = false)
     private Coche coche;
 
@@ -43,20 +39,14 @@ public class CocheFoto {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public byte[] getContenido() { return contenido; }
-    public void setContenido(byte[] contenido) { this.contenido = contenido; }
-
     public String getNombreArchivo() { return nombreArchivo; }
     public void setNombreArchivo(String nombreArchivo) { this.nombreArchivo = nombreArchivo; }
 
-    public String getContentType() { return contentType; }
-    public void setContentType(String contentType) { this.contentType = contentType; }
+    public String getTipoContenido() { return tipoContenido; }
+    public void setTipoContenido(String tipoContenido) { this.tipoContenido = tipoContenido; }
 
-    public Boolean getPortada() { return portada; }
-    public void setPortada(Boolean portada) { this.portada = portada; }
-
-    public Integer getOrden() { return orden; }
-    public void setOrden(Integer orden) { this.orden = orden; }
+    public byte[] getDatos() { return datos; }
+    public void setDatos(byte[] datos) { this.datos = datos; }
 
     public LocalDateTime getFechaSubida() { return fechaSubida; }
     public void setFechaSubida(LocalDateTime fechaSubida) { this.fechaSubida = fechaSubida; }
@@ -64,4 +54,3 @@ public class CocheFoto {
     public Coche getCoche() { return coche; }
     public void setCoche(Coche coche) { this.coche = coche; }
 }
-

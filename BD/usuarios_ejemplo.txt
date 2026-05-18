@@ -1,0 +1,26 @@
+Usuarios de ejemplo MotorHunt
+================================
+
+Todos los usuarios tienen la contrasena: admin
+
+1. Administrador principal
+   Email: admin@motorhunt.com
+   Contrasena: admin
+   Rol: ADMINISTRADOR
+
+2. Administrador soporte
+   Email: soporte@motorhunt.com
+   Contrasena: admin
+   Rol: ADMINISTRADOR
+
+3. Usuario empresa
+   Nombre: AutoMadrid Empresas S.L.
+   Email: empresa@motorhunt.com
+   Contrasena: admin
+   Rol: USUARIO
+
+4. Usuario cliente normal
+   Nombre: Laura Fernandez
+   Email: cliente@motorhunt.com
+   Contrasena: admin
+   Rol: USUARIO

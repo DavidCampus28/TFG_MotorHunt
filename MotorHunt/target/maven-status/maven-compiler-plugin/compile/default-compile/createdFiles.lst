@@ -1,0 +1,3 @@
+org\tfg\model\entities\CocheFoto.class
+org\tfg\repository\CocheFotoRepository.class
+org\tfg\service\ChatBotService.class
