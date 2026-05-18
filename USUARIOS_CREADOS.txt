@@ -1,0 +1,82 @@
+=====================================
+MOTORHUNT - USUARIOS CREADOS
+Fecha: 19 de Mayo de 2026
+=====================================
+
+⚠️ IMPORTANTE: TODOS LOS USUARIOS TIENEN LA MISMA CONTRASEÑA
+Contraseña universal: 12345
+
+ADMINISTRADORES (2)
+===================
+
+1. Admin Principal
+   Email: admin1@motorhunt.com
+   Contraseña: 12345
+   Teléfono: 900123456
+   Dirección: Calle Principal 1, Madrid
+   Rol: ADMINISTRADOR
+   Hash: $2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi
+
+2. Admin Secundario
+   Email: admin2@motorhunt.com
+   Contraseña: 12345
+   Teléfono: 900123457
+   Dirección: Avenida Central 2, Madrid
+   Rol: ADMINISTRADOR
+   Hash: $2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi
+
+
+USUARIOS NORMALES (2)
+====================
+
+3. Juan García López
+   Email: juan.garcia@example.com
+   Contraseña: 12345
+   Teléfono: 612345678
+   Dirección: Calle Secundaria 15, Barcelona
+   Rol: USUARIO
+   Coches: 10 anuncios
+   Hash: $2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi
+
+4. María López Martínez
+   Email: maria.lopez@example.com
+   Contraseña: 12345
+   Teléfono: 623456789
+   Dirección: Avenida Diagonal 50, Barcelona
+   Rol: USUARIO
+   Coches: 12 anuncios
+   Hash: $2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi
+
+
+EMPRESA (1)
+===========
+
+5. AutoMotor Premium S.L.
+   Email: info@automotor.es
+   Contraseña: 12345
+   Teléfono: 934567890
+   Dirección: Polígono Industrial 3, Valencia
+   Rol: USUARIO (empresa)
+   Coches: 40+ anuncios de segunda mano
+   Hash: $2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi
+
+
+RESUMEN TOTAL
+=============
+
+Total de Usuarios: 5
+Total de Coches: 62 anuncios de segunda mano
+
+
+CREDENCIALES PARA LOGIN
+=======================
+
+Contraseña universal: 12345
+
+Emails disponibles:
+- admin1@motorhunt.com (ADMIN)
+- admin2@motorhunt.com (ADMIN)
+- juan.garcia@example.com (USUARIO)
+- maria.lopez@example.com (USUARIO)
+- info@automotor.es (EMPRESA)
+

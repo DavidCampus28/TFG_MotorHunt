@@ -9,6 +9,7 @@ import org.tfg.model.entities.Coche;
 import org.tfg.model.entities.Usuario;
 import org.tfg.model.enums.*;
 import org.tfg.repository.CocheRepository;
+import org.tfg.repository.CocheFotoRepository;
 import org.tfg.repository.UsuarioRepository;
 import org.tfg.repository.MensajeRepository;
 import org.tfg.repository.MeGustaRepository;
@@ -31,6 +32,9 @@ public class AdminController {
 
     @Autowired
     private CocheRepository cocheRepository;
+
+    @Autowired
+    private CocheFotoRepository cocheFotoRepository;
 
     @Autowired
     private MensajeRepository mensajeRepository;
@@ -155,6 +159,11 @@ public class AdminController {
                 map.put("usuarioId", c.getUsuario().getId());
                 map.put("vendedor", c.getUsuario().getNombre());
                 map.put("estado", c.getEstado().toString());
+                String portadaUrl = cocheFotoRepository.findByCocheAndPortadaTrue(c)
+                        .or(() -> cocheFotoRepository.findFirstByCocheOrderByOrdenAsc(c))
+                        .map(foto -> "/coches/fotos/" + foto.getId())
+                        .orElse("");
+                map.put("portadaUrl", portadaUrl);
                 return map;
             }).toList();
             return ResponseEntity.ok(coches);
@@ -251,6 +260,15 @@ public class AdminController {
             response.put("vendedorId", c.getUsuario().getId());
             response.put("usuarioId", c.getUsuario().getId());
             response.put("fechaCreacion", c.getFechaCreacion());
+            response.put("fotos", cocheFotoRepository.findByCocheOrderByOrdenAsc(c).stream().map(foto -> {
+                Map<String, Object> fotoMap = new HashMap<>();
+                fotoMap.put("id", foto.getId());
+                fotoMap.put("nombreArchivo", foto.getNombreArchivo());
+                fotoMap.put("portada", Boolean.TRUE.equals(foto.getPortada()));
+                fotoMap.put("orden", foto.getOrden() == null ? 0 : foto.getOrden());
+                fotoMap.put("url", "/coches/fotos/" + foto.getId());
+                return fotoMap;
+            }).toList());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());

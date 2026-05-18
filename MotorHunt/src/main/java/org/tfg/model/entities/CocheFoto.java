@@ -16,12 +16,18 @@ public class CocheFoto {
     @Column(nullable = false)
     private String nombreArchivo;
 
-    @Column(nullable = false, length = 100)
-    private String tipoContenido;
+    @Column(name = "content_type", length = 100)
+    private String contentType;
 
     @Lob
     @Column(nullable = false, columnDefinition = "LONGBLOB")
-    private byte[] datos;
+    private byte[] contenido;
+
+    @Column(nullable = false)
+    private Boolean portada = false;
+
+    @Column(nullable = false)
+    private Integer orden = 0;
 
     @Column(nullable = false)
     private LocalDateTime fechaSubida;
@@ -42,11 +48,17 @@ public class CocheFoto {
     public String getNombreArchivo() { return nombreArchivo; }
     public void setNombreArchivo(String nombreArchivo) { this.nombreArchivo = nombreArchivo; }
 
-    public String getTipoContenido() { return tipoContenido; }
-    public void setTipoContenido(String tipoContenido) { this.tipoContenido = tipoContenido; }
+    public String getContentType() { return contentType; }
+    public void setContentType(String contentType) { this.contentType = contentType; }
 
-    public byte[] getDatos() { return datos; }
-    public void setDatos(byte[] datos) { this.datos = datos; }
+    public byte[] getContenido() { return contenido; }
+    public void setContenido(byte[] contenido) { this.contenido = contenido; }
+
+    public Boolean getPortada() { return portada; }
+    public void setPortada(Boolean portada) { this.portada = portada; }
+
+    public Integer getOrden() { return orden; }
+    public void setOrden(Integer orden) { this.orden = orden; }
 
     public LocalDateTime getFechaSubida() { return fechaSubida; }
     public void setFechaSubida(LocalDateTime fechaSubida) { this.fechaSubida = fechaSubida; }

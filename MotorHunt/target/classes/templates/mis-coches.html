@@ -375,6 +375,176 @@
             margin-top: 18px;
         }
 
+        .fotos-section {
+            margin-top: 22px;
+            padding: 18px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .fotos-section h3 {
+            color: var(--accent);
+            margin-top: 0;
+            margin-bottom: 14px;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--accent);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(211, 47, 47, 0.05);
+        }
+
+        .upload-area:hover {
+            background: rgba(211, 47, 47, 0.1);
+            border-color: var(--accent-dark);
+        }
+
+        .upload-area.dragover {
+            background: rgba(211, 47, 47, 0.15);
+            border-color: var(--accent-dark);
+        }
+
+        .upload-area p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .upload-area strong {
+            display: block;
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        #fotosInput {
+            display: none;
+        }
+
+        .galeria-edicion {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .foto-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            transition: all 0.2s;
+            cursor: grab;
+        }
+
+        .foto-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .foto-item.portada {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.2);
+        }
+
+        .foto-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .foto-item .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .foto-item:hover .overlay {
+            display: flex;
+        }
+
+        .foto-item .overlay button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .foto-item .overlay button:hover {
+            background: var(--accent-dark);
+        }
+
+        .foto-item .badge-portada {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--accent);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 700;
+            display: none;
+        }
+
+        .foto-item.portada .badge-portada {
+            display: block;
+        }
+
+        .upload-hints {
+            margin-top: 14px;
+            padding: 12px;
+            background: rgba(211, 47, 47, 0.08);
+            border-left: 3px solid var(--accent);
+            border-radius: 4px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .uploading-progress {
+            margin-top: 14px;
+            display: none;
+        }
+
+        .uploading-progress.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+            width: 0%;
+            transition: width 0.3s;
+        }
+
         @media (max-width: 980px) {
             .summary, .filters, .layout, .info-grid, .form-grid {
                 grid-template-columns: 1fr;
@@ -383,6 +553,10 @@
             .page-head, .detail-top {
                 align-items: flex-start;
                 flex-direction: column;
+            }
+
+            .galeria-edicion {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             }
         }
     </style>
@@ -473,6 +647,35 @@
                 <div class="form-group"><label>Caballos</label><input id="editCaballos" type="number" required></div>
                 <div class="form-group full"><label>Descripcion</label><textarea id="editDescripcion"></textarea></div>
             </div>
+
+            <!-- Sección de Fotos - Mejorada -->
+            <div class="fotos-section">
+                <h3>📸 Gestionar fotos del coche</h3>
+
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fotosInput').click()">
+                    <strong>+ Selecciona fotos o arrastra aquí</strong>
+                    <p>Soporta JPG, PNG, WebP. Máx 5MB por foto.</p>
+                </div>
+                <input type="file" id="fotosInput" multiple accept="image/*">
+
+                <div class="upload-hints">
+                    💡 <strong>Consejos:</strong><br>
+                    • Sube al menos 3-5 fotos de buena calidad para mejores resultados<br>
+                    • La primera foto se usará como portada automáticamente<br>
+                    • Arrastra las fotos para reordenarlas<br>
+                    • Haz clic en una foto para establecerla como portada
+                </div>
+
+                <div class="uploading-progress" id="uploadingProgress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="uploadingText" style="margin: 0; font-size: 13px; color: var(--text-secondary);">Subiendo fotos...</p>
+                </div>
+
+                <div class="galeria-edicion" id="galeriaEdicion"></div>
+            </div>
+
             <div class="modal-actions">
                 <button type="button" class="secondary" onclick="cerrarModal()">Cancelar</button>
                 <button type="submit">Guardar cambios</button>
@@ -711,6 +914,204 @@
         document.getElementById('editCaballos').value = coche.caballosPotencia || '';
         document.getElementById('editDescripcion').value = coche.descripcion || '';
         document.getElementById('editModal').classList.add('active');
+
+        // Cargar fotos
+        cargarFotosEdicion(id);
+    }
+
+    function cargarFotosEdicion(cocheId) {
+        fetch(`/coches/${cocheId}/fotos`)
+            .then(res => res.json())
+            .then(fotos => {
+                mostrarFotosEdicion(fotos, cocheId);
+            })
+            .catch(err => console.error('Error cargando fotos:', err));
+    }
+
+    function mostrarFotosEdicion(fotos, cocheId) {
+        const galeria = document.getElementById('galeriaEdicion');
+        if (!fotos || fotos.length === 0) {
+            galeria.innerHTML = '<div class="empty" style="grid-column: 1/-1; padding: 20px; text-align: center; color: var(--text-secondary);">Sin fotos aún. Sube algunas fotos para que se vea tu coche.</div>';
+            return;
+        }
+
+        galeria.innerHTML = fotos.map(foto => `
+            <div class="foto-item ${foto.portada ? 'portada' : ''}" draggable="true" data-foto-id="${foto.id}">
+                <img src="${foto.url}" alt="${foto.nombre}">
+                <div class="badge-portada">PORTADA</div>
+                <div class="overlay">
+                    <button type="button" onclick="establecerPortada(${foto.id}, event)">Portada</button>
+                    <button type="button" onclick="eliminarFotoEdicion(${foto.id}, event)">Eliminar</button>
+                </div>
+            </div>
+        `).join('');
+
+        inicializarDragDrop();
+    }
+
+    function establecerPortada(fotoId, event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        fetch(`/coches/fotos/${fotoId}/portada`, {
+            method: 'PUT'
+        })
+            .then(res => res.json())
+            .then(() => {
+                const coche = coches.find(c => c.id === cocheSeleccionadoId);
+                if (coche) {
+                    cargarFotosEdicion(coche.id);
+                }
+            })
+            .catch(err => console.error('Error:', err));
+    }
+
+    function eliminarFotoEdicion(fotoId, event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!confirm('¿Eliminar esta foto?')) return;
+
+        fetch(`/coches/fotos/${fotoId}`, {
+            method: 'DELETE'
+        })
+            .then(res => res.json())
+            .then(() => {
+                const coche = coches.find(c => c.id === cocheSeleccionadoId);
+                if (coche) {
+                    cargarFotosEdicion(coche.id);
+                }
+            })
+            .catch(err => console.error('Error:', err));
+    }
+
+    function inicializarDragDrop() {
+        const items = document.querySelectorAll('.foto-item');
+        const uploadArea = document.getElementById('uploadArea');
+
+        items.forEach(item => {
+            item.addEventListener('dragstart', handleDragStart);
+            item.addEventListener('dragover', handleDragOver);
+            item.addEventListener('drop', handleDropFoto);
+            item.addEventListener('dragend', handleDragEnd);
+        });
+
+        uploadArea.addEventListener('dragover', handleDragOverUpload);
+        uploadArea.addEventListener('dragleave', handleDragLeaveUpload);
+        uploadArea.addEventListener('drop', handleDropUpload);
+    }
+
+    let draggedItem = null;
+
+    function handleDragStart(e) {
+        draggedItem = this;
+        this.style.opacity = '0.5';
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.dropEffect = 'move';
+    }
+
+    function handleDragEnd(e) {
+        this.style.opacity = '1';
+        draggedItem = null;
+    }
+
+    function handleDropFoto(e) {
+        e.preventDefault();
+        if (!draggedItem || draggedItem === this) return;
+
+        const ids = Array.from(document.querySelectorAll('.foto-item')).map(el => parseInt(el.dataset.fotoId));
+        const dragIndex = ids.indexOf(parseInt(draggedItem.dataset.fotoId));
+        const dropIndex = ids.indexOf(parseInt(this.dataset.fotoId));
+
+        [ids[dragIndex], ids[dropIndex]] = [ids[dropIndex], ids[dragIndex]];
+
+        const coche = coches.find(c => c.id === cocheSeleccionadoId);
+        if (!coche) return;
+
+        fetch(`/coches/${coche.id}/fotos/orden`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orden: ids })
+        })
+            .then(res => res.json())
+            .then(() => cargarFotosEdicion(coche.id))
+            .catch(err => console.error('Error:', err));
+    }
+
+    // Drag & Drop para upload
+    function handleDragOverUpload(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        document.getElementById('uploadArea').classList.add('dragover');
+    }
+
+    function handleDragLeaveUpload(e) {
+        e.preventDefault();
+        document.getElementById('uploadArea').classList.remove('dragover');
+    }
+
+    function handleDropUpload(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        document.getElementById('uploadArea').classList.remove('dragover');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            document.getElementById('fotosInput').files = files;
+            subirFotos();
+        }
+    }
+
+    // Event listeners para subida de fotos
+    document.getElementById('fotosInput').addEventListener('change', subirFotos);
+
+    function subirFotos() {
+        const input = document.getElementById('fotosInput');
+        const files = input.files;
+        if (!files.length) return;
+
+        const coche = coches.find(c => c.id === cocheSeleccionadoId);
+        if (!coche) return;
+
+        const formData = new FormData();
+        let fotosValidas = 0;
+
+        for (let file of files) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert(`${file.name} es muy grande (máx 5MB)`);
+                continue;
+            }
+            if (!file.type.startsWith('image/')) {
+                alert(`${file.name} no es una imagen`);
+                continue;
+            }
+            formData.append('files', file);
+            fotosValidas++;
+        }
+
+        if (fotosValidas === 0) return;
+
+        const progressDiv = document.getElementById('uploadingProgress');
+        progressDiv.classList.add('active');
+
+        fetch(`/coches/${coche.id}/fotos`, {
+            method: 'POST',
+            body: formData
+        })
+            .then(res => res.json())
+            .then(() => {
+                input.value = '';
+                progressDiv.classList.remove('active');
+                cargarFotosEdicion(coche.id);
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                alert('Error subiendo fotos');
+                progressDiv.classList.remove('active');
+            });
     }
 
     function cerrarModal() {

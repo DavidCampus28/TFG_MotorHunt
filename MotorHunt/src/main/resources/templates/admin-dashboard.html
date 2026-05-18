@@ -251,6 +251,43 @@
             border-color: var(--accent);
         }
 
+        .foto-admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .foto-admin-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .foto-admin-item.portada {
+            border-color: var(--accent);
+        }
+
+        .foto-admin-item img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .foto-admin-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .foto-admin-actions .btn {
+            padding: 6px;
+            font-size: 12px;
+        }
+
         .form-group {
             margin-bottom: 15px;
         }
@@ -924,6 +961,15 @@
                     <label>Descripción</label>
                     <textarea id="editCocheDescripcion" style="min-height: 80px;"></textarea>
                 </div>
+                <div class="form-group">
+                    <label>Fotos del vehiculo</label>
+                    <input type="file" id="editCocheFotosInput" multiple accept="image/*">
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <input type="number" id="editCochePortadaIndex" min="0" value="0" style="max-width: 180px;" placeholder="Portada">
+                        <button type="button" class="btn btn-secondary" onclick="subirFotosAdmin()">Subir fotos</button>
+                    </div>
+                    <div id="editCocheFotosList" class="foto-admin-grid"></div>
+                </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Guardar Cambios</button>
             </form>
         </div>
@@ -984,6 +1030,7 @@
     <script>
         let currentUserId = null;
         let currentCocheId = null;
+        let currentCocheFotos = [];
         let currentDenunciaId = null;
 
         function initializeTheme() {
@@ -1528,6 +1575,101 @@
             document.getElementById('editUserModal').style.display = 'none';
         }
 
+        function renderFotosAdmin(fotos) {
+            currentCocheFotos = fotos || [];
+            const contenedor = document.getElementById('editCocheFotosList');
+            if (!contenedor) return;
+            if (currentCocheFotos.length === 0) {
+                contenedor.innerHTML = '<p style="color: var(--text-secondary);">Sin fotos guardadas</p>';
+                return;
+            }
+
+            contenedor.innerHTML = currentCocheFotos.map((foto, index) => `
+                <div class="foto-admin-item ${foto.portada ? 'portada' : ''}">
+                    <img src="${foto.url}" alt="${foto.nombreArchivo || 'Foto'}">
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
+                        ${foto.portada ? '<strong style="color: var(--accent);">Portada</strong>' : 'Foto'} · Orden ${foto.orden ?? index}
+                    </div>
+                    <div class="foto-admin-actions">
+                        <button type="button" class="btn btn-secondary" onclick="moverFotoAdmin(${index}, -1)" ${index === 0 ? 'disabled' : ''}>Subir</button>
+                        <button type="button" class="btn btn-secondary" onclick="moverFotoAdmin(${index}, 1)" ${index === currentCocheFotos.length - 1 ? 'disabled' : ''}>Bajar</button>
+                        <button type="button" class="btn btn-secondary" onclick="marcarPortadaAdmin(${foto.id})">Portada</button>
+                        <button type="button" class="btn btn-danger" onclick="eliminarFotoAdmin(${foto.id})">Borrar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function cargarFotosAdmin() {
+            if (!currentCocheId) return Promise.resolve();
+            return fetch(`/coches/${currentCocheId}/fotos`, {
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+            }).then(r => r.json()).then(renderFotosAdmin);
+        }
+
+        function subirFotosAdmin() {
+            const input = document.getElementById('editCocheFotosInput');
+            if (!input.files || input.files.length === 0) {
+                alert('Selecciona al menos una foto');
+                return;
+            }
+
+            const formData = new FormData();
+            Array.from(input.files).forEach(file => formData.append('files', file));
+            formData.append('portadaIndex', document.getElementById('editCochePortadaIndex').value || '0');
+
+            fetch(`/coches/${currentCocheId}/fotos`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+                body: formData
+            }).then(r => {
+                if (!r.ok) return r.json().then(e => Promise.reject(new Error(e.error || 'Error subiendo fotos')));
+                input.value = '';
+                return cargarFotosAdmin();
+            }).then(loadCoches).catch(e => alert(e.message));
+        }
+
+        function eliminarFotoAdmin(fotoId) {
+            if (!confirm('¿Borrar esta foto?')) return;
+            fetch(`/coches/fotos/${fotoId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+            }).then(r => {
+                if (!r.ok) throw new Error('No se pudo borrar la foto');
+                return cargarFotosAdmin();
+            }).then(loadCoches).catch(e => alert(e.message));
+        }
+
+        function marcarPortadaAdmin(fotoId) {
+            fetch(`/coches/fotos/${fotoId}/portada`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+            }).then(r => {
+                if (!r.ok) throw new Error('No se pudo cambiar la portada');
+                return cargarFotosAdmin();
+            }).then(loadCoches).catch(e => alert(e.message));
+        }
+
+        function moverFotoAdmin(index, direccion) {
+            const nuevoIndex = index + direccion;
+            if (nuevoIndex < 0 || nuevoIndex >= currentCocheFotos.length) return;
+
+            const fotos = [...currentCocheFotos];
+            [fotos[index], fotos[nuevoIndex]] = [fotos[nuevoIndex], fotos[index]];
+
+            fetch(`/coches/${currentCocheId}/fotos/orden`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ orden: fotos.map(foto => foto.id) })
+            }).then(r => {
+                if (!r.ok) throw new Error('No se pudo cambiar el orden');
+                return cargarFotosAdmin();
+            }).catch(e => alert(e.message));
+        }
+
         function saveEditUser(e) {
             e.preventDefault();
             const data = {
@@ -1572,6 +1714,9 @@
                 document.getElementById('editCocheCc').value = coche.centimetrosCubicos || '';
                 document.getElementById('editCocheEstado').value = coche.estado || 'EN_VENTA';
                 document.getElementById('editCocheDescripcion').value = coche.descripcion || '';
+                document.getElementById('editCocheFotosInput').value = '';
+                document.getElementById('editCochePortadaIndex').value = '0';
+                renderFotosAdmin(coche.fotos || []);
                 document.getElementById('editCocheModal').style.display = 'block';
                 document.getElementById('cocheDetailsModal').style.display = 'none';
             }).catch(e => alert('Error cargando datos: ' + e));

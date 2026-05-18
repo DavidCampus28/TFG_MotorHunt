@@ -358,6 +358,7 @@ public class CocheController {
             }
 
             int ordenBase = cocheFotoRepository.findByCocheOrderByOrdenAsc(coche).size();
+            int fotosGuardadas = 0;
             for (int i = 0; i < files.size(); i++) {
                 MultipartFile file = files.get(i);
                 if (file.isEmpty()) continue;
@@ -367,7 +368,7 @@ public class CocheController {
                 foto.setNombreArchivo(file.getOriginalFilename() != null ? file.getOriginalFilename() : "foto-" + i);
                 foto.setContentType(file.getContentType());
                 foto.setContenido(file.getBytes());
-                foto.setOrden(ordenBase + i);
+                foto.setOrden(ordenBase + fotosGuardadas);
                 foto.setPortada(i == portadaIndex);
 
                 if (Boolean.TRUE.equals(foto.getPortada())) {
@@ -380,12 +381,106 @@ public class CocheController {
                 }
 
                 cocheFotoRepository.save(foto);
+                fotosGuardadas++;
             }
 
+            normalizarPortada(coche);
             return ResponseEntity.ok(Map.of("mensaje", "Fotos subidas"));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @GetMapping("/{cocheId}/fotos")
+    public ResponseEntity<?> listarFotos(@PathVariable Long cocheId) {
+        Optional<Coche> cocheOpt = cocheRepository.findById(cocheId);
+        if (cocheOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<CocheFotoResponse> fotos = cocheFotoRepository.findByCocheOrderByOrdenAsc(cocheOpt.get()).stream()
+                .map(foto -> new CocheFotoResponse(
+                        foto.getId(),
+                        foto.getNombreArchivo(),
+                        Boolean.TRUE.equals(foto.getPortada()),
+                        foto.getOrden(),
+                        "/coches/fotos/" + foto.getId()
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(fotos);
+    }
+
+    @PutMapping("/fotos/{fotoId}/portada")
+    public ResponseEntity<?> marcarPortada(@PathVariable Long fotoId) {
+        Optional<CocheFoto> fotoOpt = cocheFotoRepository.findById(fotoId);
+        if (fotoOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        CocheFoto nuevaPortada = fotoOpt.get();
+        cocheFotoRepository.findByCocheOrderByOrdenAsc(nuevaPortada.getCoche()).forEach(foto -> {
+            foto.setPortada(foto.getId().equals(fotoId));
+            cocheFotoRepository.save(foto);
+        });
+
+        return ResponseEntity.ok(Map.of("mensaje", "Portada actualizada"));
+    }
+
+    @PutMapping("/{cocheId}/fotos/orden")
+    public ResponseEntity<?> actualizarOrdenFotos(@PathVariable Long cocheId, @RequestBody Map<String, Object> request) {
+        Optional<Coche> cocheOpt = cocheRepository.findById(cocheId);
+        if (cocheOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Object ordenObj = request.get("orden");
+        if (!(ordenObj instanceof List<?> ordenIds)) {
+            return ResponseEntity.badRequest().body(Map.of("error", "El campo orden debe ser una lista de IDs"));
+        }
+
+        Coche coche = cocheOpt.get();
+        List<CocheFoto> fotos = cocheFotoRepository.findByCocheOrderByOrdenAsc(coche);
+        Map<Long, CocheFoto> fotosPorId = fotos.stream().collect(Collectors.toMap(CocheFoto::getId, foto -> foto));
+
+        for (int i = 0; i < ordenIds.size(); i++) {
+            Long fotoId = Long.parseLong(ordenIds.get(i).toString());
+            CocheFoto foto = fotosPorId.get(fotoId);
+            if (foto == null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "La foto " + fotoId + " no pertenece al coche"));
+            }
+            foto.setOrden(i);
+            cocheFotoRepository.save(foto);
+        }
+
+        normalizarPortada(coche);
+        return ResponseEntity.ok(Map.of("mensaje", "Orden actualizado"));
+    }
+
+    @DeleteMapping("/fotos/{fotoId}")
+    public ResponseEntity<?> eliminarFoto(@PathVariable Long fotoId) {
+        Optional<CocheFoto> fotoOpt = cocheFotoRepository.findById(fotoId);
+        if (fotoOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        CocheFoto foto = fotoOpt.get();
+        Coche coche = foto.getCoche();
+        boolean eraPortada = Boolean.TRUE.equals(foto.getPortada());
+        cocheFotoRepository.delete(foto);
+
+        List<CocheFoto> restantes = cocheFotoRepository.findByCocheOrderByOrdenAsc(coche).stream()
+                .filter(restante -> !restante.getId().equals(fotoId))
+                .collect(Collectors.toList());
+        for (int i = 0; i < restantes.size(); i++) {
+            CocheFoto restante = restantes.get(i);
+            restante.setOrden(i);
+            if (eraPortada) {
+                restante.setPortada(i == 0);
+            }
+            cocheFotoRepository.save(restante);
+        }
+
+        return ResponseEntity.ok(Map.of("mensaje", "Foto eliminada"));
     }
 
     @GetMapping("/fotos/{fotoId}")
@@ -403,5 +498,16 @@ public class CocheController {
         return ResponseEntity.ok()
                 .contentType(mediaType)
                 .body(foto.getContenido());
+    }
+
+    private void normalizarPortada(Coche coche) {
+        List<CocheFoto> fotos = cocheFotoRepository.findByCocheOrderByOrdenAsc(coche);
+        if (fotos.isEmpty() || fotos.stream().anyMatch(foto -> Boolean.TRUE.equals(foto.getPortada()))) {
+            return;
+        }
+
+        CocheFoto primera = fotos.get(0);
+        primera.setPortada(true);
+        cocheFotoRepository.save(primera);
     }
 }
