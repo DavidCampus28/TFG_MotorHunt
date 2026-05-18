@@ -105,6 +105,32 @@
         .btn-outline { background: transparent; color: var(--accent); border-color: var(--accent); }
         .btn:hover { transform: translateY(-2px); }
 
+        .alerta-denuncias {
+            margin-top: 16px;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+            background: rgba(211,47,47,0.12);
+        }
+
+        .modal-denuncia {
+            position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.72); z-index: 3000; padding: 18px;
+        }
+        .modal-denuncia.active { display: flex; }
+        .modal-denuncia-content {
+            width: min(520px, 100%); background: var(--bg-secondary); border: 1px solid var(--accent);
+            border-radius: 10px; padding: 24px;
+        }
+        .modal-denuncia-content h2 { color: var(--accent); margin-bottom: 16px; }
+        .modal-denuncia-content label { display: block; color: var(--text-secondary); margin: 12px 0 6px; }
+        .modal-denuncia-content select, .modal-denuncia-content textarea {
+            width: 100%; padding: 11px; border-radius: 6px; border: 1px solid var(--border);
+            background: var(--bg-tertiary); color: var(--text-main);
+        }
+        .modal-denuncia-content textarea { min-height: 120px; resize: vertical; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+
         .empty {
             text-align: center; padding: 28px; border: 1px dashed var(--border); border-radius: 12px;
             color: var(--text-secondary); background: rgba(255,255,255,0.03);
@@ -132,7 +158,16 @@
                             <span class="chip" th:text="${totalCoches} + ' coches en venta'">0 coches</span>
                             <span class="chip" th:text="${vendedor.activo ? 'Cuenta activa' : 'Cuenta inactiva'}">Estado</span>
                         </div>
+                        <div class="alerta-denuncias" th:if="${vendedor.bloqueado}">
+                            Cuenta bloqueada por administracion. <span th:text="${vendedor.motivoBloqueado}"></span>
+                        </div>
+                        <div class="alerta-denuncias" th:if="${!vendedor.bloqueado && vendedor.numeroDenuncias != null && vendedor.numeroDenuncias > 0}">
+                            Esta cuenta tiene <strong th:text="${vendedor.numeroDenuncias}">0</strong> denuncia(s) revisadas.
+                        </div>
                     </div>
+                </div>
+                <div style="margin-top:18px;">
+                    <button class="btn btn-outline" type="button" onclick="abrirDenunciaUsuario()">Denunciar usuario</button>
                 </div>
             </section>
 
@@ -174,6 +209,70 @@
 
     <div th:replace="footer :: footer"></div>
 </div>
+
+<div id="denunciaModal" class="modal-denuncia">
+    <div class="modal-denuncia-content">
+        <h2>Denunciar usuario</h2>
+        <form id="denunciaForm">
+            <label>Motivo</label>
+            <select id="denunciaTipo" required>
+                <option value="FRAUDE">Fraude</option>
+                <option value="SPAM">Spam</option>
+                <option value="COMPORTAMIENTO_SOSPECHOSO">Comportamiento sospechoso</option>
+                <option value="CONTENIDO_INAPROPIADO">Contenido inapropiado</option>
+                <option value="ABUSO">Abuso</option>
+                <option value="OTRO">Otro</option>
+            </select>
+            <label>Descripcion</label>
+            <textarea id="denunciaDescripcion" required></textarea>
+            <div class="modal-actions">
+                <button class="btn btn-outline" type="button" onclick="cerrarDenunciaUsuario()">Cancelar</button>
+                <button class="btn btn-primary" type="submit">Enviar denuncia</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script th:inline="javascript">
+    const vendedorId = /*[[${vendedor.id}]]*/ 0;
+
+    function abrirDenunciaUsuario() {
+        const usuario = JSON.parse(localStorage.getItem('usuario') || 'null');
+        if (!usuario) {
+            alert('Debes iniciar sesion para denunciar');
+            window.location.href = '/login';
+            return;
+        }
+        document.getElementById('denunciaDescripcion').value = '';
+        document.getElementById('denunciaModal').classList.add('active');
+    }
+
+    function cerrarDenunciaUsuario() {
+        document.getElementById('denunciaModal').classList.remove('active');
+    }
+
+    document.getElementById('denunciaForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const usuario = JSON.parse(localStorage.getItem('usuario') || 'null');
+        fetch(`/api/denuncias/usuario/${vendedorId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                denuncianteId: usuario.id,
+                tipo: document.getElementById('denunciaTipo').value,
+                descripcion: document.getElementById('denunciaDescripcion').value
+            })
+        })
+            .then(res => {
+                if (!res.ok) return res.text().then(text => Promise.reject(new Error(text)));
+                return res.json();
+            })
+            .then(() => {
+                cerrarDenunciaUsuario();
+                alert('Denuncia enviada. Puedes ver su estado en Mis denuncias.');
+            })
+            .catch(err => alert('No se pudo enviar la denuncia: ' + err.message));
+    });
+</script>
 </body>
 </html>
 

@@ -65,6 +65,15 @@ public class Coche {
     @Enumerated(EnumType.STRING)
     private EstadoCoche estado = EstadoCoche.EN_VENTA;
 
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
+    private Integer numeroDenuncias = 0;
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean bloqueado = false;
+
+    @Column(length = 500)
+    private String motivoBloqueado;
+
     @Column(length = 1000)
     private String descripcion;
 
@@ -191,4 +200,13 @@ public class Coche {
 
     public List<CocheFoto> getFotos() { return fotos; }
     public void setFotos(List<CocheFoto> fotos) { this.fotos = fotos; }
+
+    public Integer getNumeroDenuncias() { return numeroDenuncias; }
+    public void setNumeroDenuncias(Integer numeroDenuncias) { this.numeroDenuncias = numeroDenuncias; }
+
+    public Boolean getBloqueado() { return bloqueado; }
+    public void setBloqueado(Boolean bloqueado) { this.bloqueado = bloqueado; }
+
+    public String getMotivoBloqueado() { return motivoBloqueado; }
+    public void setMotivoBloqueado(String motivoBloqueado) { this.motivoBloqueado = motivoBloqueado; }
 }

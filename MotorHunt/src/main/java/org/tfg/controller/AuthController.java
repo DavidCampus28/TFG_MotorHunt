@@ -94,6 +94,14 @@ public class AuthController {
                         .body("Usuario desactivado");
             }
 
+            if (Boolean.TRUE.equals(usuario.getBloqueado())) {
+                String motivo = usuario.getMotivoBloqueado() != null && !usuario.getMotivoBloqueado().isBlank()
+                        ? ": " + usuario.getMotivoBloqueado()
+                        : "";
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Cuenta bloqueada por administracion" + motivo);
+            }
+
             if (!passwordEncoder.matches(password, usuario.getPassword())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("Credenciales inválidas");

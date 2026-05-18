@@ -293,6 +293,88 @@
         .detalle-actions-row .me-gustas-count {
             margin-left: 0;
         }
+
+        .denuncia-alerta {
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 8px;
+            background: rgba(211, 47, 47, 0.12);
+            border: 1px solid var(--accent);
+            color: var(--text-main);
+        }
+
+        .btn-denunciar {
+            background: transparent;
+            color: var(--accent);
+            padding: 12px 18px;
+            border: 1px solid var(--accent);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            flex: 1;
+        }
+
+        .btn-denunciar:hover {
+            background: rgba(211, 47, 47, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .modal-denuncia {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.72);
+            z-index: 3000;
+            padding: 18px;
+        }
+
+        .modal-denuncia.active {
+            display: flex;
+        }
+
+        .modal-denuncia-content {
+            width: min(520px, 100%);
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 24px;
+        }
+
+        .modal-denuncia-content h2 {
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .modal-denuncia-content label {
+            display: block;
+            margin: 12px 0 6px;
+            color: var(--text-secondary);
+        }
+
+        .modal-denuncia-content select,
+        .modal-denuncia-content textarea {
+            width: 100%;
+            padding: 11px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-main);
+        }
+
+        .modal-denuncia-content textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 16px;
+        }
         @media (max-width: 768px) {
             .detalle-header {
                 grid-template-columns: 1fr;
@@ -328,6 +410,7 @@
                         <h1 id="cocheTitulo"></h1>
                         <p id="cocheAno" style="color: #666; font-size: 1.1em; margin-top: 5px;"></p>
                         <div id="cocheEstado" class="estado-detalle en-venta">En venta</div>
+                        <div id="cocheDenunciaAlerta" class="denuncia-alerta" style="display:none;"></div>
                         <div class="precio-final" id="cochePrecio"></div>
                         <div class="detalle-actions-row">
                             <button class="btn-me-gusta" id="btnMeGusta" onclick="toggleMeGusta()">❤️ Me gusta</button>
@@ -403,6 +486,12 @@
             </div>
         </div>
 
+        <div id="vendedorDenunciaAlerta" class="denuncia-alerta" style="display:none;"></div>
+        <div class="botones-accion" id="denunciaAcciones" style="display:none; margin-bottom:20px;">
+            <button class="btn-denunciar" onclick="abrirDenuncia('coche')">Denunciar anuncio</button>
+            <button class="btn-denunciar" onclick="abrirDenuncia('usuario')">Denunciar vendedor</button>
+        </div>
+
         <div class="descripcion" id="descripcionMostrada" style="display:none;">
             <h3>📝 Descripción</h3>
             <p id="cocheDescripcion"></p>
@@ -416,9 +505,35 @@
 
     <footer th:include="footer.html"></footer>
 
+    <div id="denunciaModal" class="modal-denuncia">
+        <div class="modal-denuncia-content">
+            <h2 id="denunciaTitulo">Crear denuncia</h2>
+            <form id="denunciaForm">
+                <label>Motivo</label>
+                <select id="denunciaTipo" required>
+                    <option value="FRAUDE">Fraude</option>
+                    <option value="SPAM">Spam</option>
+                    <option value="COCHE_INEXISTENTE">Coche inexistente</option>
+                    <option value="PRECIO_FALSO">Precio falso</option>
+                    <option value="COMPORTAMIENTO_SOSPECHOSO">Comportamiento sospechoso</option>
+                    <option value="CONTENIDO_INAPROPIADO">Contenido inapropiado</option>
+                    <option value="ABUSO">Abuso</option>
+                    <option value="OTRO">Otro</option>
+                </select>
+                <label>Descripcion</label>
+                <textarea id="denunciaDescripcion" required placeholder="Explica que ocurre para que el admin pueda revisarlo."></textarea>
+                <div class="modal-actions">
+                    <button type="button" class="btn-vendedor" onclick="cerrarDenuncia()">Cancelar</button>
+                    <button type="submit" class="btn-chat">Enviar denuncia</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         let cocheId = new URLSearchParams(window.location.search).get('id');
         let usuarioActual = JSON.parse(localStorage.getItem('usuario'));
+        let denunciaObjetivo = 'coche';
 
         function initializeTheme() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -473,6 +588,17 @@
             document.getElementById('meGustasTotales').textContent = coche.totalMeGustas;
             document.getElementById('cocheImagen').src = coche.fotoPortadaUrl || '/img/LogoMotorHunt.png';
 
+            const alertaCoche = document.getElementById('cocheDenunciaAlerta');
+            const denunciasCoche = Number(coche.numeroDenuncias || 0);
+            if (coche.bloqueado || denunciasCoche > 0) {
+                alertaCoche.style.display = 'block';
+                alertaCoche.textContent = coche.bloqueado
+                    ? `Anuncio bloqueado por administracion. ${coche.motivoBloqueado || ''}`
+                    : `Este anuncio tiene ${denunciasCoche} denuncia(s) revisadas.`;
+            } else {
+                alertaCoche.style.display = 'none';
+            }
+
             const galeria = document.getElementById('galeriaFotos');
             if (Array.isArray(coche.fotos) && coche.fotos.length > 0) {
                 galeria.innerHTML = coche.fotos.map((foto, index) => `
@@ -490,6 +616,17 @@
             document.getElementById('vendedorDireccion').textContent = coche.vendedorDireccion || 'No disponible';
             document.getElementById('btnPerfilVendedor').href = `/perfil-vendedor?id=${coche.vendedorId}`;
 
+            const alertaVendedor = document.getElementById('vendedorDenunciaAlerta');
+            const denunciasVendedor = Number(coche.vendedorNumeroDenuncias || 0);
+            if (coche.vendedorBloqueado || denunciasVendedor > 0) {
+                alertaVendedor.style.display = 'block';
+                alertaVendedor.textContent = coche.vendedorBloqueado
+                    ? `Cuenta bloqueada por administracion. ${coche.vendedorMotivoBloqueado || ''}`
+                    : `Esta cuenta tiene ${denunciasVendedor} denuncia(s) revisadas.`;
+            } else {
+                alertaVendedor.style.display = 'none';
+            }
+
             // Actualizar botón me gusta
             if (coche.tieneMemGusta) {
                 document.getElementById('btnMeGusta').classList.add('activo');
@@ -501,6 +638,7 @@
             // Mostrar secciones
             document.getElementById('cocheMostrado').style.display = 'grid';
             document.getElementById('vendedorMostrado').style.display = 'block';
+            document.getElementById('denunciaAcciones').style.display = 'flex';
             document.getElementById('descripcionMostrada').style.display = 'block';
             document.getElementById('ubicacionMostrada').style.display = 'block';
 
@@ -586,6 +724,48 @@
             document.querySelectorAll('.mini-foto').forEach(img => img.classList.remove('activa'));
             elemento.classList.add('activa');
         }
+
+        function abrirDenuncia(objetivo) {
+            if (!usuarioActual) {
+                alert('Debes iniciar sesión para denunciar');
+                window.location.href = '/login';
+                return;
+            }
+            denunciaObjetivo = objetivo;
+            document.getElementById('denunciaTitulo').textContent = objetivo === 'coche' ? 'Denunciar anuncio' : 'Denunciar vendedor';
+            document.getElementById('denunciaDescripcion').value = '';
+            document.getElementById('denunciaModal').classList.add('active');
+        }
+
+        function cerrarDenuncia() {
+            document.getElementById('denunciaModal').classList.remove('active');
+        }
+
+        document.getElementById('denunciaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const endpoint = denunciaObjetivo === 'coche'
+                ? `/api/denuncias/coche/${cocheId}`
+                : `/api/denuncias/usuario/${window.vendedorInfo.id}`;
+
+            fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    denuncianteId: usuarioActual.id,
+                    tipo: document.getElementById('denunciaTipo').value,
+                    descripcion: document.getElementById('denunciaDescripcion').value
+                })
+            })
+                .then(res => {
+                    if (!res.ok) return res.text().then(text => Promise.reject(new Error(text)));
+                    return res.json();
+                })
+                .then(() => {
+                    cerrarDenuncia();
+                    alert('Denuncia enviada. Puedes consultar su estado en Mis denuncias.');
+                })
+                .catch(err => alert('No se pudo enviar la denuncia: ' + err.message));
+        });
     </script>
 </body>
 </html>

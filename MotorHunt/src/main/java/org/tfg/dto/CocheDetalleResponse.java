@@ -35,10 +35,18 @@ public class CocheDetalleResponse {
     private String vendedorTelefono;
     private String vendedorDireccion;
     private String vendedorRol;
+    private Integer vendedorNumeroDenuncias;
+    private Boolean vendedorBloqueado;
+    private String vendedorMotivoBloqueado;
 
     // Me gusta info
     private boolean tieneMemGusta;
     private long totalMeGustas;
+
+    // Denuncias del anuncio
+    private Integer numeroDenuncias;
+    private Boolean bloqueado;
+    private String motivoBloqueado;
 
     // Fotos
     private List<CocheFotoResponse> fotos;

@@ -93,6 +93,13 @@ public class CocheController {
             response.setVendedorTelefono(vendedor.getTelefono());
             response.setVendedorDireccion(vendedor.getDireccion());
             response.setVendedorRol(vendedor.getRol().toString());
+            response.setVendedorNumeroDenuncias(vendedor.getNumeroDenuncias() == null ? 0 : vendedor.getNumeroDenuncias());
+            response.setVendedorBloqueado(Boolean.TRUE.equals(vendedor.getBloqueado()));
+            response.setVendedorMotivoBloqueado(vendedor.getMotivoBloqueado());
+
+            response.setNumeroDenuncias(coche.getNumeroDenuncias() == null ? 0 : coche.getNumeroDenuncias());
+            response.setBloqueado(Boolean.TRUE.equals(coche.getBloqueado()));
+            response.setMotivoBloqueado(coche.getMotivoBloqueado());
 
             // Información de me gusta
             if (usuarioId != null) {

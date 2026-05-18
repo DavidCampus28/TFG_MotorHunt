@@ -32,4 +32,14 @@ public class CocheViewController {
     public String verMeMeGustas() {
         return "mis-me-gustas";
     }
+
+    @GetMapping("/mis-coches")
+    public String verMisCoches() {
+        return "mis-coches";
+    }
+
+    @GetMapping("/mis-denuncias")
+    public String verMisDenuncias() {
+        return "mis-denuncias";
+    }
 }

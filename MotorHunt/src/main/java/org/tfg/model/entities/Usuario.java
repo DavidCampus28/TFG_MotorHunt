@@ -35,6 +35,15 @@ public class Usuario {
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean activo = true;
 
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
+    private Integer numeroDenuncias = 0;
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean bloqueado = false;
+
+    @Column(length = 500)
+    private String motivoBloqueado;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime fechaRegistro;
 
@@ -109,6 +118,15 @@ public class Usuario {
 
     public Boolean getActivo() { return activo; }
     public void setActivo(Boolean activo) { this.activo = activo; }
+
+    public Integer getNumeroDenuncias() { return numeroDenuncias; }
+    public void setNumeroDenuncias(Integer numeroDenuncias) { this.numeroDenuncias = numeroDenuncias; }
+
+    public Boolean getBloqueado() { return bloqueado; }
+    public void setBloqueado(Boolean bloqueado) { this.bloqueado = bloqueado; }
+
+    public String getMotivoBloqueado() { return motivoBloqueado; }
+    public void setMotivoBloqueado(String motivoBloqueado) { this.motivoBloqueado = motivoBloqueado; }
 
     public LocalDateTime getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
