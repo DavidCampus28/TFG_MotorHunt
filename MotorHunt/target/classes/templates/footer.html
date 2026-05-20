@@ -4,232 +4,180 @@
     <meta charset="UTF-8">
 </head>
 <body>
-    <footer th:fragment="footer">
-        <style>
-            footer {
-                background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
-                color: #b0b0b0;
-                padding: 50px 50px;
-                margin-top: 80px;
-                border-top: 2px solid #d32f2f;
-            }
+<footer th:fragment="footer" class="site-footer">
+    <style>
+        .site-footer {
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+            color: #b0b0b0;
+            padding: 46px 50px;
+            margin-top: 80px;
+            border-top: 2px solid #d32f2f;
+        }
 
-            html[data-theme="light"] footer {
-                background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-                color: #666;
-                border-top: 2px solid #d32f2f;
+        html[data-theme="light"] .site-footer {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            color: #666;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto 42px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 42px;
+        }
+
+        .footer-section h3 {
+            color: #d32f2f;
+            font-size: 15px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-section li {
+            margin-bottom: 11px;
+        }
+
+        .footer-section a {
+            color: inherit;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-section a:hover,
+        .footer-legal a:hover {
+            color: #d32f2f;
+        }
+
+        .footer-contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .contact-item strong {
+            color: #d32f2f;
+            display: block;
+            margin-bottom: 2px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .footer-divider {
+            max-width: 1200px;
+            margin: 0 auto;
+            border-top: 1px solid #333;
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        html[data-theme="light"] .footer-divider {
+            border-top-color: #ddd;
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .footer-legal a,
+        .footer-copyright {
+            color: inherit;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .site-footer {
+                padding: 30px 20px;
             }
 
             .footer-container {
-                max-width: 1200px;
-                margin: 0 auto;
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 50px;
-                margin-bottom: 50px;
-            }
-
-            .footer-section h3 {
-                color: #d32f2f;
-                font-size: 15px;
-                margin-bottom: 25px;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                font-weight: 700;
-            }
-
-            .footer-section ul {
-                list-style: none;
-            }
-
-            .footer-section ul li {
-                margin-bottom: 12px;
-            }
-
-            .footer-section ul li a {
-                color: #b0b0b0;
-                text-decoration: none;
-                transition: all 0.3s;
-                font-size: 14px;
-                font-weight: 300;
-            }
-
-            html[data-theme="light"] .footer-section ul li a {
-                color: #777;
-            }
-
-            .footer-section ul li a:hover {
-                color: #d32f2f;
-                padding-left: 8px;
-            }
-
-            .footer-contact-info {
-                display: flex;
-                flex-direction: column;
-                gap: 18px;
-            }
-
-            .contact-item {
-                display: flex;
-                align-items: flex-start;
-                gap: 15px;
-                font-size: 14px;
-                line-height: 1.6;
-            }
-
-            .contact-icon {
-                color: #d32f2f;
-                font-size: 20px;
-                min-width: 25px;
-                text-align: center;
+                grid-template-columns: 1fr;
+                gap: 28px;
             }
 
             .footer-divider {
-                border-top: 1px solid #333;
-                padding-top: 40px;
-                margin-top: 40px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-wrap: wrap;
-                gap: 30px;
-            }
-
-            html[data-theme="light"] .footer-divider {
-                border-top: 1px solid #ddd;
+                flex-direction: column;
+                text-align: center;
             }
 
             .footer-legal {
-                display: flex;
-                gap: 40px;
-                flex-wrap: wrap;
+                justify-content: center;
+                gap: 18px;
             }
+        }
+    </style>
 
-            .footer-legal a {
-                color: #b0b0b0;
-                text-decoration: none;
-                font-size: 13px;
-                transition: all 0.3s;
-                font-weight: 300;
-            }
-
-            html[data-theme="light"] .footer-legal a {
-                color: #777;
-            }
-
-            .footer-legal a:hover {
-                color: #d32f2f;
-            }
-
-            .footer-copyright {
-                color: #666666;
-                font-size: 13px;
-                text-align: right;
-                font-weight: 300;
-            }
-
-            html[data-theme="light"] .footer-copyright {
-                color: #999;
-            }
-
-            @media (max-width: 768px) {
-                footer {
-                    padding: 30px 20px;
-                }
-
-                .footer-container {
-                    grid-template-columns: 1fr;
-                    gap: 30px;
-                }
-
-                .footer-divider {
-                    flex-direction: column;
-                    text-align: center;
-                }
-
-                .footer-legal {
-                    justify-content: center;
-                    gap: 20px;
-                }
-
-                .footer-copyright {
-                    text-align: center;
-                }
-            }
-        </style>
-
-        <div class="footer-container">
-            <!-- Empresa -->
-            <div class="footer-section">
-                <h3>Sobre MotorHunt</h3>
-                <ul>
-                    <li><a href="#nosotros">Quiénes Somos</a></li>
-                    <li><a href="#mision">Nuestra Misión</a></li>
-                    <li><a href="#vision">Nuestra Visión</a></li>
-                    <li><a href="#blog">Blog</a></li>
-                    <li><a href="#prensa">Prensa</a></li>
-                </ul>
-            </div>
-
-            <!-- Servicios -->
-            <div class="footer-section">
-                <h3>Servicios</h3>
-                <ul>
-                    <li><a href="#vender">Vender un Coche</a></li>
-                    <li><a href="#comprar">Comprar un Coche</a></li>
-                    <li><a href="#tasacion">Tasación</a></li>
-                    <li><a href="#financiacion">Financiación</a></li>
-                    <li><a href="#seguros">Seguros</a></li>
-                </ul>
-            </div>
-
-            <!-- Soporte -->
-            <div class="footer-section">
-                <h3>Ayuda y Soporte</h3>
-                <ul>
-                    <li><a href="#preguntas">Preguntas Frecuentes</a></li>
-                    <li><a href="#contacto">Contáctanos</a></li>
-                    <li><a href="#centro-ayuda">Centro de Ayuda</a></li>
-                    <li><a href="#reportar">Reportar Problema</a></li>
-                    <li><a href="#chat">Chat en Vivo</a></li>
-                </ul>
-            </div>
-
-            <!-- Contacto -->
-            <div class="footer-section">
-                <h3>Contacto</h3>
-                <div class="footer-contact-info">
-                    <div class="contact-item">
-                        <span class="contact-icon">📞</span>
-                        <span>+34 900 123 456</span>
-                    </div>
-                    <div class="contact-item">
-                        <span class="contact-icon">✉️</span>
-                        <span>info@motorhunt.es</span>
-                    </div>
-                    <div class="contact-item">
-                        <span class="contact-icon">📍</span>
-                        <span>Calle Principal 123<br>28001 Madrid, España</span>
-                    </div>
-                    <div class="contact-item">
-                        <span class="contact-icon">🕐</span>
-                        <span>Lunes - Viernes: 9:00 - 18:00<br>Sábado: 10:00 - 14:00</span>
-                    </div>
-                </div>
-            </div>
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>Sobre MotorHunt</h3>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/coches-view">Comprar un coche</a></li>
+                <li><a href="/perfil">Vender un coche</a></li>
+                <li><a href="/mis-denuncias">Denuncias</a></li>
+            </ul>
         </div>
 
-        <div class="footer-divider">
-            <div class="footer-legal">
-                <a href="#terminos">Términos de Servicio</a>
-                <a href="#privacidad">Política de Privacidad</a>
-                <a href="#cookies">Política de Cookies</a>
-                <a href="#rgpd">Cumplimiento RGPD</a>
-            </div>
-            <div class="footer-copyright">
-                © 2026 MotorHunt. Todos los derechos reservados.
+        <div class="footer-section">
+            <h3>Cuenta</h3>
+            <ul>
+                <li><a href="/login">Iniciar sesion</a></li>
+                <li><a href="/perfil">Mi perfil</a></li>
+                <li><a href="/mis-coches">Mis coches</a></li>
+                <li><a href="/mis-me-gustas">Favoritos</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Soporte</h3>
+            <ul>
+                <li><a href="/chat">Mensajes</a></li>
+                <li><a href="/mis-denuncias">Seguimiento de denuncias</a></li>
+                <li><a href="#privacidad">Privacidad</a></li>
+                <li><a href="#cookies">Cookies</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Contacto</h3>
+            <div class="footer-contact-info">
+                <div class="contact-item"><strong>Telefono</strong><span>+34 900 123 456</span></div>
+                <div class="contact-item"><strong>Email</strong><span>info@motorhunt.es</span></div>
+                <div class="contact-item"><strong>Direccion</strong><span>Calle Principal 123<br>28001 Madrid, Espana</span></div>
+                <div class="contact-item"><strong>Horario</strong><span>Lunes a viernes: 9:00 - 18:00<br>Sabado: 10:00 - 14:00</span></div>
             </div>
         </div>
-    </footer>
+    </div>
+
+    <div class="footer-divider">
+        <div class="footer-legal">
+            <a href="#terminos">Terminos de servicio</a>
+            <a href="#privacidad">Politica de privacidad</a>
+            <a href="#cookies">Politica de cookies</a>
+            <a href="#rgpd">RGPD</a>
+        </div>
+        <div class="footer-copyright">
+            © 2026 MotorHunt. Todos los derechos reservados.
+        </div>
+    </div>
+</footer>
 </body>
 </html>

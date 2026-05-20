@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
 
 @RestController
 @RequestMapping("/api/admin/advanced")
@@ -42,7 +44,7 @@ public class AdminAdvancedController {
             List<Denuncia> denuncias = denunciaRepository.findAll();
 
             if (estado != null && !estado.isEmpty()) {
-                EstadoDenuncia estadoEnum = EstadoDenuncia.valueOf(estado);
+                EstadoDenuncia estadoEnum = EstadoDenuncia.valueOf(estado.trim().toUpperCase());
                 denuncias = denuncias.stream()
                         .filter(d -> d.getEstado() == estadoEnum)
                         .collect(Collectors.toList());
@@ -50,15 +52,20 @@ public class AdminAdvancedController {
 
             if (tipo != null && !tipo.isEmpty()) {
                 denuncias = denuncias.stream()
-                        .filter(d -> d.getTipo().toString().equals(tipo))
+                        .filter(d -> d.getTipo() != null && d.getTipo().name().equals(tipo.trim().toUpperCase()))
                         .collect(Collectors.toList());
             }
 
+            denuncias.sort(Comparator.comparing(Denuncia::getFechaCreacion,
+                    Comparator.nullsFirst(Comparator.naturalOrder())).reversed());
+
             var resultado = denuncias.stream().map(this::mapearDenuncia).collect(Collectors.toList());
             return ResponseEntity.ok(resultado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Filtro de denuncias no valido"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error: " + e.getMessage());
+                    .body(Map.of("error", "No se pudieron cargar las denuncias: " + e.getMessage()));
         }
     }
 
@@ -72,7 +79,7 @@ public class AdminAdvancedController {
             return ResponseEntity.ok(mapearDenuncia(denuncia.get()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error: " + e.getMessage());
+                    .body(Map.of("error", "No se pudo cargar la denuncia: " + e.getMessage()));
         }
     }
 
@@ -86,7 +93,8 @@ public class AdminAdvancedController {
 
             Denuncia denuncia = denunciaOpt.get();
             String estado = (String) request.get("estado");
-            denuncia.setEstado(EstadoDenuncia.valueOf(estado));
+            EstadoDenuncia estadoEnum = EstadoDenuncia.valueOf(estado.trim().toUpperCase());
+            denuncia.setEstado(estadoEnum);
             denuncia.setResolucion((String) request.get("resolucion"));
             denuncia.setFechaResolucion(LocalDateTime.now());
 
@@ -98,7 +106,7 @@ public class AdminAdvancedController {
 
             // Si se resuelve como RESUELTA y hay una acción
             String accion = (String) request.get("accion");
-            if ("RESUELTA".equals(estado) && accion != null) {
+            if (estadoEnum == EstadoDenuncia.RESUELTA && accion != null) {
 
                 // Bloquear usuario denunciado
                 if ("bloquear_usuario".equals(accion) && denuncia.getUsuarioDenunciado() != null) {
@@ -135,9 +143,11 @@ public class AdminAdvancedController {
 
             denunciaRepository.save(denuncia);
             return ResponseEntity.ok(Map.of("mensaje", "Denuncia resuelta"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Estado de denuncia no valido"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error: " + e.getMessage());
+                    .body(Map.of("error", "No se pudo resolver la denuncia: " + e.getMessage()));
         }
     }
 
@@ -385,13 +395,66 @@ public class AdminAdvancedController {
         }
     }
 
+    @PostMapping(value = "/configuracion/logo", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> subirLogo(@RequestParam("file") MultipartFile file,
+                                      @RequestParam(required = false) Long adminId) {
+        try {
+            if (file == null || file.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Archivo vacío"));
+            }
+
+            Optional<ConfiguracionAdmin> opt = configuracionAdminRepository.findFirstByOrderByIdDesc();
+            ConfiguracionAdmin config = opt.orElse(new ConfiguracionAdmin());
+
+            config.setLogoData(file.getBytes());
+            config.setLogoContentType(file.getContentType());
+            // Exponer una URL que sirve el logo desde este controlador
+            config.setUrlLogo("/api/admin/advanced/configuracion/logo");
+
+            if (adminId != null) {
+                Optional<Usuario> admin = usuarioRepository.findById(adminId);
+                admin.ifPresent(config::setAdminModificador);
+            }
+
+            configuracionAdminRepository.save(config);
+            return ResponseEntity.ok(Map.of("urlLogo", config.getUrlLogo()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/configuracion/logo")
+    public ResponseEntity<?> obtenerLogo() {
+        try {
+            Optional<ConfiguracionAdmin> opt = configuracionAdminRepository.findFirstByOrderByIdDesc();
+            if (opt.isEmpty() || opt.get().getLogoData() == null) {
+                // Redirigir al logo por defecto estático
+                return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/img/LogoMotorHunt.png").build();
+            }
+
+            ConfiguracionAdmin c = opt.get();
+            MediaType mt = MediaType.APPLICATION_OCTET_STREAM;
+            try { mt = MediaType.parseMediaType(c.getLogoContentType()); } catch (Exception ignored) {}
+
+            return ResponseEntity.ok()
+                    .contentType(mt)
+                    .body(c.getLogoData());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
     // ===== MÉTODOS AUXILIARES =====
 
     private Map<String, Object> mapearDenuncia(Denuncia d) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", d.getId());
-        map.put("tipo", d.getTipo().toString());
-        map.put("estado", d.getEstado().toString());
+        map.put("tipo", d.getTipo() != null ? d.getTipo().name() : "OTRO");
+        map.put("tipoTexto", d.getTipo() != null ? d.getTipo().getDescripcion() : "Otro");
+        map.put("estado", d.getEstado() != null ? d.getEstado().name() : "PENDIENTE");
+        map.put("estadoTexto", d.getEstado() != null ? d.getEstado().getDescripcion() : "Pendiente de revisar");
         map.put("descripcion", d.getDescripcion());
         map.put("denunciante", d.getDenunciante() != null ? d.getDenunciante().getNombre() : "Sistema");
         map.put("denuncianteId", d.getDenunciante() != null ? d.getDenunciante().getId() : null);

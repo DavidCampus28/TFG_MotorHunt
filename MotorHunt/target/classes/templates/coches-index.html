@@ -16,7 +16,7 @@
             background-color: #f5f5f5;
         }
 
-        header {
+        .legacy-page-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 20px 0;
@@ -169,29 +169,17 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div>
-                    <h1>🚗 Coches Disponibles</h1>
-                </div>
-                <div class="nav-buttons">
-                    <a href="/" class="btn btn-primary">← Inicio</a>
-                    <a href="/usuarios-view" class="btn btn-secondary">Ver Usuarios</a>
-                </div>
-            </div>
-        </div>
-    </header>
+    <div th:replace="~{header :: header}"></div>
 
     <div class="container">
         <div class="content">
             <div class="stats">
-                <p>📈 Total de coches: <strong th:text="${coches.size()}">0</strong></p>
+                <p>Total de coches: <strong th:text="${coches.size()}">0</strong></p>
             </div>
 
             <div th:if="${coches.isEmpty()}">
                 <div class="empty-message">
-                    <p>😔 No hay coches disponibles</p>
+                    <p>No hay coches disponibles</p>
                 </div>
             </div>
 
@@ -234,5 +222,6 @@
             </div>
         </div>
     </div>
+    <div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

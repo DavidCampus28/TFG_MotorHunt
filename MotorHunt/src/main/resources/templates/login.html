@@ -203,6 +203,41 @@
             display: block;
         }
 
+        .password-help {
+            margin-top: 8px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .terms-row {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px;
+            align-items: start;
+            margin: 18px 0 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+        .terms-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: var(--accent);
+        }
+
+        .terms-row a {
+            color: var(--accent);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .terms-row a:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -222,7 +257,7 @@
 </head>
 <body>
     <div id="app">
-        <div id="header-placeholder"></div>
+        <div th:replace="~{header :: header}"></div>
 
         <main>
             <div class="container">
@@ -233,7 +268,7 @@
                     </div>
                     <!-- FORMULARIO DE LOGIN -->
                     <div id="loginForm">
-                        <h1>🔐 Iniciar Sesión</h1>
+                        <h1>Iniciar Sesión</h1>
                         <div class="message" id="loginMessage"></div>
 
                         <form onsubmit="handleLogin(event)">
@@ -255,7 +290,7 @@
 
                     <!-- FORMULARIO DE REGISTRO -->
                     <div id="registerForm" class="hidden">
-                        <h1>📄 Registro</h1>
+                        <h1>Registro</h1>
                         <div class="message" id="registerMessage"></div>
 
                         <form onsubmit="handleRegister(event)">
@@ -269,7 +304,18 @@
                             </div>
                             <div class="form-group">
                                 <label>Contraseña</label>
-                                <input type="password" id="registerPassword" required>
+                                <input
+                                    type="password"
+                                    id="registerPassword"
+                                    minlength="12"
+                                    pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}"
+                                    autocomplete="new-password"
+                                    required
+                                    aria-describedby="passwordHelp"
+                                >
+                                <small class="password-help" id="passwordHelp">
+                                    Mínimo 12 caracteres, con mayúsculas, minúsculas, números y símbolos como @, #, ~ o |.
+                                </small>
                             </div>
                             <div class="form-group">
                                 <label>Teléfono</label>
@@ -286,6 +332,13 @@
                                     <option value="EMPRESA">Empresa (Vendedor)</option>
                                 </select>
                             </div>
+                            <label class="terms-row">
+                                <input type="checkbox" id="acceptTerms" required>
+                                <span>
+                                    He leído y acepto los
+                                    <a href="/terminos?return=registro">términos y condiciones</a>.
+                                </span>
+                            </label>
                             <button type="submit" class="btn">Registrarse</button>
                         </form>
 
@@ -296,58 +349,29 @@
                 </div>
 
                 <div class="info-container">
-                    <h2>🚙 MotorHunt</h2>
+                    <h2>MotorHunt</h2>
                     <p>Portal de compra y venta de vehículos confiable.</p>
-                    
+
                     <div id="loginInfo">
                         <p><strong>¿Por qué registrarse?</strong></p>
-                        <p>• Acceso a ofertas exclusivas</p>
-                        <p>• Publica tus coches para vender</p>
-                        <p>• Historial de compras y ventas</p>
-                        <p>• Gestión de favoritos</p>
+                        <p>Acceso a ofertas exclusivas</p>
+                        <p>Publica tus coches para vender</p>
+                        <p>Historial de compras y ventas</p>
+                        <p>Gestión de favoritos</p>
                     </div>
 
-                    <a href="/" class="nav-link">← Volver al inicio</a>
+                    <a href="/" class="nav-link">Volver al inicio</a>
                 </div>
             </div>
         </main>
 
-        <div id="footer-placeholder"></div>
+        <div th:replace="~{footer :: footer}"></div>
     </div>
 
     <script>
         function initializeTheme() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
-        }
-
-        function loadHeader() {
-            const headerHTML = `
-                <header style="background: var(--bg-secondary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border);">
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="font-size: 24px; font-weight: bold; color: var(--accent); letter-spacing: 1px;">MotorHunt</div>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <button onclick="toggleTheme()" style="background: none; border: none; cursor: pointer; font-size: 28px; color: var(--accent); transition: all 0.3s;" title="Cambiar tema">🌙</button>
-                        <a href="/" style="color: var(--text-main); text-decoration: none;">🏠 Inicio</a>
-                    </div>
-                </header>
-            `;
-            document.getElementById('header-placeholder').innerHTML = headerHTML;
-        }
-
-        function loadFooter() {
-            const footerHTML = `
-                <footer style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); color: var(--text-secondary); padding: 50px; margin-top: 80px; border-top: 1px solid var(--border); text-align: center;">
-                    <p>&copy; 2026 MotorHunt. Todos los derechos reservados.</p>
-                    <div style="margin-top: 20px; display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; font-size: 14px;">
-                        <a href="#" style="color: var(--text-secondary); text-decoration: none;">Términos</a>
-                        <a href="#" style="color: var(--text-secondary); text-decoration: none;">Privacidad</a>
-                        <a href="#" style="color: var(--text-secondary); text-decoration: none;">Cookies</a>
-                    </div>
-                </footer>
-            `;
-            document.getElementById('footer-placeholder').innerHTML = footerHTML;
         }
 
         function toggleTheme() {
@@ -388,7 +412,7 @@
                 },
                 body: JSON.stringify({ email, password })
             })
-            .then(res => res.json())
+            .then(parseResponse)
             .then(data => {
                 if (data.token) {
                     localStorage.setItem('token', data.token);
@@ -408,13 +432,28 @@
 
         function handleRegister(e) {
             e.preventDefault();
+            const password = document.getElementById('registerPassword').value;
+            const acceptTerms = document.getElementById('acceptTerms').checked;
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/;
+
+            if (!passwordRegex.test(password)) {
+                showMessage('registerMessage', 'La contraseña debe tener al menos 12 caracteres, mayúsculas, minúsculas, números y símbolos.', 'error');
+                return;
+            }
+
+            if (!acceptTerms) {
+                showMessage('registerMessage', 'Debes leer y aceptar los términos y condiciones para registrarte.', 'error');
+                return;
+            }
+
             const data = {
                 nombre: document.getElementById('registerNombre').value,
                 email: document.getElementById('registerEmail').value,
-                password: document.getElementById('registerPassword').value,
+                password: password,
                 telefono: document.getElementById('registerTelefono').value,
                 direccion: document.getElementById('registerDireccion').value,
-                rol: document.getElementById('registerRol').value
+                rol: document.getElementById('registerRol').value,
+                aceptaTerminos: 'true'
             };
 
             fetch('/api/auth/registro', {
@@ -424,7 +463,7 @@
                 },
                 body: JSON.stringify(data)
             })
-            .then(res => res.json())
+            .then(parseResponse)
             .then(data => {
                 if (data.usuario) {
                     showMessage('registerMessage', '✓ Registro exitoso. Ahora inicia sesión.', 'success');
@@ -444,14 +483,30 @@
             element.className = 'message ' + type;
         }
 
+        function parseResponse(response) {
+            return response.text().then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (error) {
+                    return text;
+                }
+            });
+        }
+
         window.addEventListener('load', () => {
             initializeTheme();
-            loadHeader();
-            loadFooter();
-            
+
             if (localStorage.getItem('showRegisterForm') === 'true') {
                 toggleForms();
                 localStorage.removeItem('showRegisterForm');
+            }
+
+            if (localStorage.getItem('termsAccepted') === 'true') {
+                if (document.getElementById('registerForm').classList.contains('hidden')) {
+                    toggleForms();
+                }
+                document.getElementById('acceptTerms').checked = true;
+                localStorage.removeItem('termsAccepted');
             }
         });
     </script>

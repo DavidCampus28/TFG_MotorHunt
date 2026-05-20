@@ -35,6 +35,7 @@ public class CocheDetalleResponse {
     private String vendedorTelefono;
     private String vendedorDireccion;
     private String vendedorRol;
+    private String vendedorTipoVendedor;
     private Integer vendedorNumeroDenuncias;
     private Boolean vendedorBloqueado;
     private String vendedorMotivoBloqueado;

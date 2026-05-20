@@ -159,11 +159,11 @@
     </style>
 </head>
 <body>
-    <nav th:include="header.html"></nav>
+    <div th:replace="~{header :: header}"></div>
 
     <div class="me-gustas-container">
         <div class="me-gustas-header">
-            <h1>❤️ Mis Me Gustas</h1>
+            <h1>Mis Me Gustas</h1>
             <div class="contador" id="contador">0 coches</div>
         </div>
 
@@ -176,7 +176,7 @@
         </div>
     </div>
 
-    <footer th:include="footer.html"></footer>
+    <div th:replace="~{footer :: footer}"></div>
 
     <script>
         let usuarioActual = JSON.parse(localStorage.getItem('usuario'));
@@ -225,7 +225,7 @@
                 });
 
                 card.innerHTML = `
-                    <div class="coche-card-imagen">🏎️</div>
+                    <div class="coche-card-imagen">Sin foto</div>
                     <div class="coche-card-contenido">
                         <h3 class="coche-card-titulo">${mg.marca} ${mg.modelo}</h3>
                         <p class="coche-card-ano">Año ${mg.ano}</p>

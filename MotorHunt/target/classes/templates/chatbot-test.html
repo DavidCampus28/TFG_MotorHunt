@@ -184,16 +184,18 @@
     </style>
 </head>
 <body>
+    <div th:replace="~{header :: header}"></div>
     <div class="container">
-        <h1>🤖 Tests del ChatBot - MotorHunt</h1>
+        <h1>Tests del ChatBot - MotorHunt</h1>
 
         <div class="grid" id="testCardsContainer"></div>
 
         <div class="results" id="resultsSection" style="display: none;">
-            <h2>📊 Resultados de Tests</h2>
+            <h2>Resultados de Tests</h2>
             <div id="resultsList"></div>
         </div>
     </div>
+    <div th:replace="~{footer :: footer}"></div>
 
     <script>
         const testCases = [
@@ -207,7 +209,7 @@
                 ]
             },
             {
-                title: "⚙️ Especificaciones Técnicas",
+                title: "Especificaciones Técnicas",
                 description: "Información sobre potencia, cilindrada, revoluciones",
                 preguntas: [
                     "¿Cuántos caballos tiene este motor?",
@@ -216,7 +218,7 @@
                 ]
             },
             {
-                title: "🚗 Versiones y Generaciones",
+                title: "Versiones y Generaciones",
                 description: "Cambios y evoluciones de modelos",
                 preguntas: [
                     "¿Qué versiones tiene este coche?",

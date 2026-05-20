@@ -2,6 +2,7 @@ package org.tfg.model.entities;
 
 import jakarta.persistence.*;
 import org.tfg.model.enums.Rol;
+import org.tfg.model.enums.TipoVendedor;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,6 +44,10 @@ public class Usuario {
 
     @Column(length = 500)
     private String motivoBloqueado;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private TipoVendedor tipoVendedor;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime fechaRegistro;
@@ -124,9 +129,22 @@ public class Usuario {
 
     public Boolean getBloqueado() { return bloqueado; }
     public void setBloqueado(Boolean bloqueado) { this.bloqueado = bloqueado; }
+    // Sobrecarga para aceptar primitive boolean
+    public void setBloqueado(boolean bloqueado) { this.bloqueado = bloqueado; }
 
     public String getMotivoBloqueado() { return motivoBloqueado; }
     public void setMotivoBloqueado(String motivoBloqueado) { this.motivoBloqueado = motivoBloqueado; }
+
+    public TipoVendedor getTipoVendedor() { return tipoVendedor; }
+    public void setTipoVendedor(TipoVendedor tipoVendedor) { this.tipoVendedor = tipoVendedor; }
+
+    // Método auxiliar para obtener el tipo de vendedor como string legible
+    public String getTipoVendedorLegible() {
+        if (tipoVendedor == null) {
+            return null;
+        }
+        return tipoVendedor == TipoVendedor.EMPRESA ? "Empresa" : "Particulares";
+    }
 
     public LocalDateTime getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }

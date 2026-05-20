@@ -397,11 +397,14 @@
             cursor: pointer;
             transition: all 0.3s;
             background: rgba(211, 47, 47, 0.05);
+            display: block;
         }
 
-        .upload-area:hover {
+        .upload-area:hover,
+        .upload-area:focus-within {
             background: rgba(211, 47, 47, 0.1);
             border-color: var(--accent-dark);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.18);
         }
 
         .upload-area.dragover {
@@ -423,7 +426,11 @@
         }
 
         #fotosInput {
-            display: none;
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
         }
 
         .galeria-edicion {
@@ -441,6 +448,12 @@
             border: 2px solid var(--border);
             transition: all 0.2s;
             cursor: grab;
+        }
+
+        .foto-item:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.22);
         }
 
         .foto-item:hover {
@@ -518,6 +531,14 @@
             font-size: 13px;
             color: var(--text-secondary);
             line-height: 1.6;
+        }
+
+        .upload-hints strong {
+            color: var(--text-main);
+        }
+
+        .upload-hints ul {
+            margin: 8px 0 0 18px;
         }
 
         .uploading-progress {
@@ -650,20 +671,22 @@
 
             <!-- Sección de Fotos - Mejorada -->
             <div class="fotos-section">
-                <h3>📸 Gestionar fotos del coche</h3>
+                <h3>Gestionar fotos del coche</h3>
 
-                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fotosInput').click()">
-                    <strong>+ Selecciona fotos o arrastra aquí</strong>
-                    <p>Soporta JPG, PNG, WebP. Máx 5MB por foto.</p>
-                </div>
-                <input type="file" id="fotosInput" multiple accept="image/*">
+                <label class="upload-area" id="uploadArea" for="fotosInput">
+                    <strong>Seleccionar fotos o arrastrarlas aquí</strong>
+                    <p>Formatos admitidos: JPG, PNG o WebP. Máximo 5 MB por foto.</p>
+                    <input type="file" id="fotosInput" multiple accept="image/*" aria-describedby="uploadHints">
+                </label>
 
-                <div class="upload-hints">
-                    💡 <strong>Consejos:</strong><br>
-                    • Sube al menos 3-5 fotos de buena calidad para mejores resultados<br>
-                    • La primera foto se usará como portada automáticamente<br>
-                    • Arrastra las fotos para reordenarlas<br>
-                    • Haz clic en una foto para establecerla como portada
+                <div class="upload-hints" id="uploadHints">
+                    <strong>Recomendaciones</strong>
+                    <ul>
+                        <li>Sube entre 3 y 5 fotos de buena calidad para mejorar el anuncio.</li>
+                        <li>La primera foto subida se usa como portada si no hay una portada previa.</li>
+                        <li>Arrastra las fotos para reordenarlas.</li>
+                        <li>Usa el botón Portada en una miniatura para cambiar la imagen principal.</li>
+                    </ul>
                 </div>
 
                 <div class="uploading-progress" id="uploadingProgress">
@@ -936,8 +959,8 @@
         }
 
         galeria.innerHTML = fotos.map(foto => `
-            <div class="foto-item ${foto.portada ? 'portada' : ''}" draggable="true" data-foto-id="${foto.id}">
-                <img src="${foto.url}" alt="${foto.nombre}">
+            <div class="foto-item ${foto.portada ? 'portada' : ''}" draggable="true" tabindex="0" data-foto-id="${foto.id}" aria-label="Foto ${foto.nombreArchivo || foto.nombre || ''}${foto.portada ? ', portada actual' : ''}">
+                <img src="${foto.url}" alt="${foto.nombreArchivo || foto.nombre || 'Foto del coche'}">
                 <div class="badge-portada">PORTADA</div>
                 <div class="overlay">
                     <button type="button" onclick="establecerPortada(${foto.id}, event)">Portada</button>

@@ -17,8 +17,9 @@ CREATE TABLE usuarios (
     email VARCHAR(255) NOT NULL UNIQUE,
     telefono VARCHAR(20),
     direccion VARCHAR(500),
-    rol VARCHAR(50) NOT NULL DEFAULT 'USUARIO' CHECK (rol IN ('USUARIO', 'ADMINISTRADOR')),
+    rol VARCHAR(50) NOT NULL DEFAULT 'USUARIO' CHECK (rol IN ('USUARIO', 'ADMINISTRADOR', 'EMPRESA')),
     activo BOOLEAN NOT NULL DEFAULT TRUE,
+    tipo_vendedor VARCHAR(50) CHECK (tipo_vendedor IN ('PARTICULAR', 'EMPRESA')),
     numero_denuncias INT NOT NULL DEFAULT 0,
     bloqueado BOOLEAN NOT NULL DEFAULT FALSE,
     motivo_bloqueado VARCHAR(500),
@@ -150,15 +151,15 @@ CREATE TABLE mensajes (
 -- DATOS DE PRUEBA
 -- =============================================
 
-INSERT INTO usuarios (nombre, email, password, telefono, direccion, rol, activo) VALUES
+INSERT INTO usuarios (nombre, email, password, telefono, direccion, rol, activo, tipo_vendedor) VALUES
 -- Administradores (password: 12345)
-('Admin Principal', 'admin1@motorhunt.com', '$2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi', '900123456', 'Calle Principal 1, Madrid', 'ADMINISTRADOR', TRUE),
-('Admin Secundario', 'admin2@motorhunt.com', '$2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi', '900123457', 'Avenida Central 2, Madrid', 'ADMINISTRADOR', TRUE),
+('Admin Principal', 'admin1@motorhunt.com', '$2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi', '900123456', 'Calle Principal 1, Madrid', 'ADMINISTRADOR', TRUE, NULL),
+('Admin Secundario', 'admin2@motorhunt.com', '$2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi', '900123457', 'Avenida Central 2, Madrid', 'ADMINISTRADOR', TRUE, NULL),
 -- Usuarios normales (password: 12345)
-('Juan García López', 'juan.garcia@example.com', '$2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi', '612345678', 'Calle Secundaria 15, Barcelona', 'USUARIO', TRUE),
-('María López Martínez', 'maria.lopez@example.com', '$2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi', '623456789', 'Avenida Diagonal 50, Barcelona', 'USUARIO', TRUE),
+('Juan García López', 'juan.garcia@example.com', '$2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi', '612345678', 'Calle Secundaria 15, Barcelona', 'USUARIO', TRUE, 'PARTICULAR'),
+('María López Martínez', 'maria.lopez@example.com', '$2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi', '623456789', 'Avenida Diagonal 50, Barcelona', 'USUARIO', TRUE, 'PARTICULAR'),
 -- Empresa (password: 12345)
-('AutoMotor Premium S.L.', 'info@automotor.es', '$2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi', '934567890', 'Polígono Industrial 3, Valencia', 'USUARIO', TRUE);
+('AutoMotor Premium S.L.', 'info@automotor.es', '$2a$10$zN1VnX54Y8urdXkK6Snfa.3vWyDcYdewd5ny7puxlL37o.yuD4Uxi', '934567890', 'Polígono Industrial 3, Valencia', 'EMPRESA', TRUE, 'EMPRESA');
 
 -- Crear muchos coches de ejemplo típicos de segunda mano en España (sin fotos - se añaden manualmente desde el panel)
 INSERT INTO coches (marca, modelo, motor, color, tipo_cambio, combustible, numero_puertas, ubicacion, caballos_potencia, kilometros, precio, numero_plazas, centimetros_cubicos, etiqueta_ambiental, estado, descripcion, ano, usuario_id) VALUES

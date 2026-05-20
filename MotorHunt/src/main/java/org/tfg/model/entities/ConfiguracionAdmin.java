@@ -14,6 +14,13 @@ public class ConfiguracionAdmin {
     @Column(length = 255)
     private String urlLogo;
 
+    @Lob
+    @Column(name = "logo_data")
+    private byte[] logoData;
+
+    @Column(name = "logo_content_type", length = 100)
+    private String logoContentType;
+
     @Column(length = 255)
     private String urlBanner;
 
@@ -62,5 +69,11 @@ public class ConfiguracionAdmin {
 
     public Usuario getAdminModificador() { return adminModificador; }
     public void setAdminModificador(Usuario adminModificador) { this.adminModificador = adminModificador; }
+
+    public byte[] getLogoData() { return logoData; }
+    public void setLogoData(byte[] logoData) { this.logoData = logoData; }
+
+    public String getLogoContentType() { return logoContentType; }
+    public void setLogoContentType(String logoContentType) { this.logoContentType = logoContentType; }
 }
 

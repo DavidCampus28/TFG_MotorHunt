@@ -261,11 +261,11 @@
     </style>
 </head>
 <body>
-    <nav th:include="header.html"></nav>
+    <div th:replace="~{header :: header}"></div>
 
     <div class="chat-container">
         <div class="chats-list">
-            <h3>💬 Mis Chats</h3>
+            <h3>Mis Chats</h3>
             <div id="listaChats"></div>
         </div>
 
@@ -283,7 +283,11 @@
                     <button type="button" class="theme-toggle-chat" onclick="toggleChatTheme()">Claro</button>
                 </div>
 
-                <div class="mensajes-area" id="mensajesArea"></div>
+                <div class="mensajes-area" id="mensajesArea">
+                    <div style="text-align: center; padding: 40px; color: #999;">
+                        <p>Cargando mensajes...</p>
+                    </div>
+                </div>
 
                 <div class="chat-input-area">
                     <form class="chat-input-form" onsubmit="enviarMensaje(event)">
@@ -295,13 +299,15 @@
         </div>
     </div>
 
-    <footer th:include="footer.html"></footer>
+    <div th:replace="~{footer :: footer}"></div>
 
     <script>
         let usuarioActual = JSON.parse(localStorage.getItem('usuario'));
         let contactoActual = null;
         let cocheSeleccionado = new URLSearchParams(window.location.search).get('coche');
         let contactoParam = new URLSearchParams(window.location.search).get('contacto');
+
+        console.log('✓ Chat iniciado - contactoParam:', contactoParam);
 
         function initializeChatTheme() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -318,132 +324,113 @@
             document.querySelector('.theme-toggle-chat').textContent = next === 'dark' ? 'Claro' : 'Oscuro';
         }
 
-        window.addEventListener('load', () => {
-            initializeChatTheme();
-            if (!usuarioActual) {
-                window.location.href = '/login';
-                return;
-            }
-            cargarMisChats();
-            if (contactoParam) {
-                seleccionarContacto(contactoParam);
-            }
-        });
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
         function cargarMisChats() {
+            console.log('→ cargarMisChats');
             fetch(`/api/mensajes/mis-chats/${usuarioActual.id}`)
                 .then(res => res.json())
                 .then(chats => {
+                    console.log('✓ Chats recibidos:', chats.length);
                     mostrarChats(chats);
                 })
-                .catch(err => console.error('Error:', err));
+                .catch(err => console.error('✗ Error:', err));
         }
 
         function mostrarChats(chats) {
             const listaChats = document.getElementById('listaChats');
             listaChats.innerHTML = '';
-
             if (chats.length === 0) {
                 listaChats.innerHTML = '<p style="color: #999; text-align: center;">No hay chats</p>';
                 return;
             }
-
             chats.forEach(chat => {
                 const chatItem = document.createElement('div');
                 chatItem.className = 'chat-item';
                 chatItem.onclick = () => seleccionarContacto(chat.contactoId, chat.contactoNombre, chat.contactoEmail);
-
                 chatItem.innerHTML = `
                     <div class="chat-item-nombre">${chat.contactoNombre}</div>
                     <div class="chat-item-preview">${chat.ultimoMensaje}</div>
                     <div class="chat-item-fecha">${new Date(chat.ultimoMensajeHora).toLocaleDateString()}</div>
                     ${chat.noLeidos > 0 ? `<div class="chat-item-noLeidos">${chat.noLeidos} nuevo</div>` : ''}
                 `;
-
                 listaChats.appendChild(chatItem);
             });
         }
 
-        function seleccionarContacto(contactoId, nombre = null, email = null) {
-            contactoActual = {
-                id: contactoId,
-                nombre: nombre,
-                email: email
-            };
-
-            // Actualizar UI
-            document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('activo'));
-            event?.target?.closest('.chat-item')?.classList.add('activo');
-
-            document.getElementById('chatVacio').style.display = 'none';
-            document.getElementById('chatActivo').style.display = 'flex';
-
-            document.getElementById('contactoNombre').textContent = nombre || 'Cargando...';
-            document.getElementById('contactoEmail').textContent = email || '';
-
-            if (!nombre) {
-                fetch(`/usuarios/${contactoId}`)
-                    .then(res => res.ok ? res.json() : null)
-                    .then(usuario => {
-                        if (!usuario) return;
-                        contactoActual.nombre = usuario.nombre;
-                        contactoActual.email = usuario.email;
-                        document.getElementById('contactoNombre').textContent = usuario.nombre || 'Contacto';
-                        document.getElementById('contactoEmail').textContent = usuario.email || '';
-                    })
-                    .catch(() => {
-                        document.getElementById('contactoNombre').textContent = 'Contacto';
-                    });
-            }
-
-            cargarConversacion();
-        }
-
         function cargarConversacion() {
+            console.log('→ cargarConversacion entre', usuarioActual.id, 'y', contactoActual.id);
             fetch(`/api/mensajes/conversacion?usuarioId1=${usuarioActual.id}&usuarioId2=${contactoActual.id}`)
                 .then(res => res.json())
                 .then(mensajes => {
+                    console.log('✓ Mensajes:', mensajes.length);
                     mostrarMensajes(mensajes);
                 })
-                .catch(err => console.error('Error:', err));
+                .catch(err => console.error('✗ Error:', err));
         }
 
         function mostrarMensajes(mensajes) {
             const area = document.getElementById('mensajesArea');
             area.innerHTML = '';
-
             mensajes.forEach(msg => {
                 const div = document.createElement('div');
                 const esPropio = msg.remitente.id === usuarioActual.id;
                 div.className = `mensaje ${esPropio ? 'propio' : 'ajeno'}`;
-
-                const fecha = new Date(msg.fechaEnvio).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                div.innerHTML = `
-                    <div>
-                        <div class="mensaje-contenido">${escapeHtml(msg.contenido)}</div>
-                        <div class="mensaje-fecha">${fecha}</div>
-                    </div>
-                `;
-
+                const fecha = new Date(msg.fechaEnvio).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+                div.innerHTML = `<div><div class="mensaje-contenido">${escapeHtml(msg.contenido)}</div><div class="mensaje-fecha">${fecha}</div></div>`;
                 area.appendChild(div);
             });
-
-            // Scroll al último mensaje
             area.scrollTop = area.scrollHeight;
+        }
+
+        function seleccionarContacto(contactoId, nombre = null, email = null) {
+            console.log('→ seleccionarContacto:', contactoId, nombre);
+            contactoActual = { id: contactoId, nombre: nombre, email: email };
+
+            // Verificar que los elementos existan
+            const chatVacio = document.getElementById('chatVacio');
+            const chatActivo = document.getElementById('chatActivo');
+            const contactoNombreEl = document.getElementById('contactoNombre');
+            const contactoEmailEl = document.getElementById('contactoEmail');
+
+            if (!chatVacio || !chatActivo || !contactoNombreEl || !contactoEmailEl) {
+                console.warn('⚠ Elementos del DOM no encontrados, reintentar en 100ms');
+                setTimeout(() => seleccionarContacto(contactoId, nombre, email), 100);
+                return;
+            }
+
+            document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('activo'));
+            chatVacio.style.display = 'none';
+            chatActivo.style.display = 'flex';
+            contactoNombreEl.textContent = nombre || 'Cargando...';
+            contactoEmailEl.textContent = email || '';
+
+            if (!nombre) {
+                fetch(`/usuarios/${contactoId}`)
+                    .then(res => res.ok ? res.json() : null)
+                    .then(usuario => {
+                        if (usuario && contactoActual && contactoActual.id === contactoId) {
+                            contactoActual.nombre = usuario.nombre;
+                            contactoActual.email = usuario.email;
+                            contactoNombreEl.textContent = usuario.nombre;
+                            contactoEmailEl.textContent = usuario.email;
+                        }
+                    })
+                    .catch(err => console.error('✗ Error:', err));
+            }
+            cargarConversacion();
         }
 
         function enviarMensaje(event) {
             event.preventDefault();
-
             if (!contactoActual) {
                 alert('Selecciona un contacto primero');
                 return;
             }
-
             const contenido = document.getElementById('mensajeInput').value.trim();
             if (!contenido) return;
 
@@ -452,27 +439,90 @@
                 destinatarioId: contactoActual.id,
                 contenido: contenido
             });
-
             if (cocheSeleccionado) {
                 params.append('cocheId', cocheSeleccionado);
             }
 
-            fetch(`/api/mensajes/enviar?${params}`, {
-                method: 'POST'
-            })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('mensajeInput').value = '';
-                cargarConversacion();
-                cargarMisChats();
-            })
-            .catch(err => console.error('Error:', err));
+            fetch(`/api/mensajes/enviar?${params}`, {method: 'POST'})
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('mensajeInput').value = '';
+                    cargarConversacion();
+                    cargarMisChats();
+                })
+                .catch(err => console.error('✗ Error:', err));
         }
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        function cargarContactoPorId(contactoId) {
+            console.log('→ cargarContactoPorId:', contactoId);
+            // Seleccionar contacto de inmediato sin esperar los datos
+            seleccionarContacto(contactoId, 'Contacto', '');
+            // Luego cargar datos en background
+            fetch(`/usuarios/${contactoId}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Usuario no encontrado');
+                    return res.json();
+                })
+                .then(usuario => {
+                    console.log('✓ Usuario cargado:', usuario.nombre);
+                    // Actualizar datos si se cargan correctamente
+                    if (usuario.nombre) {
+                        document.getElementById('contactoNombre').textContent = usuario.nombre;
+                        contactoActual.nombre = usuario.nombre;
+                    }
+                    if (usuario.email) {
+                        document.getElementById('contactoEmail').textContent = usuario.email;
+                        contactoActual.email = usuario.email;
+                    }
+                })
+                .catch(err => {
+                    console.error('✗ Error cargando usuario (continuar con ID):', err);
+                });
+        }
+
+        function inicializarChatDesdeUrl() {
+            console.log('→ inicializarChatDesdeUrl, contactoParam:', contactoParam);
+            if (contactoParam) {
+                cargarContactoPorId(parseInt(contactoParam));
+            } else {
+                cargarMisChats();
+            }
+        }
+
+        // Escuchar cuando el DOM está listo
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('✓ DOMContentLoaded');
+            initializeChatTheme();
+            if (!usuarioActual) {
+                window.location.href = '/login';
+                return;
+            }
+            inicializarChatDesdeUrl();
+        });
+
+        // TAMBIÉN ejecutar inicialización de emergencia si tarda mucho el DOMContentLoaded
+        setTimeout(() => {
+            console.log('⏱ Verificando si DOMContentLoaded ya se ejecutó...');
+            if (!contactoActual && contactoParam && usuarioActual) {
+                console.log('⚠ Timeout - inicializando de emergencia');
+                inicializarChatDesdeUrl();
+            }
+        }, 500);
+
+        // Si el contactoParam existe Y no hay contactoActual, intentar inicializar de una vez
+        // Esto da prioridad máxima a cargar el contacto desde URL
+        if (contactoParam && usuarioActual) {
+            console.log('🚀 Iniciando chat desde URL inmediatamente');
+            // Esperar a que el DOM esté parcialmente listo (pocos ms)
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    console.log('  └─ Iniciando tras DOMContentLoaded');
+                    inicializarChatDesdeUrl();
+                });
+            } else {
+                console.log('  └─ Iniciando sin esperar (DOM ya cargado)');
+                inicializarChatDesdeUrl();
+            }
         }
 
         // Recargar chats cada 3 segundos

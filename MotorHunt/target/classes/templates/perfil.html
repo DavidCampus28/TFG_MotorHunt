@@ -80,7 +80,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 80px;
+            color: #fff;
+            font-size: 42px;
+            font-weight: 800;
             box-shadow: 0 8px 25px rgba(211, 47, 47, 0.3);
         }
 
@@ -196,7 +198,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 100px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 700;
         }
 
         .coche-card.mine .coche-image {
@@ -314,10 +318,10 @@
 
         .foto-upload-box {
             margin-top: 15px;
-            padding: 14px;
-            border: 1px dashed var(--border);
+            padding: 18px;
+            border: 1px dashed var(--accent);
             border-radius: 8px;
-            background: rgba(255,255,255,0.03);
+            background: rgba(211, 47, 47, 0.06);
         }
 
         .foto-upload-box small {
@@ -325,6 +329,43 @@
             margin-top: 8px;
             color: var(--text-secondary);
             line-height: 1.5;
+        }
+
+        .foto-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 76px;
+            padding: 16px;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            color: var(--text-main);
+            font-weight: 700;
+            text-align: center;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .foto-upload-label:hover,
+        .foto-upload-label:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.18);
+        }
+
+        .foto-upload-label input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .foto-help-list {
+            margin: 10px 0 0 18px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.55;
         }
 
         .btn-ver-detalle {
@@ -712,6 +753,12 @@
             cursor: pointer;
         }
 
+        .foto-preview:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.22);
+        }
+
         .foto-preview img {
             width: 100%;
             height: 90px;
@@ -729,13 +776,29 @@
             text-overflow: ellipsis;
         }
 
+        .foto-preview .foto-index {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            min-width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            background: rgba(0,0,0,0.72);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
         .foto-preview.portada {
             border-color: var(--accent);
             box-shadow: 0 0 0 2px rgba(211,47,47,0.25);
         }
 
         .foto-preview.portada::after {
-            content: "Portada";
+            content: "Portada seleccionada";
             position: absolute;
             top: 8px;
             left: 8px;
@@ -812,7 +875,7 @@
                 <!-- PERFIL USUARIO -->
                 <div class="perfil-header">
                     <div class="perfil-info">
-                        <div class="perfil-avatar">👤</div>
+                        <div class="perfil-avatar" aria-hidden="true">MH</div>
                         <div class="perfil-datos">
                             <div class="dato-item">
                                 <span class="dato-label">Nombre</span>
@@ -841,7 +904,7 @@
 
                 <!-- MIS COCHES A LA VENTA -->
                 <div class="seccion">
-                    <h2 class="seccion-titulo">🚗 Mis Coches en Venta</h2>
+                    <h2 class="seccion-titulo">Mis Coches en Venta</h2>
                     <button class="btn-anadir">+ Añadir Coche Nuevo</button>
                     
                     <div id="misCoches">
@@ -851,7 +914,7 @@
 
                 <!-- COCHES FAVORITOS -->
                 <div class="seccion">
-                    <h2 class="seccion-titulo">♡ Mis Coches Favoritos</h2>
+                    <h2 class="seccion-titulo">Mis Coches Favoritos</h2>
                     
                     <div id="cochesFavoritos">
                         <div class="vacio">No tienes coches marcados como favoritos.</div>
@@ -860,7 +923,7 @@
 
                 <!-- CHATS -->
                 <div class="seccion">
-                    <h2 class="seccion-titulo">💭 Mis Chats</h2>
+                    <h2 class="seccion-titulo">Mis Chats</h2>
                     
                     <div id="chats" class="chats-grid">
                         <div class="vacio" style="grid-column: 1/-1;">No tienes chats activos.</div>
@@ -993,10 +1056,18 @@
                         <textarea id="newCocheDescripcion" style="min-height: 80px;"></textarea>
                     </div>
                     <div class="form-group foto-upload-box">
-                        <label>Fotos del coche</label>
-                        <input type="file" id="newCocheFotos" multiple accept="image/*">
-                        <small>Selecciona una o varias fotos desde tu ordenador. Después pulsa una miniatura para marcarla como portada.</small>
-                        <div id="fotoPreviews" class="foto-previews"></div>
+                        <label for="newCocheFotos">Fotos del coche</label>
+                        <label class="foto-upload-label" for="newCocheFotos">
+                            Seleccionar fotos desde el ordenador
+                            <input type="file" id="newCocheFotos" multiple accept="image/*" aria-describedby="newCocheFotosHelp">
+                        </label>
+                        <small id="newCocheFotosHelp">Formatos admitidos: JPG, PNG o WebP. Tamaño recomendado: hasta 5 MB por foto.</small>
+                        <ul class="foto-help-list">
+                            <li>Selecciona varias fotos a la vez para crear una galería completa.</li>
+                            <li>La primera imagen será portada por defecto.</li>
+                            <li>Pulsa una miniatura o usa Intro/Espacio para cambiar la portada.</li>
+                        </ul>
+                        <div id="fotoPreviews" class="foto-previews" aria-live="polite"></div>
                     </div>
                     <input type="hidden" id="newCochePortadaIndex" value="0">
                     <div class="modal-buttons">
@@ -1075,7 +1146,7 @@
                         const estadoClass = coche.estado === 'VENDIDO' ? 'estado-vendido' : (coche.estado === 'RESERVADO' ? 'estado-reservado' : 'estado-en-venta');
                         html += `
                             <div class="coche-card mine">
-                                <div class="coche-image" style="background-image:url('${coche.portadaUrl || ''}'); background-size:cover; background-position:center;">${coche.portadaUrl ? '' : '🚙'}</div>
+                                <div class="coche-image" style="background-image:url('${coche.portadaUrl || ''}'); background-size:cover; background-position:center;">${coche.portadaUrl ? '' : 'Sin foto'}</div>
                                 <div class="coche-info">
                                     <div class="coche-marca">${coche.marca} ${coche.modelo}</div>
                                     <div class="coche-meta-row">
@@ -1120,7 +1191,7 @@
                         const estadoTexto = favorito.estado === 'VENDIDO' ? 'Vendido' : (favorito.estado === 'RESERVADO' ? 'Reservado' : 'En venta');
                         html += `
                             <div class="coche-card favorito-card">
-                                <div class="coche-image" style="background-image:url('${favorito.portadaUrl || ''}'); background-size:cover; background-position:center;">${favorito.portadaUrl ? '' : '❤️'}</div>
+                                <div class="coche-image" style="background-image:url('${favorito.portadaUrl || ''}'); background-size:cover; background-position:center;">${favorito.portadaUrl ? '' : 'Sin foto'}</div>
                                 <div class="coche-info">
                                     <div class="coche-marca">${favorito.marca} ${favorito.modelo}</div>
                                     <div class="favorito-price">€${Number(favorito.precio).toLocaleString()}</div>
@@ -1229,10 +1300,16 @@
             const cocheId = input.dataset.cocheId;
             if (!cocheId || !input.files || input.files.length === 0) return;
 
-            const portadaIndex = prompt('Índice de portada (0 = primera foto, 1 = segunda...)', '0') || '0';
             const formData = new FormData();
-            Array.from(input.files).forEach(file => formData.append('files', file));
-            formData.append('portadaIndex', portadaIndex);
+            const files = Array.from(input.files);
+            const invalidFile = files.find(file => !file.type.startsWith('image/') || file.size > 5 * 1024 * 1024);
+            if (invalidFile) {
+                alert(`${invalidFile.name} no es una imagen valida o supera los 5 MB.`);
+                input.value = '';
+                return;
+            }
+            files.forEach(file => formData.append('files', file));
+            formData.append('portadaIndex', '0');
 
             fetch(`/coches/${cocheId}/fotos`, {
                 method: 'POST',
@@ -1376,17 +1453,38 @@
             previews.innerHTML = '';
             portadaInput.value = '0';
 
-            Array.from(this.files || []).forEach((file, index) => {
+            const files = Array.from(this.files || []);
+            if (files.length === 0) return;
+
+            const invalidFile = files.find(file => !file.type.startsWith('image/') || file.size > 5 * 1024 * 1024);
+            if (invalidFile) {
+                alert(`${invalidFile.name} no es una imagen valida o supera los 5 MB.`);
+                this.value = '';
+                return;
+            }
+
+            files.forEach((file, index) => {
                 const reader = new FileReader();
                 reader.onload = () => {
                     const item = document.createElement('div');
                     item.className = `foto-preview ${index === 0 ? 'portada' : ''}`;
-                    item.onclick = () => {
+                    item.tabIndex = 0;
+                    item.setAttribute('role', 'button');
+                    item.setAttribute('aria-label', `Seleccionar ${file.name} como portada`);
+                    const seleccionarPortada = () => {
                         portadaInput.value = index;
                         document.querySelectorAll('.foto-preview').forEach(preview => preview.classList.remove('portada'));
                         item.classList.add('portada');
+                        item.setAttribute('aria-label', `${file.name} seleccionada como portada`);
                     };
-                    item.innerHTML = `<img src="${reader.result}" alt="Foto ${index + 1}"><span>${file.name}</span>`;
+                    item.onclick = seleccionarPortada;
+                    item.onkeydown = (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            seleccionarPortada();
+                        }
+                    };
+                    item.innerHTML = `<img src="${reader.result}" alt="Vista previa ${index + 1}"><span class="foto-index">${index + 1}</span><span>${file.name}</span>`;
                     previews.appendChild(item);
                 };
                 reader.readAsDataURL(file);

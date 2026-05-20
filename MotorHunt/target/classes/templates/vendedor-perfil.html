@@ -150,11 +150,12 @@
         <div class="container">
             <section class="hero">
                 <div class="hero-top">
-                    <div class="avatar">👤</div>
+                    <div class="avatar">MH</div>
                     <div>
                         <div class="titulo" th:text="${vendedor.nombre}">Nombre vendedor</div>
                         <div class="subtitulo" th:text="${vendedor.rol}">ROL</div>
                         <div class="chips">
+                            <span class="chip" th:if="${vendedor.tipoVendedor}" th:text="${vendedor.tipoVendedorLegible}"></span>
                             <span class="chip" th:text="${totalCoches} + ' coches en venta'">0 coches</span>
                             <span class="chip" th:text="${vendedor.activo ? 'Cuenta activa' : 'Cuenta inactiva'}">Estado</span>
                         </div>
@@ -192,7 +193,7 @@
             </section>
             <section th:if="${!#lists.isEmpty(cochesVendedor)}" class="coches-grid">
                 <article class="coche-card" th:each="coche : ${cochesVendedor}">
-                    <div class="coche-img">🚗</div>
+                    <div class="coche-img">Sin foto</div>
                     <div class="coche-body">
                         <div class="coche-title" th:text="${coche.marca + ' ' + coche.modelo}">Marca modelo</div>
                         <div class="coche-meta" th:text="${coche.ano + ' • ' + coche.kilometros + ' km • ' + coche.combustible}">Meta</div>

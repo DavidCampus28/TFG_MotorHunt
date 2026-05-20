@@ -35,6 +35,15 @@ public class AuthController {
             String telefono = request.get("telefono");
             String direccion = request.get("direccion");
             String rolStr = request.getOrDefault("rol", "USUARIO");
+            boolean aceptaTerminos = Boolean.parseBoolean(request.getOrDefault("aceptaTerminos", "false"));
+
+            if (!esPasswordSegura(password)) {
+                return ResponseEntity.badRequest().body("La contraseña debe tener al menos 12 caracteres, mayúsculas, minúsculas, números y símbolos.");
+            }
+
+            if (!aceptaTerminos) {
+                return ResponseEntity.badRequest().body("Debes leer y aceptar los términos y condiciones para registrarte.");
+            }
 
             if (usuarioRepository.findByEmail(email).isPresent()) {
                 return ResponseEntity.badRequest().body("El email ya está registrado");
@@ -73,6 +82,16 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error en el registro: " + e.getMessage());
         }
+    }
+
+    private boolean esPasswordSegura(String password) {
+        if (password == null || password.length() < 12) {
+            return false;
+        }
+        return password.matches(".*[A-Z].*")
+                && password.matches(".*[a-z].*")
+                && password.matches(".*\\d.*")
+                && password.matches(".*[^A-Za-z0-9].*");
     }
 
     @PostMapping("/login")

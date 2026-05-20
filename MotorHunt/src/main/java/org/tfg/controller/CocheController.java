@@ -93,6 +93,7 @@ public class CocheController {
             response.setVendedorTelefono(vendedor.getTelefono());
             response.setVendedorDireccion(vendedor.getDireccion());
             response.setVendedorRol(vendedor.getRol().toString());
+            response.setVendedorTipoVendedor(vendedor.getTipoVendedorLegible());
             response.setVendedorNumeroDenuncias(vendedor.getNumeroDenuncias() == null ? 0 : vendedor.getNumeroDenuncias());
             response.setVendedorBloqueado(Boolean.TRUE.equals(vendedor.getBloqueado()));
             response.setVendedorMotivoBloqueado(vendedor.getMotivoBloqueado());

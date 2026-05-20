@@ -396,7 +396,7 @@
     </style>
 </head>
 <body>
-    <nav th:include="header.html"></nav>
+    <div th:replace="~{header :: header}"></div>
 
     <div class="coche-detalle-container">
         <div class="detalle-header" id="cocheMostrado" style="display:none;">
@@ -413,7 +413,7 @@
                         <div id="cocheDenunciaAlerta" class="denuncia-alerta" style="display:none;"></div>
                         <div class="precio-final" id="cochePrecio"></div>
                         <div class="detalle-actions-row">
-                            <button class="btn-me-gusta" id="btnMeGusta" onclick="toggleMeGusta()">❤️ Me gusta</button>
+                            <button class="btn-me-gusta" id="btnMeGusta" onclick="toggleMeGusta()">Me gusta</button>
                             <div class="me-gustas-count">
                                 <span id="meGustasTotales">0</span> me gustas
                             </div>
@@ -463,8 +463,11 @@
         </div>
 
         <div class="vendedor-card" id="vendedorMostrado" style="display:none;">
-            <h3>👤 Información del Vendedor</h3>
-            <p style="margin: 0; font-size: 1.2em; font-weight: bold;" id="vendedorNombre"></p>
+            <h3>Información del Vendedor</h3>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <p style="margin: 0; font-size: 1.2em; font-weight: bold;" id="vendedorNombre"></p>
+                <span id="vendedorTipoTag" style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600; background: rgba(211,47,47,0.2); color: var(--accent); border: 1px solid var(--accent);"></span>
+            </div>
             <p style="margin: 5px 0 0 0; opacity: 0.9;" id="vendedorRol"></p>
             <div class="vendedor-info">
                 <div class="vendedor-info-item">
@@ -481,8 +484,8 @@
                 </div>
             </div>
             <div class="botones-accion">
-                <button class="btn-chat" onclick="abrirChat()">💬 Chatear con el vendedor</button>
-                <a id="btnPerfilVendedor" class="btn-vendedor" href="#">👤 Ver perfil del vendedor</a>
+                <button id="btnChat" class="btn-chat" onclick="abrirChat()" data-vendedor-id="">Chatear con el vendedor</button>
+                <a id="btnPerfilVendedor" class="btn-vendedor" href="#">Ver perfil del vendedor</a>
             </div>
         </div>
 
@@ -498,12 +501,12 @@
         </div>
 
         <div class="ubicacion" id="ubicacionMostrada" style="display:none;">
-            <h3>📍 Ubicación</h3>
+            <h3>Ubicación</h3>
             <p id="cocheUbicacion"></p>
         </div>
     </div>
 
-    <footer th:include="footer.html"></footer>
+    <div th:replace="~{footer :: footer}"></div>
 
     <div id="denunciaModal" class="modal-denuncia">
         <div class="modal-denuncia-content">
@@ -616,6 +619,15 @@
             document.getElementById('vendedorDireccion').textContent = coche.vendedorDireccion || 'No disponible';
             document.getElementById('btnPerfilVendedor').href = `/perfil-vendedor?id=${coche.vendedorId}`;
 
+            // Mostrar tipo de vendedor
+            const tipoTag = document.getElementById('vendedorTipoTag');
+            if (coche.vendedorTipoVendedor) {
+                tipoTag.textContent = coche.vendedorTipoVendedor;
+                tipoTag.style.display = 'inline-block';
+            } else {
+                tipoTag.style.display = 'none';
+            }
+
             const alertaVendedor = document.getElementById('vendedorDenunciaAlerta');
             const denunciasVendedor = Number(coche.vendedorNumeroDenuncias || 0);
             if (coche.vendedorBloqueado || denunciasVendedor > 0) {
@@ -630,7 +642,7 @@
             // Actualizar botón me gusta
             if (coche.tieneMemGusta) {
                 document.getElementById('btnMeGusta').classList.add('activo');
-                document.getElementById('btnMeGusta').innerHTML = '❤️ Ya te gusta';
+                document.getElementById('btnMeGusta').innerHTML = 'Ya te gusta';
             }
 
             actualizarCountMeGustas();
@@ -648,6 +660,7 @@
                 nombre: coche.vendedorNombre,
                 email: coche.vendedorEmail
             };
+            document.getElementById('btnChat').setAttribute('data-vendedor-id', coche.vendedorId);
         }
 
         function toggleMeGusta() {
@@ -674,7 +687,7 @@
             .then(res => res.json())
             .then(data => {
                 document.getElementById('btnMeGusta').classList.add('activo');
-                document.getElementById('btnMeGusta').innerHTML = '❤️ Ya te gusta';
+                document.getElementById('btnMeGusta').innerHTML = 'Ya te gusta';
                 actualizarCountMeGustas();
                 if (window.opener && window.opener.location) {
                     try { window.opener.location.reload(); } catch (e) {}
@@ -690,7 +703,7 @@
             .then(res => res.json())
             .then(data => {
                 document.getElementById('btnMeGusta').classList.remove('activo');
-                document.getElementById('btnMeGusta').innerHTML = '❤️ Me gusta';
+                document.getElementById('btnMeGusta').innerHTML = 'Me gusta';
                 actualizarCountMeGustas();
                 if (window.opener && window.opener.location) {
                     try { window.opener.location.reload(); } catch (e) {}
@@ -715,8 +728,24 @@
                 return;
             }
 
+            // Obtener id del vendedor (intentar data atributo, variable global, y fallback)
+            let vendedorId = document.getElementById('btnChat')?.getAttribute('data-vendedor-id');
+            if (!vendedorId) {
+                vendedorId = window.vendedorInfo?.id;
+            }
+            if (!vendedorId) {
+                const href = document.getElementById('btnPerfilVendedor')?.href || '';
+                const m = href.match(/id=(\d+)/);
+                vendedorId = m ? m[1] : null;
+            }
+
+            if (!vendedorId) {
+                alert('No se pudo obtener la información del vendedor para abrir el chat');
+                return;
+            }
+
             // Redirigir a página de chat o abrir modal
-            window.location.href = `/chat?contacto=${window.vendedorInfo.id}&coche=${cocheId}`;
+            window.location.href = `/chat?contacto=${vendedorId}&coche=${cocheId}`;
         }
 
         function cambiarPortada(url, elemento) {
