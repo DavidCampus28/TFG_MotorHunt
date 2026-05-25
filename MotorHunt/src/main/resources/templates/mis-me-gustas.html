@@ -98,6 +98,7 @@
             display: flex;
             gap: 10px;
             margin-top: 15px;
+            align-items: center;
         }
         .btn-ver {
             flex: 1;
@@ -114,16 +115,25 @@
             background: #5568d3;
         }
         .btn-eliminar {
-            background: #ff4444;
-            color: white;
+            background: none;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
+            font-size: 24px;
             cursor: pointer;
             transition: all 0.3s;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            min-height: 44px;
+            border-radius: 5px;
         }
         .btn-eliminar:hover {
-            background: #ff2222;
+            background: rgba(255, 68, 68, 0.1);
+            transform: scale(1.2);
+        }
+        .btn-eliminar.active {
+            color: #ff4444;
         }
         .me-gustas-vacio {
             text-align: center;
@@ -240,7 +250,7 @@
 
                         <div class="coche-card-botones">
                             <button class="btn-ver" onclick="verDetalles(${mg.cocheId})">Ver Detalles</button>
-                            <button class="btn-eliminar" onclick="eliminarMeGusta(${mg.cocheId})">✕</button>
+                            <button class="btn-eliminar active" onclick="eliminarMeGusta(${mg.cocheId})" title="Quitar de favoritos">❤️</button>
                         </div>
                     </div>
                 `;

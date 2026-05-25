@@ -318,6 +318,16 @@
                                 </small>
                             </div>
                             <div class="form-group">
+                                <label>Repetir Contraseña</label>
+                                <input
+                                    type="password"
+                                    id="registerPasswordRepeat"
+                                    minlength="12"
+                                    autocomplete="new-password"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
                                 <label>Teléfono</label>
                                 <input type="tel" id="registerTelefono">
                             </div>
@@ -433,11 +443,17 @@
         function handleRegister(e) {
             e.preventDefault();
             const password = document.getElementById('registerPassword').value;
+            const passwordRepeat = document.getElementById('registerPasswordRepeat').value;
             const acceptTerms = document.getElementById('acceptTerms').checked;
             const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/;
 
             if (!passwordRegex.test(password)) {
                 showMessage('registerMessage', 'La contraseña debe tener al menos 12 caracteres, mayúsculas, minúsculas, números y símbolos.', 'error');
+                return;
+            }
+
+            if (password !== passwordRepeat) {
+                showMessage('registerMessage', 'Las contraseñas no coinciden.', 'error');
                 return;
             }
 

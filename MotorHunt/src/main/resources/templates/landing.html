@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotorHunt - Compra y Venta de Coches</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #252525;
+            --text-main: #d0d0d0;
+            --text-secondary: #b0b0b0;
+            --accent: #d32f2f;
+            --accent-dark: #b71c1c;
+            --border-color: #333;
+        }
+
+        html[data-theme="light"] {
+            --bg-dark: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-tertiary: #e8e8e8;
+            --text-main: #333333;
+            --text-secondary: #555555;
+            --accent: #d32f2f;
+            --accent-dark: #b71c1c;
+            --border-color: #ddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
+            color: var(--text-main);
+        }
+
+        #app {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            padding: 120px 50px;
+            text-align: center;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 35px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--accent);
+            transform: translateY(-4px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 50px;
+        }
+
+        .section {
+            padding: 100px 50px;
+        }
+
+        .section-title {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border-radius: 12px;
+            padding: 40px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 15px 40px rgba(211, 47, 47, 0.2);
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin: 60px 0;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        .info-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin: 60px 0;
+        }
+
+        .info-text h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: var(--accent);
+        }
+
+        .info-text p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .info-text ul {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .info-text li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .info-text li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .info-image {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border-radius: 12px;
+            padding: 40px;
+            border: 2px solid var(--border-color);
+            text-align: center;
+            font-size: 120px;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            padding: 80px 50px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 80px 0;
+        }
+
+        .cta-section h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 60px 30px;
+                min-height: 400px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .section {
+                padding: 60px 30px;
+            }
+
+            .container {
+                padding: 0 20px;
+            }
+
+            .info-section {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div th:replace="header :: header"></div>
+
+        <main>
+            <!-- Hero Section -->
+            <div class="hero">
+                <h1>Bienvenido a MotorHunt</h1>
+                <p>La plataforma más confiable para comprar y vender coches en España</p>
+                <div class="hero-buttons">
+                    <a href="/index" class="btn btn-primary">🔍 Explorar Vehículos</a>
+                    <a href="/login" onclick="showRegisterForm(event)" class="btn btn-secondary">📝 Registrarse</a>
+                </div>
+            </div>
+
+            <!-- Características -->
+            <section class="section" th:style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%)">
+                <div class="container">
+                    <h2 class="section-title">¿Por Qué MotorHunt?</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🔒</div>
+                            <h3>100% Seguro</h3>
+                            <p>Transacciones seguras con verificación de identidad y protección de datos garantizada.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h3>Rápido y Fácil</h3>
+                            <p>Publica tus coches en segundos. Acceso a miles de compradores potenciales.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">💬</div>
+                            <h3>Asistente IA</h3>
+                            <p>Nuestro chatbot inteligente responde todas tus preguntas sobre vehículos 24/7.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">💰</div>
+                            <h3>Sin Comisiones</h3>
+                            <p>Vende sin intermediarios. Tú controlas el precio y la negociación.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🏆</div>
+                            <h3>Verificado</h3>
+                            <p>Sistema de denuncias y reputación para garantizar honestidad en todas las operaciones.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📱</div>
+                            <h3>Totalmente Responsive</h3>
+                            <p>Accede desde cualquier dispositivo. Web, tablet o móvil con la misma experiencia.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Estadísticas -->
+            <section class="section">
+                <div class="container">
+                    <h2 class="section-title">MotorHunt por Números</h2>
+                    <div class="stats-grid">
+                        <div class="stat">
+                            <div class="stat-number">62+</div>
+                            <div class="stat-label">Vehículos Listados</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">Usuarios Activos</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Satisfacción</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">Soporte de IA</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección Comprador -->
+            <section class="section" th:style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%)">
+                <div class="container">
+                    <div class="info-section">
+                        <div class="info-text">
+                            <h2>¿Buscas Comprar?</h2>
+                            <p>En MotorHunt encontrarás miles de vehículos de segunda mano a los mejores precios. Desde coches económicos hasta vehículos premium.</p>
+                            <ul>
+                                <li>Filtros avanzados por marca, modelo, precio y más</li>
+                                <li>Fotos de alta calidad de cada vehículo</li>
+                                <li>Especificaciones técnicas detalladas</li>
+                                <li>Historial verificado del vendedor</li>
+                                <li>Chat directo con vendedores</li>
+                                <li>Guardar favoritos para comprar después</li>
+                            </ul>
+                            <a href="/index" class="btn btn-primary">Ver Vehículos Disponibles</a>
+                        </div>
+                        <div class="info-image">🚗</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección Vendedor -->
+            <section class="section">
+                <div class="container">
+                    <div class="info-section">
+                        <div class="info-image">🚙</div>
+                        <div class="info-text">
+                            <h2>¿Quieres Vender?</h2>
+                            <p>Vender en MotorHunt es simple. Crea un anuncio, carga fotos y espera a que los compradores interesados se pongan en contacto.</p>
+                            <ul>
+                                <li>Publica anuncios ilimitados sin comisiones</li>
+                                <li>Carga múltiples fotos HD de tu vehículo</li>
+                                <li>Gestión fácil de anuncios desde tu panel</li>
+                                <li>Sistema de mensajes integrado</li>
+                                <li>Estadísticas de visualizaciones</li>
+                                <li>Soporte prioritario para vendedores</li>
+                            </ul>
+                            <a href="/login" onclick="showRegisterForm(event)" class="btn btn-primary">Crea tu cuenta Vendedor</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <div class="container">
+                <div class="cta-section">
+                    <h2>¿Listo para Empezar?</h2>
+                    <p>Únete a miles de usuarios que ya confían en MotorHunt</p>
+                    <div class="hero-buttons">
+                        <a href="/login" onclick="showRegisterForm(event)" class="btn btn-primary">Registrarse Ahora</a>
+                        <a href="/index" class="btn btn-secondary">Explorar Vehículos</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div th:replace="footer :: footer"></div>
+    </div>
+
+    <script>
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        function showRegisterForm(e) {
+            e.preventDefault();
+            localStorage.setItem('showRegisterForm', 'true');
+            window.location.href = '/login';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTheme();
+        });
+    </script>
+</body>
+</html>
+

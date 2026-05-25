@@ -448,6 +448,7 @@
                     <li><a onclick="showSection('dashboard')" class="menu-item active" data-section="dashboard">Dashboard</a></li>
                     <li><a onclick="showSection('usuarios')" class="menu-item" data-section="usuarios">Usuarios</a></li>
                     <li><a onclick="showSection('coches')" class="menu-item" data-section="coches">Vehículos</a></li>
+                    <li><a onclick="showSection('anuncios-empresas')" class="menu-item" data-section="anuncios-empresas">Anuncios Empresas</a></li>
                     <li><a onclick="showSection('denuncias')" class="menu-item" data-section="denuncias">Denuncias</a></li>
                     <li><a onclick="showSection('alertas')" class="menu-item" data-section="alertas">Alertas</a></li>
                     <li><a onclick="showSection('conversaciones')" class="menu-item" data-section="conversaciones">Conversaciones</a></li>
@@ -541,6 +542,123 @@
                     <div class="section">
                         <h2>Lista de Vehículos</h2>
                         <div id="cochesList"></div>
+                    </div>
+                </div>
+
+                <!-- ANUNCIOS EMPRESAS SECTION -->
+                <div id="anuncios-empresas-section" class="section-container hidden">
+                    <div class="page-header">
+                        <h1>Gestión de Anuncios de Empresas</h1>
+                        <button class="btn btn-primary" onclick="openCreateAnuncioModal()">+ Nuevo Anuncio</button>
+                    </div>
+
+                    <div class="section">
+                        <h2>Filtros</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                            <input type="text" id="anuncioFilterId" placeholder="Filtrar por ID..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterAnuncios()">
+                            <input type="text" id="anuncioFilterEmpresa" placeholder="Filtrar por empresa..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterAnuncios()">
+                            <input type="text" id="anuncioFilterTitulo" placeholder="Filtrar por título..." style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onkeyup="filterAnuncios()">
+                            <select id="anuncioFilterEstado" style="padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-tertiary); color: var(--text-main);" onchange="filterAnuncios()">
+                                <option value="">- Estado -</option>
+                                <option value="ACTIVO">Activo</option>
+                                <option value="PAUSADO">Pausado</option>
+                                <option value="ARCHIVADO">Archivado</option>
+                            </select>
+                            <button class="btn btn-secondary" onclick="resetAnuncioFilters()">Limpiar</button>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2>Lista de Anuncios de Empresas</h2>
+                        <div id="anunciosList" style="overflow-x: auto;">
+                            <table style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Empresa</th>
+                                        <th>Título</th>
+                                        <th>Descripción</th>
+                                        <th>Estado</th>
+                                        <th>Presupuesto</th>
+                                        <th>Fecha Inicio</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>AutoNegocios S.A.</td>
+                                        <td>Compra de 50 vehículos</td>
+                                        <td>Buscamos 50 vehículos de segunda mano en buen estado para nuestra flota</td>
+                                        <td><span class="badge badge-admin">ACTIVO</span></td>
+                                        <td>€150,000</td>
+                                        <td>2026-05-20</td>
+                                        <td><button class="btn btn-secondary" onclick="viewAnuncioDetails(1)">Ver</button> <button class="btn btn-danger" onclick="confirmDeleteAnuncio(1)">Eliminar</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Fleet Management Ltd</td>
+                                        <td>Adquisición de vehículos comerciales</td>
+                                        <td>Necesitamos 30 furgonetas comerciales para expansión de servicios de logística</td>
+                                        <td><span class="badge badge-usuario">PAUSADO</span></td>
+                                        <td>€200,000</td>
+                                        <td>2026-05-15</td>
+                                        <td><button class="btn btn-secondary" onclick="viewAnuncioDetails(2)">Ver</button> <button class="btn btn-danger" onclick="confirmDeleteAnuncio(2)">Eliminar</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Transportes Europa</td>
+                                        <td>Búsqueda piezas de repuesto</td>
+                                        <td>Compramos piezas de repuesto originales para camiones y autobuses</td>
+                                        <td><span class="badge badge-admin">ACTIVO</span></td>
+                                        <td>€50,000</td>
+                                        <td>2026-05-18</td>
+                                        <td><button class="btn btn-secondary" onclick="viewAnuncioDetails(3)">Ver</button> <button class="btn btn-danger" onclick="confirmDeleteAnuncio(3)">Eliminar</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="section" style="margin-top: 30px;">
+                        <h2>Gestión de Propuestas</h2>
+                        <p style="color: var(--text-secondary); margin-bottom: 15px;">Aquí aparecerán las propuestas de vendedores para cada anuncio de empresa</p>
+                        <div style="background: var(--bg-tertiary); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+                            <h3 style="color: var(--accent); margin-bottom: 15px;">Propuestas Pendientes</h3>
+                            <table style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>ID Propuesta</th>
+                                        <th>Anuncio</th>
+                                        <th>Vendedor</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unitario</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>P-001</td>
+                                        <td>Compra de 50 vehículos</td>
+                                        <td>Juan García Motors</td>
+                                        <td>45</td>
+                                        <td>€2,950</td>
+                                        <td><span class="badge badge-admin">PENDIENTE</span></td>
+                                        <td><button class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;">Aceptar</button> <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">Rechazar</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>P-002</td>
+                                        <td>Compra de 50 vehículos</td>
+                                        <td>María López Trucks</td>
+                                        <td>50</td>
+                                        <td>€3,100</td>
+                                        <td><span class="badge badge-usuario">PENDIENTE</span></td>
+                                        <td><button class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;">Aceptar</button> <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">Rechazar</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -683,12 +801,20 @@
                         <h2>Personalización de Sitio</h2>
                         <form id="configForm" style="max-width: 600px;">
                             <div class="form-group">
-                                <label>URL del Logo</label>
-                                <input type="text" id="configLogo" placeholder="/img/LogoMotorHunt.png" value="/img/LogoMotorHunt.png" required>
+                                <label>Logo</label>
+                                <div id="configLogoPreview" style="margin-bottom: 10px; min-height: 50px; display: flex; align-items: center;"></div>
+                                <label class="foto-admin-upload-label" for="configLogoFile" style="margin-bottom: 10px;">
+                                    Seleccionar logo
+                                    <input type="file" id="configLogoFile" accept="image/*">
+                                </label>
                             </div>
                             <div class="form-group">
-                                <label>URL del Banner</label>
-                                <input type="text" id="configBanner" placeholder="URL del banner principal">
+                                <label>Banner</label>
+                                <div id="configBannerPreview" style="margin-bottom: 10px; min-height: 80px; display: flex; align-items: center;"></div>
+                                <label class="foto-admin-upload-label" for="configBannerFile" style="margin-bottom: 10px;">
+                                    Seleccionar banner
+                                    <input type="file" id="configBannerFile" accept="image/*">
+                                </label>
                             </div>
                             <div class="form-group">
                                 <label>Texto de Bienvenida</label>
@@ -1124,22 +1250,23 @@
             }
         }
 
-        function showSection(sectionId) {
-             document.querySelectorAll('.section-container').forEach(el => el.classList.add('hidden'));
-             document.getElementById(sectionId + '-section').classList.remove('hidden');
-             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-             document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+         function showSection(sectionId) {
+              document.querySelectorAll('.section-container').forEach(el => el.classList.add('hidden'));
+              document.getElementById(sectionId + '-section').classList.remove('hidden');
+              document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+              document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
 
-             if (sectionId === 'dashboard') loadDashboard();
-             else if (sectionId === 'usuarios') loadUsuarios();
-             else if (sectionId === 'coches') loadCoches();
-             else if (sectionId === 'denuncias') loadDenuncias();
-             else if (sectionId === 'alertas') loadAlertas();
-             else if (sectionId === 'conversaciones') loadConversaciones();
-             else if (sectionId === 'me-gustas') loadMeGustas();
-             else if (sectionId === 'analytics') loadAnalytics();
-             else if (sectionId === 'configuracion') loadConfiguracion();
-         }
+              if (sectionId === 'dashboard') loadDashboard();
+              else if (sectionId === 'usuarios') loadUsuarios();
+              else if (sectionId === 'coches') loadCoches();
+              else if (sectionId === 'anuncios-empresas') loadAnunciosEmpresas();
+              else if (sectionId === 'denuncias') loadDenuncias();
+              else if (sectionId === 'alertas') loadAlertas();
+              else if (sectionId === 'conversaciones') loadConversaciones();
+              else if (sectionId === 'me-gustas') loadMeGustas();
+              else if (sectionId === 'analytics') loadAnalytics();
+              else if (sectionId === 'configuracion') loadConfiguracion();
+          }
 
         function loadConversaciones() {
             fetch('/api/admin/conversaciones')
@@ -1441,9 +1568,42 @@
             });
             html += '</tbody></table>';
             document.getElementById('cochesList').innerHTML = html;
-        }
+         }
 
-        function filterUsuarios() {
+         // FUNCIONES PARA ANUNCIOS DE EMPRESAS
+         function loadAnunciosEmpresas() {
+             // Esta es una sección de prueba, no se conecta a API
+             console.log('Cargada sección de Anuncios de Empresas');
+         }
+
+         function openCreateAnuncioModal() {
+             alert('Funcionalidad de crear anuncio (en prueba)');
+         }
+
+         function viewAnuncioDetails(id) {
+             alert('Detalles del anuncio ID: ' + id + ' (en prueba)');
+         }
+
+         function confirmDeleteAnuncio(id) {
+             if (confirm('¿Eliminar anuncio ' + id + '?')) {
+                 alert('Anuncio eliminado (en prueba)');
+             }
+         }
+
+         function filterAnuncios() {
+             // Filtros de anuncios (en prueba)
+             console.log('Filtros de anuncios');
+         }
+
+         function resetAnuncioFilters() {
+             document.getElementById('anuncioFilterId').value = '';
+             document.getElementById('anuncioFilterEmpresa').value = '';
+             document.getElementById('anuncioFilterTitulo').value = '';
+             document.getElementById('anuncioFilterEstado').value = '';
+             alert('Filtros limpios (en prueba)');
+         }
+
+         function filterUsuarios() {
             const id = document.getElementById('userFilterId').value.toLowerCase();
             const nombre = document.getElementById('userFilterNombre').value.toLowerCase();
             const email = document.getElementById('userFilterEmail').value.toLowerCase();
@@ -1907,73 +2067,130 @@
              }).catch(e => console.error('Error cargando dashboard:', e));
         }
 
-        // CONFIGURACIÓN
-        let currentConfigId = null;
+          // CONFIGURACIÓN
+          let currentConfigId = null;
+          let uploadedLogUrl = null;
+          let uploadedBannerUrl = null;
 
-        function loadConfiguracion() {
-            fetch('/api/admin/advanced/configuracion', {
-                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
-            }).then(r => r.json()).then(cfg => {
-                currentConfigId = cfg.id || null;
-                document.getElementById('configLogo').value = cfg.urlLogo || '/img/LogoMotorHunt.png';
-                document.getElementById('configBanner').value = cfg.urlBanner || '';
-                document.getElementById('configBienvenida').value = cfg.textoBienvenida || '';
-                document.getElementById('configDescripcion').value = cfg.textoDescripcion || '';
-                const preview = document.getElementById('configLogoPreview');
-                if (preview) {
-                    preview.innerHTML = `<img src="${cfg.urlLogo || '/img/LogoMotorHunt.png'}" alt="Logo" style="height:48px;">`;
-                }
-            }).catch(e => console.error('Error cargando configuración:', e));
-        }
+          function initConfigListeners() {
+              const logoFile = document.getElementById('configLogoFile');
+              const bannerFile = document.getElementById('configBannerFile');
+              const configForm = document.getElementById('configForm');
 
-        document.getElementById('configLogoFile').addEventListener('change', function() {
-            const file = this.files[0];
-            if (!file) return;
-            uploadLogo(file);
-        });
+              if (logoFile) {
+                  logoFile.removeEventListener('change', handleLogoChange);
+                  logoFile.addEventListener('change', handleLogoChange);
+              }
 
-        function uploadLogo(file) {
-            const fd = new FormData();
-            fd.append('file', file);
-            const usuario = JSON.parse(localStorage.getItem('usuario') || 'null');
-            if (usuario && usuario.id) fd.append('adminId', String(usuario.id));
+              if (bannerFile) {
+                  bannerFile.removeEventListener('change', handleBannerChange);
+                  bannerFile.addEventListener('change', handleBannerChange);
+              }
 
-            fetch('/api/admin/advanced/configuracion/logo', {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
-                body: fd
-            }).then(r => r.json()).then(d => {
-                if (d.urlLogo) {
-                    document.getElementById('configLogo').value = d.urlLogo;
-                    document.getElementById('configLogoPreview').innerHTML = `<img src="${d.urlLogo}" alt="Logo" style="height:48px;">`;
-                } else {
-                    alert('No se pudo subir el logo');
-                }
-            }).catch(e => alert('Error subiendo logo: ' + e));
-        }
+              if (configForm) {
+                  configForm.removeEventListener('submit', handleConfigSubmit);
+                  configForm.addEventListener('submit', handleConfigSubmit);
+              }
+          }
 
-        document.getElementById('configForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const payload = {
-                id: currentConfigId,
-                urlLogo: document.getElementById('configLogo').value,
-                urlBanner: document.getElementById('configBanner').value,
-                textoBienvenida: document.getElementById('configBienvenida').value,
-                textoDescripcion: document.getElementById('configDescripcion').value
-            };
+          function handleLogoChange(e) {
+              const file = e.target.files[0];
+              if (!file) return;
+              uploadConfigFile(file, 'logo');
+          }
 
-            fetch('/api/admin/advanced/configuracion', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                body: JSON.stringify(payload)
-            }).then(r => r.json()).then(d => {
-                alert('Configuración guardada');
-                loadConfiguracion();
-            }).catch(e => alert('Error guardando configuración: ' + e));
-        });
+          function handleBannerChange(e) {
+              const file = e.target.files[0];
+              if (!file) return;
+              uploadConfigFile(file, 'banner');
+          }
+
+          function handleConfigSubmit(e) {
+              e.preventDefault();
+              const payload = {
+                  id: currentConfigId,
+                  urlLogo: uploadedLogUrl || '/img/LogoMotorHunt.png',
+                  urlBanner: uploadedBannerUrl || '',
+                  textoBienvenida: document.getElementById('configBienvenida').value,
+                  textoDescripcion: document.getElementById('configDescripcion').value
+              };
+
+              fetch('/api/admin/advanced/configuracion', {
+                  method: 'PUT',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer ' + localStorage.getItem('token')
+                  },
+                  body: JSON.stringify(payload)
+              }).then(r => {
+                  if (!r.ok) throw new Error('Error en la respuesta del servidor');
+                  return r.json();
+              }).then(d => {
+                  alert('✓ Configuración guardada correctamente');
+                  loadConfiguracion();
+              }).catch(e => alert('Error: ' + e.message));
+          }
+
+          function loadConfiguracion() {
+              initConfigListeners();
+
+              fetch('/api/admin/advanced/configuracion', {
+                  headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+              }).then(r => r.json()).then(cfg => {
+                  currentConfigId = cfg.id || null;
+                  uploadedLogUrl = cfg.urlLogo || '/img/LogoMotorHunt.png';
+                  uploadedBannerUrl = cfg.urlBanner || '';
+                  document.getElementById('configBienvenida').value = cfg.textoBienvenida || '';
+                  document.getElementById('configDescripcion').value = cfg.textoDescripcion || '';
+
+                  // Mostrar preview del logo
+                  const logoPreview = document.getElementById('configLogoPreview');
+                  if (logoPreview && uploadedLogUrl) {
+                      logoPreview.innerHTML = `<img src="${uploadedLogUrl}" alt="Logo" style="height:48px;">`;
+                  }
+
+                  // Mostrar preview del banner
+                  const bannerPreview = document.getElementById('configBannerPreview');
+                  if (bannerPreview && uploadedBannerUrl) {
+                      bannerPreview.innerHTML = `<img src="${uploadedBannerUrl}" alt="Banner" style="height:80px; width:100%; object-fit: cover;">`;
+                  }
+              }).catch(e => console.error('Error cargando configuración:', e));
+          }
+
+          function uploadConfigFile(file, tipo) {
+              if (!file.type.startsWith('image/')) {
+                  alert('El archivo debe ser una imagen');
+                  return;
+              }
+              if (file.size > 5 * 1024 * 1024) {
+                  alert('La imagen no puede superar 5 MB');
+                  return;
+              }
+
+              const fd = new FormData();
+              fd.append('file', file);
+              const usuario = JSON.parse(localStorage.getItem('usuario') || 'null');
+              if (usuario && usuario.id) fd.append('adminId', String(usuario.id));
+
+              fetch(`/api/admin/advanced/configuracion/${tipo}`, {
+                  method: 'POST',
+                  headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+                  body: fd
+              }).then(r => r.json()).then(d => {
+                  if (tipo === 'logo' && d.urlLogo) {
+                      uploadedLogUrl = d.urlLogo;
+                      document.getElementById('configLogoPreview').innerHTML = `<img src="${d.urlLogo}" alt="Logo" style="height:48px;">`;
+                      alert('✓ Logo subido correctamente');
+                  } else if (tipo === 'banner' && d.urlBanner) {
+                      uploadedBannerUrl = d.urlBanner;
+                      document.getElementById('configBannerPreview').innerHTML = `<img src="${d.urlBanner}" alt="Banner" style="height:80px; width:100%; object-fit: cover;">`;
+                      alert('✓ Banner subido correctamente');
+                  } else {
+                      alert('Error: No se pudo subir el archivo');
+                  }
+              }).catch(e => alert('Error subiendo: ' + e));
+          }
+
 
         function loadDenuncias() {
              const lista = document.getElementById('denunciasList');

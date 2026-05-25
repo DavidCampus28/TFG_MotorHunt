@@ -94,6 +94,51 @@ public class AuthController {
                 && password.matches(".*[^A-Za-z0-9].*");
     }
 
+    @PostMapping("/cambiar-contraseña")
+    public ResponseEntity<?> cambiarContraseña(@RequestBody Map<String, String> request) {
+        try {
+            Long usuarioId = Long.parseLong(request.get("usuarioId"));
+            String passwordActual = request.get("passwordActual");
+            String passwordNueva = request.get("passwordNueva");
+            String passwordNuevaRepeat = request.get("passwordNuevaRepeat");
+
+            Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+            if (usuarioOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no encontrado");
+            }
+
+            Usuario usuario = usuarioOpt.get();
+
+            // Verificar contraseña actual
+            if (!passwordEncoder.matches(passwordActual, usuario.getPassword())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("La contraseña actual es incorrecta");
+            }
+
+            // Validar nueva contraseña
+            if (!esPasswordSegura(passwordNueva)) {
+                return ResponseEntity.badRequest().body("La contraseña debe tener al menos 12 caracteres, mayúsculas, minúsculas, números y símbolos.");
+            }
+
+            // Verificar que las contraseñas nuevas coincidan
+            if (!passwordNueva.equals(passwordNuevaRepeat)) {
+                return ResponseEntity.badRequest().body("Las contraseñas no coinciden");
+            }
+
+            // Actualizar contraseña
+            usuario.setPassword(passwordEncoder.encode(passwordNueva));
+            usuarioRepository.save(usuario);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("mensaje", "Contraseña cambiadaexitosamente");
+            return ResponseEntity.ok(response);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("ID de usuario inválido");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al cambiar contraseña: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
         try {

@@ -24,6 +24,13 @@ public class ConfiguracionAdmin {
     @Column(length = 255)
     private String urlBanner;
 
+    @Lob
+    @Column(name = "banner_data")
+    private byte[] bannerData;
+
+    @Column(name = "banner_content_type", length = 100)
+    private String bannerContentType;
+
     @Column(columnDefinition = "TEXT")
     private String textoBienvenida;
 
@@ -75,5 +82,11 @@ public class ConfiguracionAdmin {
 
     public String getLogoContentType() { return logoContentType; }
     public void setLogoContentType(String logoContentType) { this.logoContentType = logoContentType; }
+
+    public byte[] getBannerData() { return bannerData; }
+    public void setBannerData(byte[] bannerData) { this.bannerData = bannerData; }
+
+    public String getBannerContentType() { return bannerContentType; }
+    public void setBannerContentType(String bannerContentType) { this.bannerContentType = bannerContentType; }
 }
 

@@ -446,6 +446,55 @@ public class AdminAdvancedController {
         }
     }
 
+    @PostMapping(value = "/configuracion/banner", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> subirBanner(@RequestParam("file") MultipartFile file,
+                                        @RequestParam(required = false) Long adminId) {
+        try {
+            if (file == null || file.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Archivo vacío"));
+            }
+
+            Optional<ConfiguracionAdmin> opt = configuracionAdminRepository.findFirstByOrderByIdDesc();
+            ConfiguracionAdmin config = opt.orElse(new ConfiguracionAdmin());
+
+            config.setBannerData(file.getBytes());
+            config.setBannerContentType(file.getContentType());
+            config.setUrlBanner("/api/admin/advanced/configuracion/banner");
+
+            if (adminId != null) {
+                Optional<Usuario> admin = usuarioRepository.findById(adminId);
+                admin.ifPresent(config::setAdminModificador);
+            }
+
+            configuracionAdminRepository.save(config);
+            return ResponseEntity.ok(Map.of("urlBanner", config.getUrlBanner()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/configuracion/banner")
+    public ResponseEntity<?> obtenerBanner() {
+        try {
+            Optional<ConfiguracionAdmin> opt = configuracionAdminRepository.findFirstByOrderByIdDesc();
+            if (opt.isEmpty() || opt.get().getBannerData() == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            ConfiguracionAdmin c = opt.get();
+            MediaType mt = MediaType.APPLICATION_OCTET_STREAM;
+            try { mt = MediaType.parseMediaType(c.getBannerContentType()); } catch (Exception ignored) {}
+
+            return ResponseEntity.ok()
+                    .contentType(mt)
+                    .body(c.getBannerData());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
     // ===== MÉTODOS AUXILIARES =====
 
     private Map<String, Object> mapearDenuncia(Denuncia d) {

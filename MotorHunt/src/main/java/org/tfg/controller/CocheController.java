@@ -45,7 +45,10 @@ public class CocheController {
 
     @GetMapping
     public List<Coche> getAllCoches() {
-        return cocheRepository.findAll();
+        // NO mostrar coches eliminados (FUERA_SERVICIO) en el listado público
+        return cocheRepository.findAll().stream()
+                .filter(coche -> coche.getEstado() != EstadoCoche.FUERA_SERVICIO)
+                .toList();
     }
 
     @GetMapping("/{id}")
@@ -281,10 +284,13 @@ public class CocheController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCoche(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCoche(@PathVariable Long id) {
         return cocheRepository.findById(id).map(coche -> {
-            cocheRepository.delete(coche);
-            return ResponseEntity.ok().<Void>build();
+            // Soft delete: marcar como FUERA_SERVICIO en lugar de borrar físicamente
+            coche.setEstado(EstadoCoche.FUERA_SERVICIO);
+            coche.setFechaActualizacion(LocalDateTime.now());
+            cocheRepository.save(coche);
+            return ResponseEntity.ok(Map.of("mensaje", "Anuncio eliminado correctamente"));
         }).orElse(ResponseEntity.notFound().build());
     }
 

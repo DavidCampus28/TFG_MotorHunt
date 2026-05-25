@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles del Coche - MotorHunt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-dark: #0a0a0a;
@@ -53,13 +54,16 @@
             text-align: center;
             border: 1px solid var(--border);
             box-shadow: 0 14px 34px rgba(0,0,0,0.32);
+            display: flex;
+            flex-direction: column;
         }
         .detalle-imagen img {
             width: 100%;
             border-radius: 10px;
-            height: 420px;
-            object-fit: cover;
+            max-height: 500px;
+            object-fit: contain;
             background: var(--bg-dark);
+            aspect-ratio: 16 / 9;
         }
         .detalle-titulo {
             background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
@@ -74,21 +78,28 @@
             color: var(--text-main);
         }
         .btn-me-gusta {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
-            color: white;
+            background: none;
             border: none;
-            padding: 12px 24px;
-            font-size: 1.1em;
-            border-radius: 5px;
+            padding: 0;
             cursor: pointer;
-            transition: all 0.3s;
+            font-size: 2.5em;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
         }
         .btn-me-gusta:hover {
-            background: linear-gradient(135deg, var(--accent-dark) 0%, #8b0000 100%);
-            transform: scale(1.05);
+            transform: scale(1.15);
+            color: var(--accent);
         }
         .btn-me-gusta.activo {
-            background: linear-gradient(135deg, var(--accent-dark) 0%, #8b0000 100%);
+            color: var(--accent);
+        }
+        .btn-me-gusta.activo:hover {
+            filter: drop-shadow(0 0 8px rgba(211, 47, 47, 0.5));
         }
         .especificaciones {
             display: grid;
@@ -233,19 +244,21 @@
 
         .galeria-fotos {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             gap: 10px;
             margin-top: 15px;
         }
 
         .mini-foto {
             width: 100%;
-            height: 90px;
-            object-fit: cover;
+            height: 80px;
+            object-fit: contain;
             border-radius: 8px;
             border: 2px solid var(--border);
             cursor: pointer;
             transition: all 0.2s;
+            background: var(--bg-dark);
+            aspect-ratio: 4 / 3;
         }
 
         .mini-foto.activa {
@@ -413,7 +426,9 @@
                         <div id="cocheDenunciaAlerta" class="denuncia-alerta" style="display:none;"></div>
                         <div class="precio-final" id="cochePrecio"></div>
                         <div class="detalle-actions-row">
-                            <button class="btn-me-gusta" id="btnMeGusta" onclick="toggleMeGusta()">Me gusta</button>
+                            <button class="btn-me-gusta" id="btnMeGusta" onclick="toggleMeGusta()" title="Me gusta">
+                                <i class="far fa-heart"></i>
+                            </button>
                             <div class="me-gustas-count">
                                 <span id="meGustasTotales">0</span> me gustas
                             </div>
@@ -642,7 +657,7 @@
             // Actualizar botón me gusta
             if (coche.tieneMemGusta) {
                 document.getElementById('btnMeGusta').classList.add('activo');
-                document.getElementById('btnMeGusta').innerHTML = 'Ya te gusta';
+                document.getElementById('btnMeGusta').innerHTML = '<i class="fas fa-heart"></i>';
             }
 
             actualizarCountMeGustas();
@@ -687,7 +702,7 @@
             .then(res => res.json())
             .then(data => {
                 document.getElementById('btnMeGusta').classList.add('activo');
-                document.getElementById('btnMeGusta').innerHTML = 'Ya te gusta';
+                document.getElementById('btnMeGusta').innerHTML = '<i class="fas fa-heart"></i>';
                 actualizarCountMeGustas();
                 if (window.opener && window.opener.location) {
                     try { window.opener.location.reload(); } catch (e) {}
@@ -703,7 +718,7 @@
             .then(res => res.json())
             .then(data => {
                 document.getElementById('btnMeGusta').classList.remove('activo');
-                document.getElementById('btnMeGusta').innerHTML = 'Me gusta';
+                document.getElementById('btnMeGusta').innerHTML = '<i class="far fa-heart"></i>';
                 actualizarCountMeGustas();
                 if (window.opener && window.opener.location) {
                     try { window.opener.location.reload(); } catch (e) {}

@@ -897,7 +897,8 @@
                                 <span class="dato-label">Rol</span>
                                 <span class="dato-valor" id="rolPerfil">-</span>
                             </div>
-                            <button class="btn-editar">Editar Perfil</button>
+                            <button class="btn-editar" onclick="abrirModalEditarPerfil()">Editar Perfil</button>
+                            <button class="btn-editar" onclick="abrirModalCambiarPassword()">Cambiar Contraseña</button>
                         </div>
                     </div>
                 </div>
@@ -956,6 +957,35 @@
                     <div class="modal-buttons">
                         <button type="submit" class="btn-guardar">Guardar Cambios</button>
                         <button type="button" class="btn-cancelar" onclick="cerrarModalPerfil()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL CAMBIAR CONTRASEÑA -->
+        <div id="cambiarPasswordModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">Cambiar Contraseña</div>
+                <form id="cambiarPasswordForm" onsubmit="guardarNuevaPassword(event)">
+                    <div class="form-group">
+                        <label>Contraseña Actual</label>
+                        <input type="password" id="passwordActual" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nueva Contraseña</label>
+                        <input type="password" id="passwordNueva" minlength="12" required>
+                        <small style="color: var(--text-secondary); font-size: 12px; display: block; margin-top: 5px;">
+                            Mínimo 12 caracteres, con mayúsculas, minúsculas, números y símbolos.
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label>Repetir Nueva Contraseña</label>
+                        <input type="password" id="passwordNuevaRepeat" minlength="12" required>
+                    </div>
+                    <div id="passwordMessage"></div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn-guardar">Cambiar Contraseña</button>
+                        <button type="button" class="btn-cancelar" onclick="cerrarModalPassword()">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -1333,16 +1363,19 @@
         }
 
         function eliminarCoche(cocheId) {
-            if (!confirm('¿Seguro que quieres eliminar este coche? Esta acción no se puede deshacer.')) {
+            if (!confirm('¿Seguro que quieres eliminar este anuncio? El coche se marcará como no disponible pero permanecerá en el sistema.')) {
                 return;
             }
 
             fetch(`/coches/${cocheId}`, { method: 'DELETE' })
                 .then(res => {
                     if (!res.ok) throw new Error('No se pudo eliminar');
+                    return res.json();
+                })
+                .then(() => {
                     cargarPerfil();
                 })
-                .catch(() => alert('No se pudo eliminar el coche'));
+                .catch(() => alert('No se pudo eliminar el anuncio'));
         }
 
         function abrirModalPerfil() {
@@ -1390,6 +1423,67 @@
         });
 
         document.querySelector('.btn-editar').addEventListener('click', abrirModalPerfil);
+
+        function abrirModalEditarPerfil() {
+            abrirModalPerfil();
+        }
+
+        function abrirModalCambiarPassword() {
+            document.getElementById('cambiarPasswordModal').classList.add('active');
+            document.getElementById('cambiarPasswordForm').reset();
+            document.getElementById('passwordMessage').innerHTML = '';
+        }
+
+        function cerrarModalPassword() {
+            document.getElementById('cambiarPasswordModal').classList.remove('active');
+            document.getElementById('cambiarPasswordForm').reset();
+            document.getElementById('passwordMessage').innerHTML = '';
+        }
+
+        function guardarNuevaPassword(e) {
+            e.preventDefault();
+            const usuario = JSON.parse(localStorage.getItem('usuario'));
+            const passwordActual = document.getElementById('passwordActual').value;
+            const passwordNueva = document.getElementById('passwordNueva').value;
+            const passwordNuevaRepeat = document.getElementById('passwordNuevaRepeat').value;
+            const messageEl = document.getElementById('passwordMessage');
+
+            if (passwordNueva !== passwordNuevaRepeat) {
+                messageEl.innerHTML = '<div style="color: #e74c3c; background: #f8d7da; padding: 12px; border-radius: 5px; margin-bottom: 15px;">Las contraseñas no coinciden</div>';
+                return;
+            }
+
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/;
+            if (!passwordRegex.test(passwordNueva)) {
+                messageEl.innerHTML = '<div style="color: #e74c3c; background: #f8d7da; padding: 12px; border-radius: 5px; margin-bottom: 15px;">La contraseña debe tener al menos 12 caracteres, mayúsculas, minúsculas, números y símbolos.</div>';
+                return;
+            }
+
+            fetch('/api/auth/cambiar-contraseña', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    usuarioId: usuario.id,
+                    passwordActual: passwordActual,
+                    passwordNueva: passwordNueva,
+                    passwordNuevaRepeat: passwordNuevaRepeat
+                })
+            })
+            .then(r => {
+                if (!r.ok) return r.json().then(e => Promise.reject(e));
+                return r.json();
+            })
+            .then(() => {
+                messageEl.innerHTML = '<div style="color: #155724; background: #d4edda; padding: 12px; border-radius: 5px; margin-bottom: 15px;">✓ Contraseña cambiada exitosamente</div>';
+                setTimeout(() => {
+                    cerrarModalPassword();
+                }, 1500);
+            })
+            .catch(e => {
+                const error = typeof e === 'string' ? e : e.mensaje || 'Error al cambiar contraseña';
+                messageEl.innerHTML = `<div style="color: #e74c3c; background: #f8d7da; padding: 12px; border-radius: 5px; margin-bottom: 15px;">${error}</div>`;
+            });
+        }
 
         let cocheEditandoId = null;
 

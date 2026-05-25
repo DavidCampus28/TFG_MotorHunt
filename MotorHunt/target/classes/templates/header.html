@@ -52,6 +52,41 @@
             position: relative;
         }
 
+        #notLoggedButtons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
+
+        #notLoggedButtons a {
+            min-height: 38px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background: transparent;
+            color: #f2f2f2;
+            cursor: pointer;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s, color 0.2s, background 0.2s;
+        }
+
+        html[data-theme="light"] #notLoggedButtons a {
+            color: #222;
+            border-color: #ddd;
+        }
+
+        #notLoggedButtons a:hover {
+            border-color: #ff4444;
+            color: #ff4444;
+            background: rgba(255, 68, 68, 0.08);
+        }
+
         .header-action,
         .theme-btn,
         .user-btn {
@@ -403,22 +438,29 @@
 
     <div class="header-right">
         <a id="adminBtnHeader" class="header-action admin-btn" href="/admin/dashboard" style="display: none;">Panel Admin</a>
-        <button class="theme-btn" type="button" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">Tema</button>
-        <button class="user-btn" type="button" onclick="toggleUserMenu()" aria-haspopup="true" aria-controls="userMenu">Cuenta</button>
+        <button class="theme-btn" type="button" onclick="toggleTheme()" title="Cambiar tema oscuro/claro" aria-label="Cambiar tema">☀️</button>
+
+        <!-- Botones directos cuando NO está logueado -->
+        <div id="notLoggedButtons">
+            <a href="/login" class="header-action">Iniciar Sesión</a>
+            <a href="/login" class="header-action" onclick="showRegisterForm(event)">Registrarse</a>
+        </div>
+
+        <!-- Menú de usuario cuando IS logueado -->
+        <button class="user-btn" type="button" id="loggedUserBtn" onclick="toggleUserMenu()" aria-haspopup="true" aria-controls="userMenu" style="display: none;">👤 <span id="userNameShort"></span></button>
+
         <button class="chatbot-button" type="button" onclick="toggleChatBot()" title="Abrir asistente IA" aria-label="Abrir asistente IA">IA</button>
+
         <div class="user-menu" id="userMenu">
-            <div class="user-info" id="userInfo" style="display: none;">
-                Hola, <span id="userName"></span>
-            </div>
-            <div id="notLoggedMenu">
-                <a href="/login">Iniciar sesion</a>
-                <a href="/login" onclick="showRegisterForm(event)">Registrarse</a>
-            </div>
             <div id="loggedMenu" style="display: none;">
-                <a href="/perfil">Mi perfil</a>
-                <a href="/mis-coches">Mis coches</a>
-                <a href="/mis-denuncias">Denuncias</a>
-                <button type="button" onclick="logout()">Cerrar sesion</button>
+                <div class="user-info">
+                    Hola, <span id="userName"></span>
+                </div>
+                <a href="/perfil">👤 Mi perfil</a>
+                <a href="/mis-coches">🚗 Mis coches</a>
+                <a href="/mis-denuncias">⚠️ Denuncias</a>
+                <a href="/mis-me-gustas">❤️ Mis favoritos</a>
+                <button type="button" onclick="logout()">Cerrar sesión</button>
             </div>
         </div>
     </div>
@@ -540,7 +582,7 @@
             html.setAttribute('data-theme', nextTheme);
             localStorage.setItem('theme', nextTheme);
             const themeBtn = document.querySelector('.theme-btn');
-            if (themeBtn) themeBtn.textContent = nextTheme === 'dark' ? 'Tema' : 'Tema claro';
+            if (themeBtn) themeBtn.textContent = nextTheme === 'dark' ? '🌙' : '☀️';
         }
 
         function showRegisterForm(e) {
@@ -551,23 +593,25 @@
 
         function initializeHeader() {
             const usuario = localStorage.getItem('usuario');
-            const userInfo = document.getElementById('userInfo');
-            const notLoggedMenu = document.getElementById('notLoggedMenu');
+            const notLoggedButtons = document.getElementById('notLoggedButtons');
+            const loggedUserBtn = document.getElementById('loggedUserBtn');
             const loggedMenu = document.getElementById('loggedMenu');
             const adminBtn = document.getElementById('adminBtnHeader');
 
             if (usuario) {
                 const user = JSON.parse(usuario);
-                userInfo.style.display = 'block';
+                // Mostrar menú de usuario logueado
+                notLoggedButtons.style.display = 'none';
+                loggedUserBtn.style.display = 'inline-flex';
                 document.getElementById('userName').textContent = user.nombre;
-                notLoggedMenu.style.display = 'none';
+                document.getElementById('userNameShort').textContent = user.nombre.split(' ')[0];
                 loggedMenu.style.display = 'block';
                 if (user.rol === 'ADMINISTRADOR') {
                     adminBtn.style.display = 'inline-flex';
                 }
             } else {
-                userInfo.style.display = 'none';
-                notLoggedMenu.style.display = 'block';
+                // Mostrar botones de cuentanotLoggedButtons.style.display = 'flex';
+                loggedUserBtn.style.display = 'none';
                 loggedMenu.style.display = 'none';
                 adminBtn.style.display = 'none';
             }
@@ -577,7 +621,7 @@
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
             const themeBtn = document.querySelector('.theme-btn');
-            if (themeBtn) themeBtn.textContent = savedTheme === 'dark' ? 'Tema' : 'Tema claro';
+            if (themeBtn) themeBtn.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
         }
 
         document.addEventListener('DOMContentLoaded', () => {
