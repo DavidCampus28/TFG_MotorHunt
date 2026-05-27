@@ -17,4 +17,7 @@ public interface MensajeRepository extends JpaRepository<Mensaje, Long> {
 
     @Query("SELECT m FROM Mensaje m WHERE (m.remitente = :usuario OR m.destinatario = :usuario) ORDER BY m.fechaEnvio DESC")
     List<Mensaje> findByRemitenteOrDestinatario(@Param("usuario") Usuario usuario);
+
+    @Query("SELECT m FROM Mensaje m WHERE (m.remitente.id = :id1 AND m.destinatario.id = :id2) OR (m.remitente.id = :id2 AND m.destinatario.id = :id1) ORDER BY m.fechaEnvio ASC")
+    List<Mensaje> findConversationBetween(@Param("id1") Long id1, @Param("id2") Long id2);
 }

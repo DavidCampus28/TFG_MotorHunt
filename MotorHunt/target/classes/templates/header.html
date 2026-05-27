@@ -436,6 +436,9 @@
         </a>
     </div>
 
+    <!-- Contenedor global para toasts/popup ligeros (reemplazo de alert) -->
+    <div id="globalPopupContainer" style="position:fixed;right:20px;bottom:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;align-items:flex-end;"></div>
+
     <div class="header-right">
         <a id="adminBtnHeader" class="header-action admin-btn" href="/admin/dashboard" style="display: none;">Panel Admin</a>
         <button class="theme-btn" type="button" onclick="toggleTheme()" title="Cambiar tema oscuro/claro" aria-label="Cambiar tema">☀️</button>
@@ -447,7 +450,7 @@
         </div>
 
         <!-- Menú de usuario cuando IS logueado -->
-        <button class="user-btn" type="button" id="loggedUserBtn" onclick="toggleUserMenu()" aria-haspopup="true" aria-controls="userMenu" style="display: none;">👤 <span id="userNameShort"></span></button>
+        <button class="user-btn" type="button" id="loggedUserBtn" onclick="toggleUserMenu()" aria-haspopup="true" aria-controls="userMenu" style="display: none;"><span id="userNameShort"></span></button>
 
         <button class="chatbot-button" type="button" onclick="toggleChatBot()" title="Abrir asistente IA" aria-label="Abrir asistente IA">IA</button>
 
@@ -456,10 +459,10 @@
                 <div class="user-info">
                     Hola, <span id="userName"></span>
                 </div>
-                <a href="/perfil">👤 Mi perfil</a>
-                <a href="/mis-coches">🚗 Mis coches</a>
-                <a href="/mis-denuncias">⚠️ Denuncias</a>
-                <a href="/mis-me-gustas">❤️ Mis favoritos</a>
+                <a href="/perfil">Mi perfil</a>
+                <a href="/mis-coches">Mis coches</a>
+                <a href="/mis-denuncias">Denuncias</a>
+                <a href="/mis-me-gustas">Mis favoritos</a>
                 <button type="button" onclick="logout()">Cerrar sesión</button>
             </div>
         </div>
@@ -622,6 +625,34 @@
             document.documentElement.setAttribute('data-theme', savedTheme);
             const themeBtn = document.querySelector('.theme-btn');
             if (themeBtn) themeBtn.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+        }
+
+        // Función global para mostrar popups/toasts estéticos en lugar de alert()
+        function showPopup(text, timeout = 3500) {
+            const container = document.getElementById('globalPopupContainer');
+            if (!container) return alert(text);
+            const el = document.createElement('div');
+            el.style.background = 'rgba(0,0,0,0.85)';
+            el.style.color = '#fff';
+            el.style.padding = '12px 16px';
+            el.style.borderRadius = '10px';
+            el.style.boxShadow = '0 8px 20px rgba(0,0,0,0.3)';
+            el.style.maxWidth = '360px';
+            el.style.fontSize = '0.95em';
+            el.textContent = text;
+            container.appendChild(el);
+            setTimeout(() => {
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 300);
+            }, timeout);
+        }
+
+        // Reemplazar window.alert por showPopup para no tener que editar cada plantilla
+        try {
+            window.alert = (msg) => showPopup(String(msg));
+        } catch (e) {
+            // si fallara, no rompe la página
+            console.warn('No se pudo sobrescribir window.alert:', e);
         }
 
         document.addEventListener('DOMContentLoaded', () => {

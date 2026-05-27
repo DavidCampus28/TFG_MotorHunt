@@ -129,6 +129,106 @@
             background: var(--bg-tertiary); color: var(--text-main);
         }
         .modal-denuncia-content textarea { min-height: 120px; resize: vertical; }
+
+        .custom-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 30px;
+            min-width: 400px;
+            max-width: 600px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1999;
+            display: none;
+        }
+
+        .custom-alert-overlay.active {
+            display: block;
+        }
+
+        .custom-alert-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 15px;
+        }
+
+        .custom-alert-message {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .custom-alert-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .custom-alert-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .custom-alert-button.primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+        }
+
+        .custom-alert-button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.3);
+        }
+
+        .custom-alert-button.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .custom-alert-button.secondary:hover {
+            border-color: var(--accent);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translate(-50%, -60%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        .custom-alert {
+            display: none;
+        }
+
+        .custom-alert.active {
+            display: block;
+        }
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
 
         .empty {
@@ -233,8 +333,40 @@
         </form>
     </div>
 </div>
+
+<!-- CUSTOM ALERT MODAL -->
+<div id="customAlertOverlay" class="custom-alert-overlay"></div>
+<div id="customAlert" class="custom-alert">
+    <div class="custom-alert-title" id="customAlertTitle">Alerta</div>
+    <div class="custom-alert-message" id="customAlertMessage">Mensaje</div>
+    <div class="custom-alert-buttons" id="customAlertButtons"></div>
+</div>
+
 <script th:inline="javascript">
     const vendedorId = /*[[${vendedor.id}]]*/ 0;
+
+    // CUSTOM ALERT FUNCTIONS
+    function showCustomAlert(title, message) {
+        const overlay = document.getElementById('customAlertOverlay');
+        const alertBox = document.getElementById('customAlert');
+        const alertTitle = document.getElementById('customAlertTitle');
+        const alertMessage = document.getElementById('customAlertMessage');
+        const alertButtons = document.getElementById('customAlertButtons');
+
+        alertTitle.textContent = title;
+        alertMessage.textContent = message;
+        alertButtons.innerHTML = `<button class="custom-alert-button primary" onclick="closeCustomAlert()">Aceptar</button>`;
+
+        overlay.classList.add('active');
+        alertBox.classList.add('active');
+    }
+
+    function closeCustomAlert() {
+        const overlay = document.getElementById('customAlertOverlay');
+        const alertBox = document.getElementById('customAlert');
+        overlay.classList.remove('active');
+        alertBox.classList.remove('active');
+    }
 
     function abrirDenunciaUsuario() {
         const usuario = JSON.parse(localStorage.getItem('usuario') || 'null');
@@ -269,9 +401,9 @@
             })
             .then(() => {
                 cerrarDenunciaUsuario();
-                alert('Denuncia enviada. Puedes ver su estado en Mis denuncias.');
+                showCustomAlert('Denuncia enviada', 'Tu denuncia ha sido enviada correctamente. Puedes ver su estado en Mis denuncias.');
             })
-            .catch(err => alert('No se pudo enviar la denuncia: ' + err.message));
+            .catch(err => showCustomAlert('Error', 'No se pudo enviar la denuncia: ' + err.message));
     });
 </script>
 </body>

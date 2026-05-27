@@ -578,7 +578,7 @@
                 })
                 .catch(err => {
                     console.error('Error:', err);
-                    alert('No se pudo cargar el coche');
+                    showCustomAlert('Error', 'No se pudo cargar el coche');
                 });
         }
 
@@ -680,8 +680,8 @@
 
         function toggleMeGusta() {
             if (!usuarioActual) {
-                alert('Debes iniciar sesión');
-                window.location.href = '/login';
+                showCustomAlert('Iniciar sesión', 'Debes iniciar sesión');
+                setTimeout(() => { window.location.href = '/login'; }, 900);
                 return;
             }
 
@@ -738,8 +738,8 @@
 
         function abrirChat() {
             if (!usuarioActual) {
-                alert('Debes iniciar sesión');
-                window.location.href = '/login';
+                showCustomAlert('Iniciar sesión', 'Debes iniciar sesión');
+                setTimeout(() => { window.location.href = '/login'; }, 900);
                 return;
             }
 
@@ -755,7 +755,7 @@
             }
 
             if (!vendedorId) {
-                alert('No se pudo obtener la información del vendedor para abrir el chat');
+                showCustomAlert('Error', 'No se pudo obtener la información del vendedor para abrir el chat');
                 return;
             }
 
@@ -771,8 +771,8 @@
 
         function abrirDenuncia(objetivo) {
             if (!usuarioActual) {
-                alert('Debes iniciar sesión para denunciar');
-                window.location.href = '/login';
+                showCustomAlert('Iniciar sesión', 'Debes iniciar sesión para denunciar');
+                setTimeout(() => { window.location.href = '/login'; }, 900);
                 return;
             }
             denunciaObjetivo = objetivo;
@@ -806,10 +806,103 @@
                 })
                 .then(() => {
                     cerrarDenuncia();
-                    alert('Denuncia enviada. Puedes consultar su estado en Mis denuncias.');
+                    showCustomAlert('Denuncia enviada', 'Denuncia enviada. Puedes consultar su estado en Mis denuncias.');
                 })
-                .catch(err => alert('No se pudo enviar la denuncia: ' + err.message));
+                .catch(err => showCustomAlert('Error', 'No se pudo enviar la denuncia: ' + err.message));
         });
+    </script>
+
+    <script>
+        (function(){
+            function createCustomAlertElements() {
+                if (document.getElementById('customAlert')) return;
+                const overlay = document.createElement('div');
+                overlay.id = 'customAlertOverlay';
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlay.style.right = '0';
+                overlay.style.bottom = '0';
+                overlay.style.background = 'rgba(0,0,0,0.5)';
+                overlay.style.zIndex = 2000;
+                overlay.style.display = 'none';
+                document.body.appendChild(overlay);
+
+                const box = document.createElement('div');
+                box.id = 'customAlert';
+                box.style.position = 'fixed';
+                box.style.top = '50%';
+                box.style.left = '50%';
+                box.style.transform = 'translate(-50%, -50%)';
+                box.style.minWidth = '320px';
+                box.style.maxWidth = '640px';
+                box.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-secondary') || '#222';
+                box.style.border = '1px solid ' + (getComputedStyle(document.documentElement).getPropertyValue('--border') || '#333');
+                box.style.borderRadius = '10px';
+                box.style.padding = '20px 24px';
+                box.style.boxShadow = '0 10px 40px rgba(0,0,0,0.5)';
+                box.style.zIndex = 2001;
+                box.style.display = 'none';
+
+                const title = document.createElement('div');
+                title.id = 'customAlertTitle';
+                title.style.fontSize = '16px';
+                title.style.fontWeight = '700';
+                title.style.marginBottom = '8px';
+                title.style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-main') || '#fff';
+                box.appendChild(title);
+
+                const msg = document.createElement('div');
+                msg.id = 'customAlertMessage';
+                msg.style.fontSize = '14px';
+                msg.style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary') || '#ccc';
+                msg.style.marginBottom = '16px';
+                box.appendChild(msg);
+
+                const btns = document.createElement('div');
+                btns.id = 'customAlertButtons';
+                btns.style.display = 'flex';
+                btns.style.justifyContent = 'flex-end';
+                btns.style.gap = '8px';
+                box.appendChild(btns);
+
+                document.body.appendChild(box);
+
+                overlay.addEventListener('click', function(e){ if(e.target === overlay) closeCustomAlert(); });
+            }
+
+            function showCustomAlert(title, message, autoClose = false, timeout = 1500) {
+                createCustomAlertElements();
+                const overlay = document.getElementById('customAlertOverlay');
+                const box = document.getElementById('customAlert');
+                document.getElementById('customAlertTitle').textContent = title;
+                document.getElementById('customAlertMessage').textContent = message;
+                const btns = document.getElementById('customAlertButtons');
+                btns.innerHTML = '';
+                const ok = document.createElement('button');
+                ok.textContent = 'Aceptar';
+                ok.className = 'custom-alert-button primary';
+                ok.style.border = 'none';
+                ok.style.padding = '8px 12px';
+                ok.style.cursor = 'pointer';
+                ok.onclick = closeCustomAlert;
+                btns.appendChild(ok);
+                overlay.style.display = 'block';
+                box.style.display = 'block';
+                if (autoClose) setTimeout(closeCustomAlert, timeout);
+            }
+
+            function closeCustomAlert() {
+                const overlay = document.getElementById('customAlertOverlay');
+                const box = document.getElementById('customAlert');
+                if (overlay) overlay.style.display = 'none';
+                if (box) box.style.display = 'none';
+            }
+
+            // Expose to global scope so template scripts can use it
+            window.showCustomAlert = showCustomAlert;
+            window.closeCustomAlert = closeCustomAlert;
+        })();
     </script>
 </body>
 </html>

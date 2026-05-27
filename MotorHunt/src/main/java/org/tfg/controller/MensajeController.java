@@ -60,10 +60,8 @@ public class MensajeController {
 
             Mensaje saved = mensajeRepository.save(mensaje);
 
-            return ResponseEntity.ok(Map.of(
-                    "id", saved.getId(),
-                    "mensaje", "Mensaje enviado correctamente"
-            ));
+            // Devolver un payload plano evita bucles de serialización JSON entre entidades relacionadas
+            return ResponseEntity.ok(toMensajePayload(saved));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error: " + e.getMessage());
@@ -85,15 +83,10 @@ public class MensajeController {
             Usuario usuario1 = usuario1Opt.get();
             Usuario usuario2 = usuario2Opt.get();
 
-            // Obtener todos los mensajes entre estos dos usuarios
-            List<Mensaje> mensajes = mensajeRepository.findAll().stream()
-                    .filter(m -> (m.getRemitente().getId().equals(usuario1.getId()) &&
-                                 m.getDestinatario().getId().equals(usuario2.getId())) ||
-                                (m.getRemitente().getId().equals(usuario2.getId()) &&
-                                 m.getDestinatario().getId().equals(usuario1.getId())))
-                    .toList();
+            // Obtener la conversación entre ambos ordenada por fecha de envío (ascendente)
+            List<Mensaje> mensajes = mensajeRepository.findConversationBetween(usuario1.getId(), usuario2.getId());
 
-            // Marcar como leídos
+            // Marcar como leídos (para el usuario que solicita la conversación)
             mensajes.forEach(m -> {
                 if (m.getDestinatario().getId().equals(usuarioId1) && !m.getLeido()) {
                     m.setLeido(true);
@@ -102,7 +95,11 @@ public class MensajeController {
                 }
             });
 
-            return ResponseEntity.ok(mensajes);
+            List<Map<String, Object>> payload = mensajes.stream()
+                    .map(this::toMensajePayload)
+                    .toList();
+
+            return ResponseEntity.ok(payload);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error: " + e.getMessage());
@@ -211,6 +208,19 @@ public class MensajeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error: " + e.getMessage());
         }
+    }
+
+    private Map<String, Object> toMensajePayload(Mensaje mensaje) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("id", mensaje.getId());
+        payload.put("contenido", mensaje.getContenido());
+        payload.put("fechaEnvio", mensaje.getFechaEnvio());
+        payload.put("leido", mensaje.getLeido());
+        payload.put("fechaLectura", mensaje.getFechaLectura());
+        payload.put("remitenteId", mensaje.getRemitente() != null ? mensaje.getRemitente().getId() : null);
+        payload.put("destinatarioId", mensaje.getDestinatario() != null ? mensaje.getDestinatario().getId() : null);
+        payload.put("cocheId", mensaje.getCoche() != null ? mensaje.getCoche().getId() : null);
+        return payload;
     }
 }
 
